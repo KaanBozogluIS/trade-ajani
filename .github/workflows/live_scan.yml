@@ -1,0 +1,40 @@
+name: Canli Sinyal Taramasi
+
+# Laptop kapaliyken de calisir - GitHub'in kendi sunucularinda, ucretsiz.
+# Her 30 dakikada bir watchlist'i kontrol eder, sinyal DEGISTIYSE Telegram'a
+# bildirim atar. Ayni sinyali tekrar tekrar gondermemek icin son durumu
+# (data/state/last_signal.json) her calistirmadan sonra repoya geri yazar.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}  # GitHub'da "Run workflow" ile elle de tetiklenebilir
+
+permissions:
+  contents: write  # last_signal.json'u geri commitleyebilmek icin
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - name: Sinyalleri kontrol et, degisen varsa Telegram'a gonder
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/live_scan.py
+
+      - name: Sinyal durumunu repoya geri yaz
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add data/state/last_signal.json
+          git diff --staged --quiet || git commit -m "sinyal durumu guncellendi [skip ci]"
+          git push
