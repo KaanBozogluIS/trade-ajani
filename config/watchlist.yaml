@@ -1,0 +1,71 @@
+# Bu oturumda IS/OOS dogrulamali arastirmayla bulunan, izlemeye deger
+# kombinasyonlar. scripts/live_scan.py bunlari her calistiginda kontrol
+# eder, sinyal DEGISTIGINDE Telegram'a bildirim gonderir.
+#
+# GRUP A - ALTCOIN Stratejisi (orta/kucuk cap, %50-65 kazanma orani,
+# kirilim+geri cekilme+toparlanma mantigi - core/strategies/breakout_retest_recovery.py)
+- provider: binance
+  symbol: SEIUSDT
+  timeframe: 1h
+  strategy: altcoin_stratejisi
+  params: { tolerance_pct: 0.4, min_touches: 2, break_atr_mult: 0.2, tp_r_mult: 1.5, sl_atr_buffer: 0.3 }
+  start: "2023-01-01"
+
+- provider: binance
+  symbol: SHIBUSDT
+  timeframe: 1h
+  strategy: altcoin_stratejisi
+  params: { tolerance_pct: 0.4, min_touches: 3, break_atr_mult: 0.5, tp_r_mult: 2.5, sl_atr_buffer: 0.3 }
+  start: "2023-01-01"
+
+- provider: binance
+  symbol: FETUSDT
+  timeframe: 1h
+  strategy: altcoin_stratejisi
+  params: { tolerance_pct: 0.4, min_touches: 2, break_atr_mult: 0.2, tp_r_mult: 2.0, sl_atr_buffer: 0.3 }
+  start: "2023-01-01"
+
+# GRUP B - MAJOR Stratejisi (buyuk/likit coinler, dusuk kazanma orani ama
+# yuksek R:R, chandelier iz suren stop - core/strategies/major_trend_rider.py)
+- provider: binance
+  symbol: BNBUSDT
+  timeframe: 4h
+  strategy: major_stratejisi
+  params: { breakout_len: 55, adx_min: 25, chandelier_mult: 3.0, vol_mult: 1.3 }
+  start: "2023-01-01"
+
+- provider: binance
+  symbol: SOLUSDT
+  timeframe: 4h
+  strategy: major_stratejisi
+  params: { breakout_len: 10, adx_min: 30, chandelier_mult: 4.0, vol_mult: 1.0 }
+  start: "2023-01-01"
+
+- provider: binance
+  symbol: ETHUSDT
+  timeframe: 4h
+  strategy: major_stratejisi
+  # DIKKAT: bar-ici (gercek stop emri) senaryosunda ETH digerlerine gore
+  # kirilgan cikti - dusuk oncelikli izle, panelde teyit etmeden guvenme.
+  params: { breakout_len: 55, adx_min: 20, chandelier_mult: 2.5, vol_mult: 1.3 }
+  start: "2023-01-01"
+
+# GRUP C - ZEC. btc_zec_hunt.py ile 25 stratejinin tamami tarandi - basit
+# ema_cross (karmasik sarmalayicisiz) en saglami cikti: 280 islemlik dev
+# ornek, IS_PF=1.68, OOS_PF=2.50, OOS getiri +%3446. Onceki mtf_trend_confirm
+# versiyonundan (IS_PF sinirda 1.00) cok daha guvenilir.
+- provider: binance
+  symbol: ZECUSDT
+  timeframe: 1h
+  strategy: ema_cross
+  params: { fast: 20, slow: 50, trend_filter: 200 }
+  start: "2023-01-01"
+
+# GRUP D - BTC. btc_zec_hunt.py ile bulundu: ict_swing (1d) - 95 islemlik
+# ornek, IS_PF=1.19, OOS_PF=1.38, ikisi de Sharpe>0 (tutarli).
+- provider: binance
+  symbol: BTCUSDT
+  timeframe: 1d
+  strategy: ict_swing
+  params: { tp_r_mult: 2.0, sl_atr_buffer: 0.3 }
+  start: "2023-01-01"

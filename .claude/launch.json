@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "trade-dashboard",
+      "runtimeExecutable": "C:\\Users\\Kaan\\.venvs\\trade-ajani\\Scripts\\streamlit.exe",
+      "runtimeArgs": ["run", "dashboard/Home.py", "--server.headless", "true", "--server.port", "8501"],
+      "port": 8501
+    }
+  ]
+}

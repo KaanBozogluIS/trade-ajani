@@ -1,0 +1,20 @@
+# Bunu config/watchlist.yaml olarak kopyala ve doldur.
+# research/scan.py sonuclarinda (reports/scan_sonuclari.csv) tutarlilik_skoru
+# yuksek cikan kombinasyonlari buraya ekle - live_scan.py bunlari izler.
+#
+# provider: binance | yahoo
+# strategy: ema_cross | donchian_breakout | bollinger_mean_reversion | trend_momentum
+
+- provider: binance
+  symbol: BTCUSDT
+  timeframe: 4h
+  strategy: donchian_breakout
+  params: { entry_len: 20, exit_len: 10, adx_min: 20 }
+  start: "2023-01-01"
+
+- provider: binance
+  symbol: ETHUSDT
+  timeframe: 1h
+  strategy: trend_momentum
+  params: { ema_trend: 100, macd_fast: 12, macd_slow: 26, macd_signal: 9 }
+  start: "2023-01-01"

@@ -1,0 +1,1 @@
+"""Trade ajani cekirdek paketi."""
