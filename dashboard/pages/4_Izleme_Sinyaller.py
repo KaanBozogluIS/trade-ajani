@@ -19,6 +19,8 @@ import streamlit as st
 import yaml
 from dotenv import load_dotenv
 
+from core.tz import format_istanbul
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 load_dotenv(ROOT / ".env")
 
@@ -50,7 +52,8 @@ for e in watchlist:
     rows.append({
         "Kaynak": e["provider"], "Sembol": e["symbol"], "Zaman Dilimi": e["timeframe"],
         "Strateji": e["strategy"], "Son Sinyal": {1: "🟢 LONG", -1: "🔴 SHORT", 0: "⚪ FLAT", None: "—"}.get(s.get("signal")),
-        "Son Fiyat": s.get("price"), "Son Mum": s.get("time"),
+        "Son Fiyat": s.get("price"),
+        "Son Mum (TR saati)": format_istanbul(s["time"]) if s.get("time") else "—",
     })
 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
@@ -70,7 +73,7 @@ with col1:
 
 st.divider()
 st.caption(
-    "Sürekli otomatik çalışması için Windows Görev Zamanlayıcısı'na ekleyin: "
-    f"Program = `{sys.executable}`, Bağımsız değişkenler = `scripts\\live_scan.py`, "
-    f"Başlangıç dizini = `{ROOT}`, Tetikleyici = her 15-60 dakikada bir."
+    "🌐 Sürekli tarama artık **GitHub Actions**'ta çalışıyor (`.github/workflows/live_scan.yml`, "
+    "her 30 dakikada bir) — laptop kapalıyken de sinyaller gelmeye devam eder. "
+    "GitHub'daki *Actions* sekmesinden çalışma geçmişini görebilirsin."
 )

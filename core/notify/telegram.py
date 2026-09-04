@@ -14,6 +14,8 @@ import os
 
 import requests
 
+from core.tz import format_istanbul
+
 _API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
@@ -53,6 +55,6 @@ def format_signal_message(*, provider: str, symbol: str, timeframe: str, strateg
         f"*{arrow}*  `{symbol}` ({provider}, {timeframe})\n"
         f"Strateji: `{strategy}`\n"
         f"Fiyat: `{price:.6g}`\n"
-        f"Mum zamani (UTC): `{bar_time}`\n"
+        f"Mum zamani: `{format_istanbul(bar_time)}`\n"
         f"_Bu otomatik bir sinyaldir, yatirim tavsiyesi degildir._"
     )

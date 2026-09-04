@@ -95,7 +95,8 @@ def main() -> None:
         changed = prev_signal != last_signal
 
         label = _SIGNAL_NAME[last_signal]
-        print(f"{key:55s} -> {label:6s} @ {last_price:g}  ({last_time})"
+        from core.tz import format_istanbul
+        print(f"{key:55s} -> {label:6s} @ {last_price:g}  ({format_istanbul(last_time)})"
               f"{'  [YENI]' if changed else ''}")
 
         if changed:
