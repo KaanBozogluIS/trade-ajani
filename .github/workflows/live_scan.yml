@@ -1,13 +1,18 @@
 name: Canli Sinyal Taramasi
 
 # Laptop kapaliyken de calisir - GitHub'in kendi sunucularinda, ucretsiz.
-# Her 30 dakikada bir watchlist'i kontrol eder, sinyal DEGISTIYSE Telegram'a
+# Her 5 dakikada bir watchlist'i kontrol eder, sinyal DEGISTIYSE Telegram'a
 # bildirim atar. Ayni sinyali tekrar tekrar gondermemek icin son durumu
 # (data/state/last_signal.json) her calistirmadan sonra repoya geri yazar.
+# NOT: 5 dakikalik siklik private repo'larda aylik ucretsiz Actions kotasini
+# (2000 dk) asar - bu yuzden repo bilincli olarak public yapildi (Actions
+# dakikasi public repo'larda sinirsiz/ucretsiz). Gercek kimlik bilgileri
+# (.env, TELEGRAM_BOT_TOKEN/CHAT_ID) hicbir zaman repoya commitlenmiyor,
+# sadece GitHub Secrets'ta duruyor.
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch: {}  # GitHub'da "Run workflow" ile elle de tetiklenebilir
 
 permissions:
