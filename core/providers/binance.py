@@ -12,11 +12,17 @@ import requests
 
 from core.providers.base import DataProvider, DataProviderError, normalize
 
-_SPOT_URL = "https://api.binance.com/api/v3/klines"
+# NOT: klines/exchangeInfo/ticker icin api.binance.com YERINE
+# data-api.binance.vision kullaniyoruz - Binance'in ozel "sadece piyasa
+# verisi" ucu. api.binance.com (islem/hesap ucu) ABD merkezli IP'lerden
+# (GitHub Actions runner'lari dahil) 451 hatasiyla engelleniyor; bu ayri uc
+# aynı veriyi bu kisitlama olmadan veriyor. Sadece OKUMA yapiyoruz (islem
+# gondermiyoruz), bu yuzden bu uc bizim icin tam yeterli.
+_SPOT_URL = "https://data-api.binance.vision/api/v3/klines"
 _FUTURES_URL = "https://fapi.binance.com/fapi/v1/klines"
-_EXCHANGE_INFO_URL = "https://api.binance.com/api/v3/exchangeInfo"
-_TICKER_24H_URL = "https://api.binance.com/api/v3/ticker/24hr"
-_TICKER_PRICE_URL = "https://api.binance.com/api/v3/ticker/price"
+_EXCHANGE_INFO_URL = "https://data-api.binance.vision/api/v3/exchangeInfo"
+_TICKER_24H_URL = "https://data-api.binance.vision/api/v3/ticker/24hr"
+_TICKER_PRICE_URL = "https://data-api.binance.vision/api/v3/ticker/price"
 _MAX_LIMIT = 1000  # Binance tek istekte en fazla bu kadar mum verir
 
 # Kaldiracli/token urunleri (BTCUP, BTCDOWN, BTCBULL...) gercek spot coin
