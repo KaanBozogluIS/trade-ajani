@@ -1,18 +1,18 @@
 {
   "binance:SEIUSDT:1h:altcoin_stratejisi": {
     "signal": 0,
-    "time": "2026-09-05 07:00:00+00:00",
-    "price": 0.04771
+    "time": "2026-09-05 08:00:00+00:00",
+    "price": 0.04766
   },
   "binance:SHIBUSDT:1h:altcoin_stratejisi": {
     "signal": 0,
-    "time": "2026-09-05 07:00:00+00:00",
-    "price": 5.4e-06
+    "time": "2026-09-05 08:00:00+00:00",
+    "price": 5.44e-06
   },
   "binance:FETUSDT:1h:altcoin_stratejisi": {
     "signal": 1,
-    "time": "2026-09-05 07:00:00+00:00",
-    "price": 0.167
+    "time": "2026-09-05 08:00:00+00:00",
+    "price": 0.1649
   },
   "binance:BNBUSDT:4h:major_stratejisi": {
     "signal": 1,
@@ -31,8 +31,8 @@
   },
   "binance:ZECUSDT:1h:ema_cross": {
     "signal": 1,
-    "time": "2026-09-05 07:00:00+00:00",
-    "price": 1001.02
+    "time": "2026-09-05 08:00:00+00:00",
+    "price": 1005.15
   },
   "binance:BTCUSDT:1d:ict_swing": {
     "signal": 1,
