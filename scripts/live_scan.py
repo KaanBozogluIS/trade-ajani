@@ -30,10 +30,11 @@ if hasattr(sys.stdout, "reconfigure"):
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import pandas as pd
 import yaml
 from dotenv import load_dotenv
 
-from core import datastore
+from core import datastore, indicators as ta
 from core.notify.telegram import TelegramNotifier, format_signal_message
 from core.strategies import REGISTRY
 from core.strategy import Signal
@@ -94,6 +95,31 @@ def main() -> None:
         last_signal = int(result.signal.iloc[-1])
         last_time = df.index[-1]
         last_price = float(df["close"].iloc[-1])
+        # NOT: coğu strateji stop_loss/take_profit'i SADECE giris barinda
+        # dolduruyor (backtest.py bunu yeterli buluyor - sadece o bari
+        # okuyor). Canli gosterimde ise pozisyon acikken SONRAKI barlarda
+        # da "hala gecerli olan" stop/hedefi gormek isteriz - ffill() bunu
+        # cozer (yeni bir giris oldugunda zaten TAZE bir deger yazilir,
+        # eskisinin uzerine gecer - bkz. core/strategy.py StrategyResult).
+        sl_series = result.stop_loss.ffill() if result.stop_loss is not None else None
+        tp_series = result.take_profit.ffill() if result.take_profit is not None else None
+        strat_sl = float(sl_series.iloc[-1]) if sl_series is not None and not pd.isna(sl_series.iloc[-1]) else None
+        last_tp = float(tp_series.iloc[-1]) if tp_series is not None and not pd.isna(tp_series.iloc[-1]) else None
+
+        # BASKA BIR ONEMLI DUZELTME: trend-takip stratejileri (ema_cross,
+        # major_stratejisi) pozisyonu AYLARCA acik tutabiliyor - bu durumda
+        # stratejinin KENDI stop'u (giris barinda kilitlenen) fiyattan
+        # COK uzak/anlamsiz kalabilir (ornek: ZECUSDT'de %59 mesafe -
+        # matematiksel olarak dogru ama "simdi nereden girsem" sorusuna
+        # yaramaz). Bu yuzden HER ZAMAN GUNCEL ATR'a gore taze bir stop da
+        # hesaplaniyor; stratejinin kendi stop'u COK uzaksa (>%15) o
+        # yerine bu guncel deger kullanilir.
+        atr_now = float(ta.atr(df, 14).iloc[-1])
+        fresh_sl = None
+        if not pd.isna(atr_now) and atr_now > 0:
+            fresh_sl = last_price - 2.5 * atr_now if last_signal > 0 else last_price + 2.5 * atr_now
+        stale = strat_sl is not None and abs(last_price - strat_sl) / last_price > 0.15
+        last_sl = fresh_sl if (strat_sl is None or stale) else strat_sl
 
         prev_signal = state.get(key, {}).get("signal")
         changed = prev_signal != last_signal
@@ -104,9 +130,15 @@ def main() -> None:
               f"{'  [YENI]' if changed else ''}")
 
         if changed:
+            # watchlist.yaml'da satir-bazli risk_pct/max_leverage override
+            # edilebilir (varsayilan %1.5 risk / 10x - kullanicinin
+            # belirttigi 5-10x kaldirac araliginin ustu).
             msg = format_signal_message(
                 provider=provider, symbol=symbol, timeframe=tf, strategy=strat_name,
                 side=label, price=last_price, bar_time=last_time,
+                stop_loss=last_sl, take_profit=last_tp,
+                risk_per_trade_pct=entry.get("risk_per_trade_pct", 1.5),
+                max_leverage=entry.get("max_leverage", 10.0),
             )
             if args.dry_run:
                 print("  (dry-run, gonderilmedi)\n" + msg)

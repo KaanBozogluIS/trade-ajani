@@ -14,6 +14,7 @@ import os
 
 import requests
 
+from core.risk import suggest_leverage
 from core.tz import format_istanbul
 
 _API = "https://api.telegram.org/bot{token}/sendMessage"
@@ -49,12 +50,35 @@ class TelegramNotifier:
 
 
 def format_signal_message(*, provider: str, symbol: str, timeframe: str, strategy: str,
-                           side: str, price: float, bar_time) -> str:
+                           side: str, price: float, bar_time,
+                           stop_loss: float | None = None, take_profit: float | None = None,
+                           risk_per_trade_pct: float = 1.5, max_leverage: float = 10.0) -> str:
     arrow = {"LONG": "\U0001F7E2 LONG", "SHORT": "\U0001F534 SHORT", "FLAT": "⚪ FLAT (kapat)"}[side]
-    return (
-        f"*{arrow}*  `{symbol}` ({provider}, {timeframe})\n"
-        f"Strateji: `{strategy}`\n"
-        f"Fiyat: `{price:.6g}`\n"
-        f"Mum zamani: `{format_istanbul(bar_time)}`\n"
-        f"_Bu otomatik bir sinyaldir, yatirim tavsiyesi degildir._"
-    )
+    lines = [
+        f"*{arrow}*  `{symbol}` ({provider}, {timeframe})",
+        f"Strateji: `{strategy}`",
+        f"Giris (guncel fiyat): `{price:.6g}`",
+    ]
+
+    # FLAT (pozisyon kapatma) sinyalinde giris/stop/kaldirac anlamsiz -
+    # sadece kapat bilgisi yeterli.
+    if side != "FLAT":
+        if stop_loss is not None:
+            lines.append(f"Stop: `{stop_loss:.6g}`")
+            sizing = suggest_leverage(price, stop_loss, risk_per_trade_pct, max_leverage)
+            if sizing is not None:
+                lines.append(
+                    f"Onerilen kaldirac: `{sizing.suggested_leverage:.1f}x` "
+                    f"(stop mesafesi %{sizing.stop_distance_pct:.2f}, "
+                    f"islem basi risk %{sizing.risk_per_trade_pct:g})"
+                )
+        else:
+            lines.append("Stop: _bu strateji sabit stop kullanmiyor (iz suren/dinamik) - panelden takip et_")
+        if take_profit is not None:
+            lines.append(f"Hedef: `{take_profit:.6g}`")
+
+    lines.append(f"Mum zamani: `{format_istanbul(bar_time)}`")
+    lines.append("_Bu otomatik bir sinyaldir, yatirim tavsiyesi degildir. "
+                  "Kaldirac onerisi sadece stop mesafesine gore pozisyon buyuklugu hesabidir, "
+                  "garanti degildir._")
+    return "\n".join(lines)

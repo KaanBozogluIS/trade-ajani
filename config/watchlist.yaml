@@ -27,18 +27,21 @@
 
 # GRUP B - MAJOR Stratejisi (buyuk/likit coinler, dusuk kazanma orani ama
 # yuksek R:R, chandelier iz suren stop - core/strategies/major_trend_rider.py)
+# emit_stop_loss:true - HER BARDA guncel chandelier seviyesini de dondurur
+# (Telegram mesaji/kaldirac onerisi icin) - validated (emit_stop_loss=False)
+# sonuclari ETKILEMEZ, sadece live_scan.py'nin gosterdigi ek bilgi.
 - provider: binance
   symbol: BNBUSDT
   timeframe: 4h
   strategy: major_stratejisi
-  params: { breakout_len: 55, adx_min: 25, chandelier_mult: 3.0, vol_mult: 1.3 }
+  params: { breakout_len: 55, adx_min: 25, chandelier_mult: 3.0, vol_mult: 1.3, emit_stop_loss: true }
   start: "2025-01-01"
 
 - provider: binance
   symbol: SOLUSDT
   timeframe: 4h
   strategy: major_stratejisi
-  params: { breakout_len: 10, adx_min: 30, chandelier_mult: 4.0, vol_mult: 1.0 }
+  params: { breakout_len: 10, adx_min: 30, chandelier_mult: 4.0, vol_mult: 1.0, emit_stop_loss: true }
   start: "2025-01-01"
 
 - provider: binance
@@ -47,7 +50,7 @@
   strategy: major_stratejisi
   # DIKKAT: bar-ici (gercek stop emri) senaryosunda ETH digerlerine gore
   # kirilgan cikti - dusuk oncelikli izle, panelde teyit etmeden guvenme.
-  params: { breakout_len: 55, adx_min: 20, chandelier_mult: 2.5, vol_mult: 1.3 }
+  params: { breakout_len: 55, adx_min: 20, chandelier_mult: 2.5, vol_mult: 1.3, emit_stop_loss: true }
   start: "2025-01-01"
 
 # GRUP C - ZEC. btc_zec_hunt.py ile 25 stratejinin tamami tarandi - basit
@@ -58,7 +61,12 @@
   symbol: ZECUSDT
   timeframe: 1h
   strategy: ema_cross
-  params: { fast: 20, slow: 50, trend_filter: 200 }
+  # atr_stop_mult: gecerli sinyalle DOGRUDAN ilgisi yok (validated sonuclari
+  # DEGISTIRMEZ - sadece stop_loss alanini doldurur, kaldirac onerisi/Telegram
+  # mesaji icin). Uzun suren trendlerde bu giris-bazli stop cok uzaklasirsa
+  # scripts/live_scan.py otomatik olarak guncel ATR'a gore taze bir stop
+  # kullanir (bkz. o dosyadaki 'stale' kontrolu).
+  params: { fast: 20, slow: 50, trend_filter: 200, atr_stop_mult: 7.0 }
   start: "2025-01-01"
 
 # GRUP D - BTC. btc_zec_hunt.py ile bulundu: ict_swing (1d) - 95 islemlik
