@@ -38,5 +38,35 @@
     "signal": 1,
     "time": "2026-09-07 00:00:00+00:00",
     "price": 79112.01
+  },
+  "binance:TUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 0.00442
+  },
+  "binance:DOTUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 1.123
+  },
+  "binance:UNIUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 6.886
+  },
+  "binance:FETUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 0.1808
+  },
+  "binance:LINKUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 12.584
+  },
+  "binance:PEPEUSDT:1h:tepe_dip_stratejisi": {
+    "signal": 0,
+    "time": "2026-09-08 14:00:00+00:00",
+    "price": 3.65e-06
   }
 }
