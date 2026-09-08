@@ -34,10 +34,10 @@ quick_lookup = {
                       "1h", "1h", "1h", "1h", "1h", "1h"],
     "Durum": ["✅ Güçlü", "✅ Güçlü", "🟡 Orta", "✅ Güçlü", "🟡 Orta (büyük düşüş riski)",
               "⚠️ Kaldıraçta kırılgan", "✅ Çok Güçlü (dev örneklem)", "🟡 Mütevazı ama tutarlı",
-              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
-              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
-              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
-              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu"],
+              "📡 Canlı", "📡 Canlı", "📡 Canlı",
+              "📡 Canlı", "📡 Canlı", "📡 Canlı",
+              "📡 Canlı", "📡 Canlı", "📡 Canlı",
+              "📡 Canlı", "📡 Canlı", "📡 Canlı"],
 }
 import pandas as pd
 st.dataframe(pd.DataFrame(quick_lookup), use_container_width=True, hide_index=True)
@@ -157,10 +157,8 @@ st.caption("108 sembol × 3 zaman dilimi IS/OOS taramasında 20 farklı 1sa semb
 st.warning("**TRXUSDT/SCUSDT/ONGUSDT'de kaldıraçlı halde net ZARARLI** — kaldıraçsız IS/OOS "
            "eşiğini az farkla geçmişlerdi ama gerçekçi pozisyon boyutlandırmasında tutmadı. "
            "Bu üçü bilerek watchlist'e eklenmedi.")
-st.info("🔬 **Şu an GÖZLEM MODUNDA** (`notify: false`) — watchlist'te takip ediliyor ve "
-        "panelde/loglarda görünüyor ama henüz Telegram'a bildirim göndermiyor. Canlı sinyal "
-        "davranışı bir süre izlendikten sonra `config/watchlist.yaml`'da `notify: true` "
-        "yapılarak diğer stratejiler gibi tam canlıya alınabilir.")
+st.info("📡 **CANLI** (`notify: true`, 2026-09-08'de kullanıcı talebiyle etkinleştirildi) — "
+        "diğer stratejiler gibi sinyal değiştiğinde Telegram'a bildirim gönderiyor.")
 
 st.divider()
 
@@ -190,8 +188,8 @@ st.caption("108 sembol × 3 zaman dilimi IS/OOS taramasında 33 farklı kombinas
 st.warning("**BTCUSDT/SCUSDT'de kaldıraçlı halde net ZARARLI/başabaş** (PF 0.88 / 0.98) — "
            "kaldıraçsız IS/OOS eşiğini az farkla geçmişlerdi ama gerçekçi boyutlandırmada tutmadı, "
            "bilerek watchlist'e eklenmedi.")
-st.info("🔬 **Şu an GÖZLEM MODUNDA** (`notify: false`) — Tepe/Dip Stratejisi gibi, canlı sinyal "
-        "davranışı bir süre izlendikten sonra `notify: true` yapılarak tam canlıya alınabilir.")
+st.info("📡 **CANLI** (`notify: true`, 2026-09-08'de kullanıcı talebiyle etkinleştirildi) — "
+        "diğer stratejiler gibi sinyal değiştiğinde Telegram'a bildirim gönderiyor.")
 
 st.divider()
 st.info("📌 **Watchlist'te bu kombinasyonların tümü aktif** — İzleme & Sinyaller sayfasından "

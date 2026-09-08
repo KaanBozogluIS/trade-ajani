@@ -73,16 +73,15 @@
 # GRUP E - TEPE/DIP Stratejisi (rejime gore trend-ici duzeltme alimi/satimi
 # ya da aralik-ucu donusu - core/strategies/reversal_pullback.py).
 # reversal_hunt.py ile 108 sembol IS/OOS + 8x kaldiracli tam-tarih testinde
-# dogrulanan EN SAGLAM 6 sembol. notify:false - HENUZ CANLIYA ALINMADI,
-# bir sure sinyal davranisi gozlemlensin diye Telegram'a gonderilmiyor
-# (dashboard'da/loglarda gorunur, sadece bildirim gitmiyor).
+# dogrulanan EN SAGLAM 6 sembol. notify:true - kullanicinin acik talebiyle
+# (2026-09-08) canliya alindi, artik Telegram'a bildirim gonderiyor.
 - provider: binance
   symbol: TUSDT
   timeframe: 1h
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.15, min_touches: 2, vol_mult: 1.1, sl_atr_buffer: 0.3, tp_r_mult_trend: 3.0, tp_r_mult_range: 1.5, adx_trend_min: 22.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: DOTUSDT
@@ -90,7 +89,7 @@
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.15, min_touches: 2, vol_mult: 1.1, sl_atr_buffer: 0.3, tp_r_mult_trend: 3.0, tp_r_mult_range: 1.5, adx_trend_min: 22.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: UNIUSDT
@@ -98,7 +97,7 @@
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.15, min_touches: 2, vol_mult: 1.3, sl_atr_buffer: 0.3, tp_r_mult_trend: 2.0, tp_r_mult_range: 1.2, adx_trend_min: 22.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: FETUSDT
@@ -106,7 +105,7 @@
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.15, min_touches: 2, vol_mult: 1.3, sl_atr_buffer: 0.3, tp_r_mult_trend: 2.0, tp_r_mult_range: 1.2, adx_trend_min: 22.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: LINKUSDT
@@ -114,7 +113,7 @@
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.2, min_touches: 2, vol_mult: 1.2, sl_atr_buffer: 0.3, tp_r_mult_trend: 2.5, tp_r_mult_range: 1.5, adx_trend_min: 20.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: PEPEUSDT
@@ -122,20 +121,20 @@
   strategy: tepe_dip_stratejisi
   params: { tolerance_pct: 0.15, min_touches: 2, vol_mult: 1.3, sl_atr_buffer: 0.3, tp_r_mult_trend: 2.0, tp_r_mult_range: 1.2, adx_trend_min: 22.0 }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 # GRUP F - HACIM-FIYAT UYUMSUZLUGU (Absorbsiyon) Stratejisi (Wyckoff "efor
 # vs sonuc" fikrinden esinlenen - core/strategies/volume_absorption.py).
 # volume_absorption_hunt.py ile 108 sembol IS/OOS + 8x kaldiracli tam-tarih
-# testinde dogrulanan EN SAGLAM 6 sembol. notify:false - HENUZ CANLIYA
-# ALINMADI, gozlem modunda.
+# testinde dogrulanan EN SAGLAM 6 sembol. notify:true - kullanicinin acik
+# talebiyle (2026-09-08) canliya alindi, artik Telegram'a bildirim gonderiyor.
 - provider: binance
   symbol: SANDUSDT
   timeframe: 1h
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.3, absorb_range_mult: 1.0, tp_r_mult: 2.2, sl_atr_buffer: 0.3, tolerance_pct: 0.2, min_touches: 2, require_trend_align: true }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: BONKUSDT
@@ -143,7 +142,7 @@
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.1, absorb_range_mult: 1.3, tp_r_mult: 2.5, sl_atr_buffer: 0.4, tolerance_pct: 0.2, min_touches: 2, require_trend_align: false }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: ETHUSDT
@@ -151,7 +150,7 @@
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.2, absorb_range_mult: 1.1, tp_r_mult: 2.0, sl_atr_buffer: 0.3, tolerance_pct: 0.15, min_touches: 2, require_trend_align: false }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: BNBUSDT
@@ -159,7 +158,7 @@
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.2, absorb_range_mult: 1.1, tp_r_mult: 2.5, sl_atr_buffer: 0.3, tolerance_pct: 0.15, min_touches: 2, require_trend_align: true }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: ONGUSDT
@@ -167,7 +166,7 @@
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.2, absorb_range_mult: 1.1, tp_r_mult: 2.0, sl_atr_buffer: 0.3, tolerance_pct: 0.15, min_touches: 2, require_trend_align: false }
   start: "2025-01-01"
-  notify: false
+  notify: true
 
 - provider: binance
   symbol: DOTUSDT
@@ -175,4 +174,4 @@
   strategy: hacim_uyumsuzlugu_stratejisi
   params: { absorb_vol_mult: 1.1, absorb_range_mult: 1.3, tp_r_mult: 2.5, sl_atr_buffer: 0.4, tolerance_pct: 0.2, min_touches: 2, require_trend_align: false }
   start: "2025-01-01"
-  notify: false
+  notify: true
