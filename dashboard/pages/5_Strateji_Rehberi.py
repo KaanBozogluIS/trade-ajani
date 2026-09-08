@@ -20,16 +20,22 @@ st.caption("Hangi strateji hangi coin'de çalışıyor — bu oturumda eğitim/t
 st.subheader("🔎 Hızlı bakış: coin → strateji")
 quick_lookup = {
     "Coin": ["SEI", "SHIB", "FET", "BNB", "SOL", "ETH", "ZEC", "BTC",
-             "TUSDT", "DOTUSDT", "UNIUSDT", "FETUSDT", "LINKUSDT", "PEPEUSDT"],
+             "TUSDT", "DOTUSDT", "UNIUSDT", "FETUSDT", "LINKUSDT", "PEPEUSDT",
+             "SANDUSDT", "BONKUSDT", "ETHUSDT (2)", "BNBUSDT (2)", "ONGUSDT", "DOTUSDT (2)"],
     "Strateji": ["Altcoin Stratejisi", "Altcoin Stratejisi", "Altcoin Stratejisi",
                  "Major Stratejisi", "Major Stratejisi", "Major Stratejisi",
                  "ema_cross", "ict_swing",
                  "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi",
-                 "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi"],
+                 "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi",
+                 "Hacim Uyumsuzluğu", "Hacim Uyumsuzluğu", "Hacim Uyumsuzluğu",
+                 "Hacim Uyumsuzluğu", "Hacim Uyumsuzluğu", "Hacim Uyumsuzluğu"],
     "Zaman Dilimi": ["1h", "1h", "1h", "4h", "4h", "4h", "1h", "1d",
+                      "1h", "1h", "1h", "1h", "1h", "1h",
                       "1h", "1h", "1h", "1h", "1h", "1h"],
     "Durum": ["✅ Güçlü", "✅ Güçlü", "🟡 Orta", "✅ Güçlü", "🟡 Orta (büyük düşüş riski)",
               "⚠️ Kaldıraçta kırılgan", "✅ Çok Güçlü (dev örneklem)", "🟡 Mütevazı ama tutarlı",
+              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
+              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
               "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
               "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu"],
 }
@@ -155,6 +161,37 @@ st.info("🔬 **Şu an GÖZLEM MODUNDA** (`notify: false`) — watchlist'te taki
         "panelde/loglarda görünüyor ama henüz Telegram'a bildirim göndermiyor. Canlı sinyal "
         "davranışı bir süre izlendikten sonra `config/watchlist.yaml`'da `notify: true` "
         "yapılarak diğer stratejiler gibi tam canlıya alınabilir.")
+
+st.divider()
+
+# --------------------------------------------------------------------
+st.subheader("6️⃣ Hacim-Fiyat Uyumsuzluğu (Absorbsiyon) Stratejisi")
+st.markdown("""
+**Mantık:** Wyckoff'un "efor vs sonuç" fikrinden esinlenen, sıfırdan tasarlanmış bir strateji —
+bir mumda **hacim (efor) anormal yüksekken fiyat aralığı (sonuç) ATR'a göre küçükse**, bu bir
+uyumsuzluktur: büyük bir taraf agresif girmiş ama fiyatı hareket ettirememiş — o seviyede
+**karşı tarafın emri "emdiğinin"** (absorbe ettiğinin) izidir. Tek başına yeterli değil; bu yüzden
+çok-dokunuşlu bir destek/direnç bölgesinde gerçekleşmesi VE ardından fiyatın o "emilim mumunun"
+ucunu kırarak yön teyidi vermesi şart koşuluyor. `core/strategies/volume_absorption.py`
+""")
+absorption_data = {
+    "Coin": ["SANDUSDT", "BONKUSDT", "ETHUSDT", "BNBUSDT", "ONGUSDT", "DOTUSDT"],
+    "Kaldıraçlı Getiri (8x, %1.5 risk)": ["+%28.8", "+%29.1", "+%23.1", "+%20.3", "+%26.8", "+%24.8"],
+    "Sharpe": [1.09, 1.07, 0.72, 0.74, 0.59, 0.47],
+    "Max Düşüş": ["-%4.5", "-%11.5", "-%5.4", "-%7.4", "-%12.3", "-%15.6"],
+    "İşlem Sayısı": [22, 44, 40, 22, 62, 95],
+    "Kazanma Oranı": ["%59.1", "%43.2", "%52.5", "%50.0", "%48.4", "%39.0"],
+    "Kâr Faktörü": [2.75, 1.66, 1.74, 2.03, 1.43, 1.24],
+}
+st.dataframe(pd.DataFrame(absorption_data), use_container_width=True, hide_index=True)
+st.caption("108 sembol × 3 zaman dilimi IS/OOS taramasında 33 farklı kombinasyonda (24 benzersiz "
+           "1sa sembolde) doğrulandı; yukarıdaki 6'sı 8x kaldıraçlı tam-tarih testinde en sağlam "
+           "çıkanlar (24 sembolün 22'si kaldıraçlı halde net karlı).")
+st.warning("**BTCUSDT/SCUSDT'de kaldıraçlı halde net ZARARLI/başabaş** (PF 0.88 / 0.98) — "
+           "kaldıraçsız IS/OOS eşiğini az farkla geçmişlerdi ama gerçekçi boyutlandırmada tutmadı, "
+           "bilerek watchlist'e eklenmedi.")
+st.info("🔬 **Şu an GÖZLEM MODUNDA** (`notify: false`) — Tepe/Dip Stratejisi gibi, canlı sinyal "
+        "davranışı bir süre izlendikten sonra `notify: true` yapılarak tam canlıya alınabilir.")
 
 st.divider()
 st.info("📌 **Watchlist'te bu kombinasyonların tümü aktif** — İzleme & Sinyaller sayfasından "

@@ -96,6 +96,20 @@ PARAM_GRID: dict[str, list[dict]] = {
         {"tolerance_pct": 0.2, "min_touches": 2, "vol_mult": 1.2, "sl_atr_buffer": 0.3,
          "tp_r_mult_trend": 2.5, "tp_r_mult_range": 1.5, "adx_trend_min": 20.0},
     ],
+    # HACIM-FIYAT UYUMSUZLUGU (Absorbsiyon) Stratejisi - Wyckoff "efor vs
+    # sonuc" fikrinden esinlenen, sifirdan tasarlanmis strateji. Bkz.
+    # core/strategies/volume_absorption.py. research/volume_absorption_hunt.py
+    # ile 108 sembol IS/OOS + 8x kaldiracli tam-tarih testinde dogrulandi:
+    # 24 sembolun 22'si kaldiracli halde net karli (ort +%13.8, medyan
+    # maxDD -%11.2). BTCUSDT/SCUSDT kaldiracli halde zayif/zararli cikti.
+    "hacim_uyumsuzlugu_stratejisi": [
+        {"absorb_vol_mult": 1.2, "absorb_range_mult": 1.1, "tp_r_mult": 2.0, "sl_atr_buffer": 0.3,
+         "tolerance_pct": 0.15, "min_touches": 2, "require_trend_align": False},
+        {"absorb_vol_mult": 1.5, "absorb_range_mult": 0.9, "tp_r_mult": 2.0, "sl_atr_buffer": 0.3,
+         "tolerance_pct": 0.15, "min_touches": 2, "require_trend_align": False},
+        {"absorb_vol_mult": 1.3, "absorb_range_mult": 1.0, "tp_r_mult": 2.2, "sl_atr_buffer": 0.3,
+         "tolerance_pct": 0.2, "min_touches": 2, "require_trend_align": True},
+    ],
 }
 
 

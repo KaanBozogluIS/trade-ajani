@@ -16,6 +16,7 @@ from core.strategies.ict_swing import IctSwing
 from core.strategies.ma_cross import EmaCross
 from core.strategies.major_trend_rider import MajorTrendRider
 from core.strategies.reversal_pullback import ReversalPullback
+from core.strategies.volume_absorption import VolumeAbsorption
 
 REGISTRY = {
     "ema_cross": EmaCross,
@@ -23,6 +24,8 @@ REGISTRY = {
     "altcoin_stratejisi": BreakoutRetestRecovery,
     "major_stratejisi": MajorTrendRider,
     "tepe_dip_stratejisi": ReversalPullback,
+    "hacim_uyumsuzlugu_stratejisi": VolumeAbsorption,
 }
 
-__all__ = ["REGISTRY", "EmaCross", "IctSwing", "BreakoutRetestRecovery", "MajorTrendRider", "ReversalPullback"]
+__all__ = ["REGISTRY", "EmaCross", "IctSwing", "BreakoutRetestRecovery", "MajorTrendRider",
+           "ReversalPullback", "VolumeAbsorption"]
