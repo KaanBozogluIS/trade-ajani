@@ -76,6 +76,10 @@ def main() -> None:
     for entry in watchlist:
         provider, symbol, tf = entry["provider"], entry["symbol"], entry["timeframe"]
         strat_name, params = entry["strategy"], entry.get("params", {})
+        # notify:false -> "gozlem modu" - sinyal takip edilir/loglanir AMA
+        # Telegram'a gonderilmez. Yeni/henuz canliya alinmamis stratejileri
+        # once bir sure gozlemlemek icin (bkz. tepe_dip_stratejisi girisleri).
+        entry_notify = entry.get("notify", True)
         key = f"{provider}:{symbol}:{tf}:{strat_name}"
 
         df = datastore.update(provider, symbol, tf, start=entry.get("start", "2023-01-01"))
@@ -106,6 +110,8 @@ def main() -> None:
             )
             if args.dry_run:
                 print("  (dry-run, gonderilmedi)\n" + msg)
+            elif not entry_notify:
+                print("  (gozlem modu - notify:false, gonderilmedi)\n" + msg)
             else:
                 notifier.send(msg)
 

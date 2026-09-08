@@ -54,6 +54,7 @@ for e in watchlist:
         "Strateji": e["strategy"], "Son Sinyal": {1: "🟢 LONG", -1: "🔴 SHORT", 0: "⚪ FLAT", None: "—"}.get(s.get("signal")),
         "Son Fiyat": s.get("price"),
         "Son Mum (TR saati)": format_istanbul(s["time"]) if s.get("time") else "—",
+        "Bildirim": "📡 Canlı" if e.get("notify", True) else "🔬 Gözlem (Telegram'a gitmiyor)",
     })
 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 

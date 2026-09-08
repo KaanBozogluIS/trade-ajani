@@ -19,13 +19,19 @@ st.caption("Hangi strateji hangi coin'de çalışıyor — bu oturumda eğitim/t
 
 st.subheader("🔎 Hızlı bakış: coin → strateji")
 quick_lookup = {
-    "Coin": ["SEI", "SHIB", "FET", "BNB", "SOL", "ETH", "ZEC", "BTC"],
+    "Coin": ["SEI", "SHIB", "FET", "BNB", "SOL", "ETH", "ZEC", "BTC",
+             "TUSDT", "DOTUSDT", "UNIUSDT", "FETUSDT", "LINKUSDT", "PEPEUSDT"],
     "Strateji": ["Altcoin Stratejisi", "Altcoin Stratejisi", "Altcoin Stratejisi",
                  "Major Stratejisi", "Major Stratejisi", "Major Stratejisi",
-                 "ema_cross", "ict_swing"],
-    "Zaman Dilimi": ["1h", "1h", "1h", "4h", "4h", "4h", "1h", "1d"],
+                 "ema_cross", "ict_swing",
+                 "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi",
+                 "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi", "Tepe/Dip Stratejisi"],
+    "Zaman Dilimi": ["1h", "1h", "1h", "4h", "4h", "4h", "1h", "1d",
+                      "1h", "1h", "1h", "1h", "1h", "1h"],
     "Durum": ["✅ Güçlü", "✅ Güçlü", "🟡 Orta", "✅ Güçlü", "🟡 Orta (büyük düşüş riski)",
-              "⚠️ Kaldıraçta kırılgan", "✅ Çok Güçlü (dev örneklem)", "🟡 Mütevazı ama tutarlı"],
+              "⚠️ Kaldıraçta kırılgan", "✅ Çok Güçlü (dev örneklem)", "🟡 Mütevazı ama tutarlı",
+              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu",
+              "🔬 Gözlem modu", "🔬 Gözlem modu", "🔬 Gözlem modu"],
 }
 import pandas as pd
 st.dataframe(pd.DataFrame(quick_lookup), use_container_width=True, hide_index=True)
@@ -117,6 +123,38 @@ st.dataframe(pd.DataFrame(btc_data), use_container_width=True, hide_index=True)
 st.caption("Zaman dilimi: 1d. Mütevazı ama bu oturumda BTC için bulunan İLK gerçekten IS/OOS "
            "tutarlı sonuç — BTC bu evrende en zor piyasa oldu, hiçbir yöntem çok güçlü bir edge "
            "vermedi. Aynı strateji SOLUSDT 4h'de de çalışıyor (563 işlem, tam tarih +%260).")
+
+st.divider()
+
+# --------------------------------------------------------------------
+st.subheader("5️⃣ Tepe/Dip Stratejisi — rejime uyarlanan dönüş/düzeltme")
+st.markdown("""
+**Mantık:** Kendi tasarladığımız, REJIME göre iki farklı mantık çalıştıran bir strateji —
+ADX **trendli** ise (fiyat EMA200'ün doğru tarafında) kısa bir düzeltmede (RSI sığ dalış,
+MACD histogram dönüşü, hacim teyidi) trend YÖNÜNDE giriş yapar ("artan coin'de düzeltmede alım");
+ADX **yatay** ise çok-dokunuşlu bir destek/direnç bölgesinden derin bir RSI aşırılığıyla
+gelen dönüşü yakalar (mean-reversion). `core/strategies/reversal_pullback.py`
+""")
+tepe_dip_data = {
+    "Coin": ["TUSDT", "DOTUSDT", "UNIUSDT", "FETUSDT", "LINKUSDT", "PEPEUSDT"],
+    "Kaldıraçlı Getiri (8x, %1.5 risk)": ["+%38.9", "+%37.9", "+%32.4", "+%30.1", "+%30.0", "+%18.9"],
+    "Sharpe": [1.08, 0.95, 1.09, 1.05, 0.81, 0.98],
+    "Max Düşüş": ["-%9.7", "-%5.3", "-%7.4", "-%5.2", "-%9.9", "-%5.8"],
+    "İşlem Sayısı": [54, 47, 46, 34, 51, 22],
+    "Kazanma Oranı": ["%59.3", "%55.3", "%65.2", "%64.7", "%51.0", "%63.6"],
+    "Kâr Faktörü": [2.01, 1.92, 2.12, 2.41, 1.67, 2.37],
+}
+st.dataframe(pd.DataFrame(tepe_dip_data), use_container_width=True, hide_index=True)
+st.caption("108 sembol × 3 zaman dilimi IS/OOS taramasında 20 farklı 1sa sembolde bağımsız "
+           "doğrulandı (ETHUSDT, DOGEUSDT, ARUSDT, SANDUSDT dahil — panelden kendin test "
+           "edebilirsin); yukarıdaki 6'sı 8x kaldıraçlı tam-tarih testinde en sağlam çıkanlar.")
+st.warning("**TRXUSDT/SCUSDT/ONGUSDT'de kaldıraçlı halde net ZARARLI** — kaldıraçsız IS/OOS "
+           "eşiğini az farkla geçmişlerdi ama gerçekçi pozisyon boyutlandırmasında tutmadı. "
+           "Bu üçü bilerek watchlist'e eklenmedi.")
+st.info("🔬 **Şu an GÖZLEM MODUNDA** (`notify: false`) — watchlist'te takip ediliyor ve "
+        "panelde/loglarda görünüyor ama henüz Telegram'a bildirim göndermiyor. Canlı sinyal "
+        "davranışı bir süre izlendikten sonra `config/watchlist.yaml`'da `notify: true` "
+        "yapılarak diğer stratejiler gibi tam canlıya alınabilir.")
 
 st.divider()
 st.info("📌 **Watchlist'te bu kombinasyonların tümü aktif** — İzleme & Sinyaller sayfasından "

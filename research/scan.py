@@ -81,6 +81,21 @@ PARAM_GRID: dict[str, list[dict]] = {
         {"breakout_len": 10, "adx_min": 30, "chandelier_mult": 4.0, "vol_mult": 1.0},
         {"breakout_len": 30, "adx_min": 20, "chandelier_mult": 2.5, "vol_mult": 1.3},
     ],
+    # TEPE/DIP Stratejisi - rejime gore uyarlanan (trendde duzeltme alimi/
+    # satimi, yatayda aralik-ucu donusu) sifirdan tasarlanmis strateji. Bkz.
+    # core/strategies/reversal_pullback.py. research/reversal_hunt.py ile
+    # 108 sembol IS/OOS + 8x kaldiracli tam-tarih testinde dogrulandi: en
+    # saglam 1sa sembolleri TUSDT/DOTUSDT/UNIUSDT/FETUSDT/LINKUSDT/PEPEUSDT
+    # (kaldiracli getiri +%19..+%39, maxDD <%10). TRXUSDT/SCUSDT/ONGUSDT
+    # kaldiracli halde net zararli cikti - bu grup HARIC tutulmali.
+    "tepe_dip_stratejisi": [
+        {"tolerance_pct": 0.15, "min_touches": 2, "vol_mult": 1.1, "sl_atr_buffer": 0.3,
+         "tp_r_mult_trend": 3.0, "tp_r_mult_range": 1.5, "adx_trend_min": 22.0},
+        {"tolerance_pct": 0.15, "min_touches": 2, "vol_mult": 1.3, "sl_atr_buffer": 0.3,
+         "tp_r_mult_trend": 2.0, "tp_r_mult_range": 1.2, "adx_trend_min": 22.0},
+        {"tolerance_pct": 0.2, "min_touches": 2, "vol_mult": 1.2, "sl_atr_buffer": 0.3,
+         "tp_r_mult_trend": 2.5, "tp_r_mult_range": 1.5, "adx_trend_min": 20.0},
+    ],
 }
 
 
