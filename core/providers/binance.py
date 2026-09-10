@@ -123,14 +123,21 @@ class BinanceProvider(DataProvider):
         raise DataProviderError(f"Binance istegi {self.max_retries} denemede basarisiz: {last_error}")
 
 
-def _request_json(url: str, params: dict | None = None, timeout: int = 20, max_retries: int = 4):
+def _request_json(url: str, params: dict | None = None, timeout: int = 20, max_retries: int = 4,
+                   max_sleep: float = 60.0):
+    """max_sleep: 429/418 sonrasi EN FAZLA kac saniye beklenir. Kritik
+    OHLCV cekimi icin varsayilan (60s) uygun, ama OI/long-short gibi
+    "kaybedilirse bir sonraki calistirmada tamamlanir" turu best-effort
+    veriler icin cok daha kisa tutulmali - yoksa paylasimli/kisitli bir IP'de
+    (ornegin GitHub Actions) tek bir sikisik sembol tum isi dakikalarca
+    kilitleyebilir (bkz. core/oi_store.py kullanimi)."""
     delay = 1.0
     last_error: Exception | None = None
     for _ in range(max_retries):
         try:
             r = requests.get(url, params=params, timeout=timeout)
             if r.status_code in (418, 429) or r.status_code >= 500:
-                time.sleep(min(float(r.headers.get("Retry-After", delay)), 60))
+                time.sleep(min(float(r.headers.get("Retry-After", delay)), max_sleep))
                 delay *= 2
                 last_error = DataProviderError(f"HTTP {r.status_code}: {r.text[:200]}")
                 continue
@@ -138,7 +145,7 @@ def _request_json(url: str, params: dict | None = None, timeout: int = 20, max_r
             return r.json()
         except requests.RequestException as exc:
             last_error = exc
-            time.sleep(delay)
+            time.sleep(min(delay, max_sleep))
             delay *= 2
     raise DataProviderError(f"Binance istegi basarisiz: {last_error}")
 
@@ -190,7 +197,8 @@ def get_open_interest_hist(symbol: str, period: str = "1h", limit: int = 500) ->
     penceresinin OTESINDE kalici bir gecmis olusturuyor.
     """
     data = _request_json(_OPEN_INTEREST_HIST_URL,
-                          params={"symbol": symbol.upper(), "period": period, "limit": limit})
+                          params={"symbol": symbol.upper(), "period": period, "limit": limit},
+                          timeout=10, max_retries=2, max_sleep=5.0)
     if not data:
         return pd.DataFrame(columns=["open_interest", "open_interest_value"])
     df = pd.DataFrame(data)
@@ -205,7 +213,8 @@ def get_long_short_ratio_hist(symbol: str, period: str = "1h", limit: int = 500)
     tek yone yuklenmis" sorusuna cevap. Ayni ~30 gunluk Binance kisitlamasi
     gecerli, bkz. get_open_interest_hist() ust bilgisi."""
     data = _request_json(_LONG_SHORT_RATIO_URL,
-                          params={"symbol": symbol.upper(), "period": period, "limit": limit})
+                          params={"symbol": symbol.upper(), "period": period, "limit": limit},
+                          timeout=10, max_retries=2, max_sleep=5.0)
     if not data:
         return pd.DataFrame(columns=["long_account_pct", "short_account_pct", "long_short_ratio"])
     df = pd.DataFrame(data)
