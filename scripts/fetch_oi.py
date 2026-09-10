@@ -2,14 +2,25 @@
 icin gunceller ve KALICI olarak biriktirir (core/oi_store.py).
 
 Binance bu veriyi sadece ~30 gun saklıyor - bu script'in duzenli
-calistirilmasi (bkz. .github/workflows/fetch_oi.yml, saatlik) sayesinde
-Binance'in penceresi kaysa bile bizim yerel arsivimiz kalici buyur.
+calistirilmasi Binance'in penceresi kaysa bile bizim yerel arsivimizin
+kalici buyumesini sagliyor.
+
+ONEMLI - NEDEN GITHUB ACTIONS'TA DEGIL: bu veriyi veren uc
+(fapi.binance.com/futures/data/...) GitHub Actions'in ABD merkezli
+IP'lerinden HTTP 451 (cografi engel) ile reddediliyor - normal mum
+verisinden (klines, data-api.binance.vision ile cozulmustu) FARKLI, daha
+kisitli bir uc, ayni cozum burada ISE YARAMIYOR (bu uc icin bilinen bir
+"vision" mirror'u yok). Bu yuzden SADECE bu script'i (scripts/oi_topla.bat
+ile) kendi bilgisayarindan calistirarak biriktirebiliyoruz - otomatik
+bulut toplama (simdilik) YOK. Duzenli calistirmak istersen Windows Gorev
+Zamanlayicisi'na oi_topla.bat'i ekleyebilirsin.
 
 NOT: sadece futures'ta islem goren semboller icin veri doner - spot'ta
 olup futures'ta olmayan semboller icin bos/hata donerse ATLANIR (durdurmaz).
 
 Kullanim:
     python scripts/fetch_oi.py
+    (ya da cift tikla: scripts/oi_topla.bat)
 """
 
 from __future__ import annotations
