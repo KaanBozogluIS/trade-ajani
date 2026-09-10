@@ -1,0 +1,42 @@
+name: Acik Pozisyon (OI) Toplama
+
+# Binance'in OI/long-short gecmisini SADECE ~30 gun sakladigi icin (bkz.
+# core/oi_store.py) bu is duzenli calisip data/oi/ altindaki kalici
+# arsivi buyutuyor - Binance'in penceresi kaysa bile veri kaybolmuyor.
+# Saatlik yeterli (Binance verisi zaten saatlik cozunurlukte).
+
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - name: Acik pozisyon / long-short verisini guncelle
+        run: python scripts/fetch_oi.py
+
+      - name: Arsivi repoya geri yaz
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add data/oi/
+          git diff --staged --quiet && exit 0
+          git commit -m "OI/long-short verisi guncellendi [skip ci]"
+          # live_scan.yml (5 dk) ile ayni anda push CAKISABILIR - rebase+retry.
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break
+            sleep 5
+          done

@@ -23,6 +23,8 @@ _FUTURES_URL = "https://fapi.binance.com/fapi/v1/klines"
 _EXCHANGE_INFO_URL = "https://data-api.binance.vision/api/v3/exchangeInfo"
 _TICKER_24H_URL = "https://data-api.binance.vision/api/v3/ticker/24hr"
 _TICKER_PRICE_URL = "https://data-api.binance.vision/api/v3/ticker/price"
+_OPEN_INTEREST_HIST_URL = "https://fapi.binance.com/futures/data/openInterestHist"
+_LONG_SHORT_RATIO_URL = "https://fapi.binance.com/futures/data/globalLongShortAccountRatio"
 _MAX_LIMIT = 1000  # Binance tek istekte en fazla bu kadar mum verir
 
 # Kaldiracli/token urunleri (BTCUP, BTCDOWN, BTCBULL...) gercek spot coin
@@ -178,6 +180,40 @@ def get_24h_stats(symbols: list[str] | None = None) -> pd.DataFrame:
     if symbols is not None:
         df = df[df["symbol"].isin(symbols)]
     return df.reset_index(drop=True)
+
+
+def get_open_interest_hist(symbol: str, period: str = "1h", limit: int = 500) -> pd.DataFrame:
+    """Acik pozisyon (Open Interest) gecmisi - futures'a OZGU bir veri,
+    spot klines'ta YOK. Binance bunu SADECE SON ~30 GUN icin saklar (limit
+    en fazla 500 kayit dondurur) - bu yuzden `core/oi_store.py` bu veriyi
+    her cagrildiginda YEREL olarak biriktirip Binance'in kendi 30-gunluk
+    penceresinin OTESINDE kalici bir gecmis olusturuyor.
+    """
+    data = _request_json(_OPEN_INTEREST_HIST_URL,
+                          params={"symbol": symbol.upper(), "period": period, "limit": limit})
+    if not data:
+        return pd.DataFrame(columns=["open_interest", "open_interest_value"])
+    df = pd.DataFrame(data)
+    df["ts"] = pd.to_datetime(df["timestamp"].astype("int64"), unit="ms", utc=True)
+    df["open_interest"] = pd.to_numeric(df["sumOpenInterest"], errors="coerce")
+    df["open_interest_value"] = pd.to_numeric(df["sumOpenInterestValue"], errors="coerce")
+    return df.set_index("ts")[["open_interest", "open_interest_value"]].sort_index()
+
+
+def get_long_short_ratio_hist(symbol: str, period: str = "1h", limit: int = 500) -> pd.DataFrame:
+    """Piyasa geneli long/short hesap orani gecmisi - "kalabalik ne kadar
+    tek yone yuklenmis" sorusuna cevap. Ayni ~30 gunluk Binance kisitlamasi
+    gecerli, bkz. get_open_interest_hist() ust bilgisi."""
+    data = _request_json(_LONG_SHORT_RATIO_URL,
+                          params={"symbol": symbol.upper(), "period": period, "limit": limit})
+    if not data:
+        return pd.DataFrame(columns=["long_account_pct", "short_account_pct", "long_short_ratio"])
+    df = pd.DataFrame(data)
+    df["ts"] = pd.to_datetime(df["timestamp"].astype("int64"), unit="ms", utc=True)
+    df["long_account_pct"] = pd.to_numeric(df["longAccount"], errors="coerce") * 100.0
+    df["short_account_pct"] = pd.to_numeric(df["shortAccount"], errors="coerce") * 100.0
+    df["long_short_ratio"] = pd.to_numeric(df["longShortRatio"], errors="coerce")
+    return df.set_index("ts")[["long_account_pct", "short_account_pct", "long_short_ratio"]].sort_index()
 
 
 def get_live_prices(symbols: list[str] | None = None) -> pd.Series:
