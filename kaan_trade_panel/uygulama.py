@@ -39,6 +39,7 @@ import haberler as hb
 import sanal_trader as strd
 import veri_kaynaklari as vk
 import trade_ajani_stratejileri as taj
+from dogrulama import simule_et
 from stratejiler import atr, rsi
 
 # ============================================================
@@ -1871,6 +1872,89 @@ def sayfa_trade_ajani(sembol):
 
     st.caption(f"{kod} · 1 saatlik mumlar · son {len(df)} bar · coin değiştirince yenilenir.")
 
+    # --- GECMISE DONUK ANALIZ (2026-09-12'de eklendi) -----------
+    # Kullanicinin KENDI SECTIGI strateji + coin + gun sayisiyla, ayri bir
+    # "Calistir" butonuna basinca calisan, tek seferlik bir geriye donuk
+    # test. Sayfanin geri kalani (yukaridaki durum kartlari) SURESIZ/
+    # otomatik calisirken, bu bolum BILEREK sadece butona basinca calisir
+    # -- 40 gunluk saatlik veri + simulasyon her navigasyonda/1 saniyede
+    # bir kosarsa gereksiz agir olur.
+    st.markdown('<div class="bolum-basligi" style="margin-top:20px;">Geçmişe Dönük Analiz</div>',
+                unsafe_allow_html=True)
+    st.caption(
+        "Seçtiğiniz stratejiyi, seçili coin için geçmiş veride tek seferlik çalıştırır — "
+        "getiri, en büyük düşüş, işlem listesi ve bir portföy eğrisi gösterir. **Bu bir "
+        "garanti değildir**: geçmişte iyi giden bir strateji geleceği garanti etmez, "
+        "burada IS/OOS (eğitim/test) ayrımı da yapılmaz — sadece tek bir dönemin "
+        "sonucunu gösterir (tarafsız doğrulama için bkz. `research/` klasöründeki "
+        "Trade-ajanı taramaları)."
+    )
+    kontrol = st.columns([2, 2, 1])
+    with kontrol[0]:
+        secilen_isim = st.selectbox(
+            "Strateji", [isim for isim, _, _ in taj.STRATEJILER], key="ta_analiz_strateji")
+    with kontrol[1]:
+        gun_sayisi = st.slider(
+            "Kaç gün geriye bakılsın", min_value=7, max_value=40, value=30, step=1,
+            key="ta_analiz_gun", help="1 saatlik mumlarla tek bir borsa isteğinin "
+            "güvenle döndürebildiği üst sınıra göre 40 günle sınırlandı.")
+    with kontrol[2]:
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        calistir = st.button("Çalıştır", key="ta_analiz_calistir", width="stretch")
+
+    if calistir:
+        strateji_sozlugu = {isim: (fn, params) for isim, fn, params in taj.STRATEJILER}
+        fn, params = strateji_sozlugu[secilen_isim]
+        isinma = taj.isinma_suresi(secilen_isim, params)
+        adet = gun_sayisi * 24 + isinma + 20
+        df_analiz = c_mumlar(sembol, "1h", adet)
+        if df_analiz is None or len(df_analiz) < isinma + 30:
+            st.warning(f"{kod} için seçilen aralıkta yeterli veri alınamadı.")
+        else:
+            try:
+                poz = fn(df_analiz, **params)
+            except Exception as exc:
+                st.error(f"Strateji çalıştırılamadı: {exc}")
+                poz = None
+            if poz is not None:
+                a_ayarlar = {"baslangic_bakiye": 1000.0, "islem_ucreti_yuzde": 0.1, "islem_orani": 0.95}
+                sonuc = simule_et(df_analiz, poz, a_ayarlar, baslangic=min(isinma, len(df_analiz) - 2),
+                                  detay_don=True)
+                if sonuc is None:
+                    st.warning("Bu ayarlarla simülasyon sonucu üretilemedi.")
+                else:
+                    m = st.columns(5)
+                    with m[0]:
+                        st.metric("Getiri", f"{sonuc['getiri']:+.1f}%")
+                    with m[1]:
+                        st.metric("Al-tut getirisi", f"{sonuc['al_tut_getiri']:+.1f}%")
+                    with m[2]:
+                        st.metric("En büyük düşüş", f"{sonuc['dusus']:.1f}%")
+                    with m[3]:
+                        st.metric("İşlem sayısı", f"{sonuc['tur']}")
+                    with m[4]:
+                        st.metric("Kazanma oranı", f"{sonuc['kazanma']:.0f}%" if sonuc["tur"] else "—")
+
+                    egri_df = pd.DataFrame({"Zaman": sonuc["zamanlar"], "Portföy değeri": sonuc["seri"]})
+                    st.line_chart(egri_df.set_index("Zaman"))
+
+                    if sonuc["islemler"]:
+                        islem_df = pd.DataFrame(sonuc["islemler"]).rename(columns={
+                            "zaman": "Giriş zamanı", "fiyat": "Giriş fiyatı", "yon": "Yön",
+                            "cikis_zaman": "Çıkış zamanı", "cikis_fiyat": "Çıkış fiyatı",
+                            "getiri_yuzde": "Getiri %",
+                        })
+                        st.dataframe(
+                            islem_df.sort_values("Giriş zamanı", ascending=False),
+                            width="stretch", hide_index=True,
+                            column_config={
+                                "Giriş fiyatı": st.column_config.NumberColumn(format="%.6g"),
+                                "Çıkış fiyatı": st.column_config.NumberColumn(format="%.6g"),
+                                "Getiri %": st.column_config.NumberColumn(format="%+.2f%%"),
+                            })
+                    else:
+                        st.info("Seçilen dönemde bu strateji hiç işlem tetiklemedi.")
+
 
 # ============================================================
 #  SANAL TRADER  (coklu strateji, otomatik rotasyon)
@@ -1907,16 +1991,27 @@ def sayfa_trade_ajani(sembol):
 
 def _pozisyon_degeri(poz, fiyat):
     """
-    Bir pozisyonun (LONG ya da SHORT) o anki fiyatla degerini hesaplar --
-    sanal_trader.py'nin Portfoy.toplam_deger()'iyle AYNI mantik. LONG icin
-    miktar*fiyat (degismedi); SHORT icin o an kapatilsa donecek nakit
-    (maliyet +/- gerceklesmemis kar/zarar).
+    Bir pozisyonun (LONG ya da SHORT, spot ya da kaldiracli) o anki
+    fiyatla degerini hesaplar -- sanal_trader.py'nin Portfoy.toplam_
+    deger()'iyle AYNI mantik. Spot LONG icin miktar*fiyat (degismedi);
+    SHORT ve/ya kaldiracli pozisyonlar icin o an kapatilsa donecek nakit
+    (maliyet +/- kaldiracla buyutulmus gerceklesmemis kar/zarar,
+    SIFIRIN ALTINA dusmez -- likidasyonla tutarli).
     """
     if fiyat is None:
         return 0.0
-    if poz.get("yon") == "SHORT":
-        giris = poz.get("giris_fiyat") or fiyat
-        maliyet = poz.get("maliyet") or (poz["miktar"] * giris)
+    yon = poz.get("yon", "LONG")
+    kaldirac = poz.get("kaldirac", 1.0) or 1.0
+    giris = poz.get("giris_fiyat") or fiyat
+    maliyet = poz.get("maliyet") or (poz["miktar"] * giris / kaldirac)
+
+    if kaldirac > 1.0:
+        if yon == "SHORT":
+            kar_zarar = maliyet * kaldirac * (giris - fiyat) / giris if giris else 0.0
+        else:
+            kar_zarar = maliyet * kaldirac * (fiyat / giris - 1) if giris else 0.0
+        return max(0.0, maliyet + kar_zarar)
+    if yon == "SHORT":
         kar_zarar = maliyet * (giris - fiyat) / giris if giris else 0.0
         return maliyet + kar_zarar
     return poz["miktar"] * fiyat
@@ -1964,13 +2059,16 @@ def _sanal_trader_egri_verisi(islemler):
         satir = df.iloc[i]
         nakit = float(satir["nakit"])
 
+        kaldirac_deger = float(satir["kaldirac"]) if "kaldirac" in satir and pd.notna(satir.get("kaldirac")) else 1.0
         if satir["islem"] == "AL":
             pozisyonlar[satir["sembol"]] = {"miktar": float(satir["miktar"]), "yon": "LONG",
-                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"])}
+                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"]),
+                                            "kaldirac": kaldirac_deger}
         elif satir["islem"] == "KISA_AC":
             pozisyonlar[satir["sembol"]] = {"miktar": float(satir["miktar"]), "yon": "SHORT",
-                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"])}
-        elif str(satir["islem"]) in ("SAT", "KISA_KAPAT"):
+                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"]),
+                                            "kaldirac": kaldirac_deger}
+        elif str(satir["islem"]) in ("SAT", "KISA_KAPAT", "LIKIDASYON"):
             pozisyonlar.pop(satir["sembol"], None)
 
         if not pozisyonlar:
@@ -2116,7 +2214,16 @@ def _sanal_trader_icerik(depo):
         "sınırlamadır. 'En iyi performans gösteren'in seçilmesi, o "
         "stratejinin gelecekte de iyi gideceğinin garantisi DEĞİLDİR — "
         "yakın geçmişte iyi gideni kovalama riski taşır. Bu bir kâr aracı "
-        "değil, şeffaf bir gözlem aracıdır.")
+        "değil, şeffaf bir gözlem aracıdır.  \n\n"
+        "**Kaldıraç (2026-09-12):** YENİ açılan pozisyonlar artık spot değil, "
+        "**5x-10x arası dinamik kaldıraçlı** — kaldıraç, ATR'a (oynaklığa) "
+        "göre otomatik belirlenir (dar/öngörülen stop → yüksek kaldıraç, "
+        "geniş/öngörülen stop → düşük kaldıraç, her zaman bu aralığa "
+        "sıkıştırılır). **LİKİDASYON gerçek gibi modellenir**: marjinin "
+        "tamamı bir pozisyonda kaybedilebilir (o pozisyon için en fazla "
+        "kaybedilen tutar, ona ayrılan marjinle sınırlıdır — negatif bakiye "
+        "olmaz). Değişikliğin öncesinde açılmış pozisyonlar spot kalmaya "
+        "devam eder, doğal kapanışlarını bekler.")
 
     ust = st.columns([5, 2])
     with ust[0]:
@@ -2165,18 +2272,9 @@ def _sanal_trader_icerik(depo):
     if portfoy_verisi:
         toplam_deger = portfoy_verisi["nakit"]
         for sembol, poz in pozisyonlar.items():
-            fiyat = guncel_fiyatlar.get(sembol)
-            if not fiyat:
-                continue
-            if poz.get("yon", "LONG") == "SHORT":
-                # SHORT: sanal_trader.py'nin Portfoy.toplam_deger'iyle AYNI
-                # mantik -- o an kapatilsa donecek nakit (maliyet +/- kar/zarar).
-                giris = poz.get("giris_fiyat", fiyat)
-                maliyet = poz.get("maliyet") or (poz["miktar"] * giris)
-                kar_zarar = maliyet * (giris - fiyat) / giris if giris else 0.0
-                toplam_deger += maliyet + kar_zarar
-            else:
-                toplam_deger += poz["miktar"] * fiyat
+            # _pozisyon_degeri: LONG/SHORT + spot/kaldiracli HEPSINI kapsar,
+            # sanal_trader.py'nin Portfoy.toplam_deger()'iyle AYNI mantik.
+            toplam_deger += _pozisyon_degeri(poz, guncel_fiyatlar.get(sembol))
         if portfoy_verisi.get("baslangic"):
             kar_yuzde = (toplam_deger / portfoy_verisi["baslangic"] - 1) * 100
 
@@ -2207,14 +2305,18 @@ def _sanal_trader_icerik(depo):
         for sembol, poz in pozisyonlar.items():
             guncel = guncel_fiyatlar.get(sembol)
             yon = poz.get("yon", "LONG")
+            kaldirac = poz.get("kaldirac", 1.0) or 1.0
             if guncel and poz.get("giris_fiyat"):
                 # SHORT'ta kar/zarar YONU ters -- fiyat DUSTUKCE kazanc.
-                kar = ((poz["giris_fiyat"] / guncel - 1) * 100) if yon == "SHORT" \
+                # Kaldiracli pozisyonlarda fiyat hareketi kaldirac KATI buyutulur.
+                temel = ((poz["giris_fiyat"] / guncel - 1) * 100) if yon == "SHORT" \
                     else ((guncel / poz["giris_fiyat"] - 1) * 100)
+                kar = max(-100.0, temel * kaldirac)  # likidasyonda -%100'un altina inmez
             else:
                 kar = None
             satirlar.append({
                 "Coin": sembol.split("/")[0], "Yön": "🔴 SHORT" if yon == "SHORT" else "🟢 LONG",
+                "Kaldıraç": "Spot" if kaldirac <= 1.0 else f"{kaldirac:.1f}x",
                 "Strateji": poz["strateji"],
                 "Giriş fiyatı": poz["giris_fiyat"], "Güncel fiyat": guncel,
                 "Kâr/zarar %": kar, "Miktar": poz["miktar"],
@@ -2257,7 +2359,11 @@ def _sanal_trader_icerik(depo):
                     })
 
         # --- Strateji performans ozeti (SADECE kapanan islemler) ----
-        kapanan = islemler[islemler["islem"].astype(str).str.startswith("SAT")].copy()
+        # NOT (2026-09-12 duzeltmesi): SHORT destegi eklendiginde "KISA_KAPAT"
+        # (kisa pozisyon kapanisi) ve likidasyon destegi eklendiginde
+        # "LIKIDASYON" da birer KAPANIS turu oldu -- sadece "SAT" (LONG
+        # kapanisi) filtrelemek bu ikisini SESSIZCE ozetten dislardi.
+        kapanan = islemler[islemler["islem"].astype(str).isin(["SAT", "KISA_KAPAT", "LIKIDASYON"])].copy()
         if "kar_zarar" in kapanan.columns:
             kapanan["kar_zarar"] = pd.to_numeric(kapanan["kar_zarar"], errors="coerce")
             kapanan["kar_zarar_yuzde"] = pd.to_numeric(kapanan.get("kar_zarar_yuzde"), errors="coerce")

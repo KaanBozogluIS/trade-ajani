@@ -71,7 +71,7 @@ import trade_ajani_stratejileri as taj
 from dogrulama import simule_et
 from strateji_desenleri import DESEN_STRATEJILERI
 from strateji_desenleri import isinma_suresi as desen_isinma_suresi
-from stratejiler import STRATEJILER
+from stratejiler import STRATEJILER, atr
 from stratejiler import isinma_suresi as klasik_isinma_suresi
 
 try:
@@ -141,6 +141,26 @@ AYARLAR = {
     "rotasyon_periyodu_saat": 1,
     "geriye_donuk_pencere_gun": 30,    # rotasyon karari icin bakilan gecmis pencere
     "dongu_saniye": 3600,              # kontroller arasi bekleme (saatlik mumla hizali)
+
+    # KALDIRAC (2026-09-12'de eklendi): YENI acilan pozisyonlar artik SPOT
+    # degil, VADELI (kaldiracli) -- "sanal", gercek para/API anahtari yine
+    # YOK, sadece kar/zarar matematigi buyutuluyor. Kaldirac, HER pozisyon
+    # icin ayni degil -- ATR'a (oynakliga) gore DINAMIK hesaplanir (bkz.
+    # _kaldirac_hesapla): oynakligi dusuk coinlerde min_kaldirac'a, oynakligi
+    # yuksek coinlerde maks_kaldirac'a YAKLASMAZ, TAM TERSI -- risk_per_
+    # islem_yuzde sabit tutulmaya calisilir (dar/ongorulen stop -> yuksek
+    # kaldirac, genis/ongorulen stop -> dusuk kaldirac), HER ZAMAN
+    # [min_kaldirac, maks_kaldirac] araligina sikistirilir.
+    #
+    # ONEMLI SINIRLAMA (durustluk notu): stratejilerin hicbiri (kaan-trade'in
+    # kendi 16+4'u de, aktarilan Trade-ajani stratejileri de) gercek bir
+    # stop-loss seviyesi DONDURMUYOR (sinyal serisi sadece -1/0/1) -- bu
+    # yuzden "stop mesafesi" gercek stratejinin kendi stop'u DEGIL, 2xATR'lik
+    # GENEL bir varsayimdir (coğu strateji icin kaba ama makul bir vekil).
+    "min_kaldirac": 5.0,
+    "maks_kaldirac": 10.0,
+    "risk_per_islem_yuzde": 12.0,   # kaldirac = risk_per_islem_yuzde / (stop_atr_kati*ATR/fiyat*100), sonra klemplenir
+    "stop_atr_kati": 2.0,           # varsayilan stop mesafesi ~= bu kati * ATR(14)
 }
 
 # Zaman dilimine gore bir mumun kac saat surdugu -- "gun" cinsinden
@@ -152,6 +172,46 @@ _SAAT_PER_MUM = {"1m": 1 / 60, "5m": 5 / 60, "15m": 15 / 60, "30m": 0.5,
 def _gun_to_mum(gun, zaman_dilimi):
     saat = _SAAT_PER_MUM.get(zaman_dilimi, 24)
     return int(gun * 24 / saat)
+
+
+def _kaldirac_hesapla(df, a):
+    """
+    YENI acilan bir pozisyon icin kaldiraci ATR'a (oynakliga) gore
+    DINAMIK hesaplar, HER ZAMAN [min_kaldirac, maks_kaldirac] icine
+    sikistirir (bkz. AYARLAR'daki "KALDIRAC" notu -- bu proje stop
+    seviyesini stratejiden degil, 2xATR varsayimindan turetir).
+    """
+    seri = atr(df, 14)
+    if seri is None or len(seri) == 0:
+        return a["min_kaldirac"]
+    a_deger = float(seri.iloc[-1])
+    fiyat = float(df["kapanis"].iloc[-1])
+    if pd.isna(a_deger) or a_deger <= 0 or fiyat <= 0:
+        return a["min_kaldirac"]
+    stop_mesafe_yuzde = (a["stop_atr_kati"] * a_deger / fiyat) * 100
+    if stop_mesafe_yuzde <= 0:
+        return a["maks_kaldirac"]
+    kaldirac = a["risk_per_islem_yuzde"] / stop_mesafe_yuzde
+    return max(a["min_kaldirac"], min(a["maks_kaldirac"], kaldirac))
+
+
+def _likidasyon_fiyati(pozisyon):
+    """
+    Kaldiracli bir pozisyonun MARJININ TAMAMEN tukendigi fiyat seviyesi
+    (basitlestirilmis -- gercek borsalardaki bakim marjini tamponu yok,
+    bkz. AYARLAR'daki "likidasyon_bakim_payi"). Kaldiracsiz (spot, yani
+    kaldirac<=1.0 ya da alan hic yok) pozisyonlar icin None doner --
+    spot pozisyonlar HICBIR ZAMAN likide olmaz.
+    """
+    kaldirac = pozisyon.get("kaldirac", 1.0)
+    if not kaldirac or kaldirac <= 1.0:
+        return None
+    giris = pozisyon.get("giris_fiyat")
+    if not giris:
+        return None
+    if pozisyon.get("yon") == "SHORT":
+        return giris * (1 + 1.0 / kaldirac)
+    return giris * (1 - 1.0 / kaldirac)
 
 
 KLASOR = Path(__file__).parent
@@ -220,26 +280,33 @@ class Portfoy:
     def bos_pozisyon_yeri(self, maks_pozisyon):
         return max(0, maks_pozisyon - len(self.pozisyonlar))
 
-    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG"):
+    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG", kaldirac=1.0):
         """
         <tutar> USDT'lik nakitle sembolde pozisyon acar (sanal).
 
         <yon>: "LONG" (fiyat yukselirse kazanc) ya da "SHORT" (fiyat
         duserse kazanc -- Trade-ajani'nin orijinal LONG+SHORT strateji
-        mantigi buraya tasinirken eklendi). Nakit muhasebesi HER IKI
-        yon icin de ayni (acilista <tutar> nakitten dusulur) -- fark
-        SADECE kapat()'taki kar/zarar hesabinda.
+        mantigi buraya tasinirken eklendi).
+
+        <kaldirac>: 1.0 (varsayilan) = SPOT, davranis BIREBIR eskisi gibi
+        (miktar = tutar/fiyat, tam notional). >1.0 ise <tutar> artik
+        MARJIN'dir -- gercekte kontrol edilen notional = tutar*kaldirac
+        (miktar buyur), ama nakitten yine SADECE <tutar> (marjin)
+        dusulur. Bkz. _kaldirac_hesapla (ATR'a gore dinamik, [5,10]
+        araligina sikistirilir) ve kapat()'taki likidasyon mantigi.
         """
         if tutar < 1 or tutar > self.nakit:
             return None
-        ucret = tutar * ucret_yuzde / 100
-        miktar = (tutar - ucret) / fiyat
+        kaldirac = kaldirac or 1.0
+        ucret = tutar * kaldirac * ucret_yuzde / 100
+        miktar = (tutar * kaldirac - ucret) / fiyat
         self.nakit -= tutar
         self.pozisyonlar[sembol] = {
             "miktar": miktar, "strateji": strateji, "giris_fiyat": fiyat,
             "giris_zamani": datetime.now(timezone.utc).isoformat(),
-            "maliyet": tutar,  # nakitten cikan TAM tutar (ucret dahil) -- kapat()'ta kar/zarar buna gore hesaplanir
+            "maliyet": tutar,  # nakitten cikan MARJIN (kaldirac=1'de "tam tutar" ile ayni) -- kapat()'ta kar/zarar buna gore hesaplanir
             "yon": yon,
+            "kaldirac": kaldirac,
         }
         self.islem_sayisi += 1
         return {"miktar": miktar, "tutar": tutar, "ucret": ucret}
@@ -257,19 +324,38 @@ class Portfoy:
         DEGISMEZ). SHORT icin kar/zarar formulu Trade-ajani'nin
         core/backtest.py'sindeki "pos_dir * (exit/entry - 1)" ile AYNI
         matematik (pos_dir=-1) -- fiyat DUSTUKCE kazanc.
+
+        KALDIRAC (kaldirac>1.0): kar/zarar MARJIN (<maliyet>) uzerinden
+        kaldirac KATI buyutulur -- LIKIDASYON: kar/zarar marjinin
+        TAMAMINI goturursen (ya da asarsa) <net> SIFIRDA sabitlenir,
+        nakit NEGATIFE dusmez (gercek vadeli islemlerdeki "marjin kaybi"
+        ile ayni ilke). kaldirac<=1.0 (spot -- eski pozisyonlarda alan
+        hic YOK) icin asagidaki iki dal (LONG/SHORT) BIREBIR eskisi gibi,
+        DEGISMEDI.
         """
         pozisyon = self.pozisyonlar.get(sembol)
         if not pozisyon:
             return None
         miktar = pozisyon["miktar"]
         yon = pozisyon.get("yon", "LONG")
+        kaldirac = pozisyon.get("kaldirac", 1.0) or 1.0
         giris_fiyat = pozisyon.get("giris_fiyat", fiyat)
         maliyet = pozisyon.get("maliyet") or (miktar * giris_fiyat)
 
         brut_islem = miktar * fiyat  # kapanista el degistiren notional -- ucret bunun uzerinden alinir (yon farketmez)
         ucret = brut_islem * ucret_yuzde / 100
 
-        if yon == "SHORT":
+        if kaldirac > 1.0:
+            if yon == "SHORT":
+                kar_zarar = maliyet * kaldirac * (giris_fiyat - fiyat) / giris_fiyat - ucret if giris_fiyat else -ucret
+            else:
+                kar_zarar = maliyet * kaldirac * (fiyat / giris_fiyat - 1) - ucret if giris_fiyat else -ucret
+            net = maliyet + kar_zarar
+            if net < 0:
+                # LIKIDASYON: marjinin tamami gitti, daha fazla kaybedilemez.
+                kar_zarar = -maliyet
+                net = 0.0
+        elif yon == "SHORT":
             kar_zarar = maliyet * (giris_fiyat - fiyat) / giris_fiyat - ucret if giris_fiyat else -ucret
             net = maliyet + kar_zarar
         else:
@@ -290,16 +376,28 @@ class Portfoy:
 
         SHORT pozisyonlar icin, o an kapatilsa ne kadar nakit donecegi
         (maliyet +/- gerceklesmemis kar/zarar) hesaba katilir -- LONG
-        icin davranis (miktar * fiyat) DEGISMEDI.
+        icin davranis (miktar * fiyat) DEGISMEDI. Kaldiracli pozisyonlar
+        icin kar/zarar marjin uzerinden kaldirac kati buyutulur ve deger
+        SIFIRIN ALTINA (marjin kaybindan fazla) dusurulmez -- kapat()'taki
+        likidasyon mantigiyla tutarli.
         """
         deger = self.nakit
         for sembol, pozisyon in self.pozisyonlar.items():
             fiyat = fiyatlar.get(sembol)
             if not fiyat:
                 continue
-            if pozisyon.get("yon", "LONG") == "SHORT":
-                giris_fiyat = pozisyon.get("giris_fiyat", fiyat)
-                maliyet = pozisyon.get("maliyet") or (pozisyon["miktar"] * giris_fiyat)
+            yon = pozisyon.get("yon", "LONG")
+            kaldirac = pozisyon.get("kaldirac", 1.0) or 1.0
+            giris_fiyat = pozisyon.get("giris_fiyat", fiyat)
+            maliyet = pozisyon.get("maliyet") or (pozisyon["miktar"] * giris_fiyat)
+
+            if kaldirac > 1.0:
+                if yon == "SHORT":
+                    kar_zarar = maliyet * kaldirac * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
+                else:
+                    kar_zarar = maliyet * kaldirac * (fiyat / giris_fiyat - 1) if giris_fiyat else 0.0
+                deger += max(0.0, maliyet + kar_zarar)
+            elif yon == "SHORT":
                 kar_zarar = maliyet * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
                 deger += maliyet + kar_zarar
             else:
@@ -536,22 +634,58 @@ def rotasyonu_uygula(portfoy, durum, depo, a):
 #  6) NORMAL DONGU: her atanmis coin icin AL/SAT kontrolu
 # ============================================================
 
-def islem_kaydet(saat, islem, strateji, sembol, fiyat, sonuc, portfoy, fiyatlar, sebep):
+_ISLEM_KOLONLARI = [
+    "tarih", "islem", "strateji", "sembol", "fiyat", "miktar",
+    "tutar", "ucret", "kar_zarar", "kar_zarar_yuzde", "nakit",
+    "portfoy_degeri", "sebep", "kaldirac",
+]
+
+
+def _islem_dosyasi_semaya_uydur():
+    """
+    islemler.csv'ye "kaldirac" sutunu SONRADAN (2026-09-12) eklendi.
+    Dosya zaten varsa VE eski (bu sutunsuz) bir basligi varsa, TUM
+    dosyayi okuyup basligi + her eski satira "kaldirac"=1.0 (o donemde
+    HER ISLEM spot'tu, bu dogru bir varsayimdan cok bir GERCEK) ekleyerek
+    yeniden yazar. Boylece DictWriter'in yeni sutunla YENI satir eklemesi,
+    eski (sutunsuz) baslikla COLUMN SAYISI UYUSMAZLIGINA yol acmaz --
+    "yarim/bozuk dosya" riskine karsi _atomik_yaz ile TEK adimda yazilir.
+    """
+    if not ISLEM_DOSYASI.exists():
+        return
+    with ISLEM_DOSYASI.open("r", newline="", encoding="utf-8-sig") as f:
+        okuyucu = csv.reader(f)
+        satirlar = list(okuyucu)
+    if not satirlar or "kaldirac" in satirlar[0]:
+        return
+    satirlar[0] = satirlar[0] + ["kaldirac"]
+    for satir in satirlar[1:]:
+        satir.append("1.0")
+    import io
+    tampon = io.StringIO()
+    csv.writer(tampon).writerows(satirlar)
+    _atomik_yaz(ISLEM_DOSYASI, tampon.getvalue())
+    print(f"[i] {ISLEM_DOSYASI.name} semasi guncellendi: 'kaldirac' sutunu eklendi "
+          f"(eski {len(satirlar) - 1} satira 1.0/spot atandi).")
+
+
+def islem_kaydet(saat, islem, strateji, sembol, fiyat, sonuc, portfoy, fiyatlar, sebep, kaldirac=1.0):
     """
     "kar_zarar"/"kar_zarar_yuzde" sutunlari SADECE SAT satirlarinda
     doludur (Portfoy.kapat()'in dondurdugu sonuc'ta bulunur) -- AL
     satirlarinda bos kalir, cunku bir alim ANINDA henuz kar/zarar
     yoktur. Boylece panelde "hangi strateji, hangi coin'de, ne zaman,
     kar mi zarar mi etti" dogrudan bu tablodan okunabilir.
+
+    <kaldirac>: pozisyonun kaldiraci (1.0 = spot) -- panelin geçmiş
+    portföy eğrisini (_sanal_trader_egri_verisi) doğru yeniden
+    kurabilmesi için AL/KISA_AC satırlarına yazılır.
     """
+    _islem_dosyasi_semaya_uydur()
     CIKTI_KLASORU.mkdir(parents=True, exist_ok=True)
     yeni_dosya = not ISLEM_DOSYASI.exists()
     with ISLEM_DOSYASI.open("a", newline="", encoding="utf-8-sig") as f:
-        yazici = csv.DictWriter(f, fieldnames=[
-            "tarih", "islem", "strateji", "sembol", "fiyat", "miktar",
-            "tutar", "ucret", "kar_zarar", "kar_zarar_yuzde", "nakit",
-            "portfoy_degeri", "sebep",
-        ])
+        yazici = csv.DictWriter(f, fieldnames=_ISLEM_KOLONLARI)
         if yeni_dosya:
             yazici.writeheader()
         yazici.writerow({
@@ -562,6 +696,7 @@ def islem_kaydet(saat, islem, strateji, sembol, fiyat, sonuc, portfoy, fiyatlar,
             "kar_zarar_yuzde": round(sonuc["kar_zarar_yuzde"], 2) if "kar_zarar_yuzde" in sonuc else "",
             "nakit": round(portfoy.nakit, 2),
             "portfoy_degeri": round(portfoy.toplam_deger(fiyatlar), 2), "sebep": sebep,
+            "kaldirac": round(kaldirac, 3) if kaldirac else 1.0,
         })
 
 
@@ -606,6 +741,33 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
     if df is None or len(df) < isinma + 30:
         return None
 
+    saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    # LIKIDASYON KONTROLU (kaldiracli pozisyonlar icin): son mumun ic
+    # fiyat aralinginda (yuksek/dusuk) marjini tuketen bir hareket oldu
+    # mu diye bakilir -- bu, STRATEJININ sinyalinden BAGIMSIZDIR (strateji
+    # hatasi/degisimi beklemeden, bir onceki kontrolden bu yana marjin
+    # gittiyse hemen kapatilir). Spot (kaldiracsiz) pozisyonlarda
+    # _likidasyon_fiyati None doner, bu blok hicbir sey yapmaz.
+    if tutuluyor_mu:
+        acik_poz = portfoy.pozisyonlar[sembol]
+        likit_fiyat = _likidasyon_fiyati(acik_poz)
+        if likit_fiyat is not None:
+            son_yuksek = float(df["yuksek"].iloc[-1])
+            son_dusuk = float(df["dusuk"].iloc[-1])
+            likide_oldu = (acik_poz.get("yon", "LONG") == "LONG" and son_dusuk <= likit_fiyat) or \
+                          (acik_poz.get("yon") == "SHORT" and son_yuksek >= likit_fiyat)
+            if likide_oldu:
+                acik_kaldirac = acik_poz.get("kaldirac", 1.0)
+                fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, likit_fiyat)
+                sonuc = portfoy.kapat(sembol, likit_fiyat, a["islem_ucreti_yuzde"])
+                if sonuc:
+                    islem_kaydet(saat, "LIKIDASYON", strateji_isim, sembol, likit_fiyat, sonuc,
+                                portfoy, fiyatlar, "likidasyon", kaldirac=acik_kaldirac)
+                    print(f"   >> LIKIDASYON: {sembol} @ {likit_fiyat:.6g}  "
+                          f"(marjin kaybedildi, {acik_kaldirac:.1f}x)  [{strateji_isim}]")
+                    return "LIKIDASYON"
+
     try:
         poz = fn(df, **params)
     except Exception:
@@ -615,20 +777,20 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         return None
 
     fiyat = float(df["kapanis"].iloc[-1])
-    saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
     if son_sinyal == 1.0 and not tutuluyor_mu:
         bos_yer = portfoy.bos_pozisyon_yeri(a["maks_pozisyon"])
         if bos_yer <= 0:
             return None
         tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
-        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="LONG")
+        kaldirac = _kaldirac_hesapla(df, a)
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="LONG", kaldirac=kaldirac)
         if sonuc:
             fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
             islem_kaydet(saat, "AL", strateji_isim, sembol, fiyat, sonuc, portfoy,
-                        fiyatlar, "sinyal")
+                        fiyatlar, "sinyal", kaldirac=kaldirac)
             print(f"   >> SANAL ALIM: {sembol}  {sonuc['miktar']:.6f} "
-                  f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")
+                  f"({sonuc['tutar']:,.2f} USDT marjin, {kaldirac:.1f}x)  [{strateji_isim}]")
             return "AL"
     elif son_sinyal == -1.0 and not tutuluyor_mu:
         # SHORT: Trade-ajani'ndan tasinan stratejilerin orijinal (LONG+
@@ -637,24 +799,26 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         if bos_yer <= 0:
             return None
         tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
-        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="SHORT")
+        kaldirac = _kaldirac_hesapla(df, a)
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="SHORT", kaldirac=kaldirac)
         if sonuc:
             fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
             islem_kaydet(saat, "KISA_AC", strateji_isim, sembol, fiyat, sonuc, portfoy,
-                        fiyatlar, "sinyal")
+                        fiyatlar, "sinyal", kaldirac=kaldirac)
             print(f"   >> SANAL KISA (SHORT) ACILIS: {sembol}  {sonuc['miktar']:.6f} "
-                  f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")
+                  f"({sonuc['tutar']:,.2f} USDT marjin, {kaldirac:.1f}x)  [{strateji_isim}]")
             return "KISA_AC"
     elif son_sinyal == 0.0 and tutuluyor_mu:
         # ONCE fiyatlari topla (pozisyon hala listede), SONRA kapat --
         # aksi halde kapatilan pozisyon toplam degerden eksik sayilirdi.
         yon = portfoy.pozisyonlar[sembol].get("yon", "LONG")
+        kapanan_kaldirac = portfoy.pozisyonlar[sembol].get("kaldirac", 1.0)
         fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
         sonuc = portfoy.kapat(sembol, fiyat, a["islem_ucreti_yuzde"])
         if sonuc:
             etiket = "SAT" if yon == "LONG" else "KISA_KAPAT"
             islem_kaydet(saat, etiket, strateji_isim, sembol, fiyat, sonuc, portfoy,
-                        fiyatlar, "sinyal")
+                        fiyatlar, "sinyal", kaldirac=kapanan_kaldirac)
             aciklama = "SATIS" if yon == "LONG" else "KISA KAPATMA"
             print(f"   >> SANAL {aciklama}: {sembol}  {sonuc['miktar']:.6f} "
                   f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")

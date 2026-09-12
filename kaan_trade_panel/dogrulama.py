@@ -80,7 +80,7 @@ def gunluge_cevir(df):
               .reset_index())
 
 
-def simule_et(df, pozisyon, a, baslangic=0):
+def simule_et(df, pozisyon, a, baslangic=0, detay_don=False):
     """
     Pozisyon listesini gercek alim-satima cevirip sonucu olcer.
 
@@ -99,9 +99,18 @@ def simule_et(df, pozisyon, a, baslangic=0):
     rotasyonuna eklenen) stratejilerden gelir -- SHORT ekonomisi
     sanal_trader.py'nin Portfoy.kapat()'iyle AYNI matematik (fiyat
     dustukce kazanc): kar_zarar = tutar * (giris_fiyat - kapanis_fiyat) / giris_fiyat.
+
+    <detay_don>: True ise sonuc sozlugune "seri" (portfoy degeri, HER
+    mum icin), "zamanlar" (df'de "zaman" sutunu varsa o, yoksa indeks)
+    ve "islemler" (her kapanan islemin giris/cikis zamani-fiyati-yonu-
+    getirisi) eklenir -- Trade Ajanı sayfasındaki geçmişe dönük analiz
+    aracı (grafik + işlem tablosu) için. Varsayilan False'ta davranis
+    (dondurulen sozluk) ESKISIYLE BIREBIR AYNI -- rotasyon/tarama.py gibi
+    mevcut cagiranlar etkilenmez.
     """
     acilis = df["acilis"].tolist()
     kapanis = df["kapanis"].tolist()
+    zaman_sutunu = df["zaman"].tolist() if "zaman" in df.columns else None
     poz = list(pozisyon)
     n = len(df)
 
@@ -112,6 +121,8 @@ def simule_et(df, pozisyon, a, baslangic=0):
     bekleyen, acik_tutar = None, None
     turlar, seri = [], []
     odenen_ucret, piyasada = 0.0, 0
+    islem_kayitlari = []
+    acik_giris = None  # {"zaman","fiyat","yon"} -- detay_don icin
 
     for i in range(baslangic, n):
         if bekleyen == "AL" and coin == 0 and yon is None:
@@ -122,6 +133,9 @@ def simule_et(df, pozisyon, a, baslangic=0):
                 nakit -= harcanan
                 odenen_ucret += ucret
                 acik_tutar = harcanan
+                if detay_don:
+                    acik_giris = {"zaman": zaman_sutunu[i] if zaman_sutunu else i,
+                                 "fiyat": acilis[i], "yon": "LONG"}
         elif bekleyen == "KISA_AC" and coin == 0 and yon is None:
             harcanan = nakit * a["islem_orani"]
             if harcanan >= 1:
@@ -132,13 +146,20 @@ def simule_et(df, pozisyon, a, baslangic=0):
                 kisa_giris_fiyat, kisa_tutar = acilis[i], harcanan
                 acik_tutar = harcanan
                 yon = "SHORT"
+                if detay_don:
+                    acik_giris = {"zaman": zaman_sutunu[i] if zaman_sutunu else i,
+                                 "fiyat": acilis[i], "yon": "SHORT"}
         elif bekleyen == "SAT" and coin > 0:
             brut = coin * acilis[i]
             ucret = brut * ucret_o
             nakit += brut - ucret
             odenen_ucret += ucret
             if acik_tutar:
-                turlar.append((brut - ucret - acik_tutar) / acik_tutar * 100)
+                getiri_yuzde = (brut - ucret - acik_tutar) / acik_tutar * 100
+                turlar.append(getiri_yuzde)
+                if detay_don and acik_giris:
+                    islem_kayitlari.append({**acik_giris, "cikis_zaman": zaman_sutunu[i] if zaman_sutunu else i,
+                                            "cikis_fiyat": acilis[i], "getiri_yuzde": getiri_yuzde})
                 acik_tutar = None
             coin = 0.0
         elif bekleyen == "SAT" and yon == "SHORT":
@@ -149,7 +170,11 @@ def simule_et(df, pozisyon, a, baslangic=0):
             nakit += net
             odenen_ucret += ucret
             if acik_tutar:
-                turlar.append((net - acik_tutar) / acik_tutar * 100)
+                getiri_yuzde = (net - acik_tutar) / acik_tutar * 100
+                turlar.append(getiri_yuzde)
+                if detay_don and acik_giris:
+                    islem_kayitlari.append({**acik_giris, "cikis_zaman": zaman_sutunu[i] if zaman_sutunu else i,
+                                            "cikis_fiyat": acilis[i], "getiri_yuzde": getiri_yuzde})
                 acik_tutar = None
             kisa_miktar = kisa_giris_fiyat = kisa_tutar = None
             yon = None
@@ -181,7 +206,7 @@ def simule_et(df, pozisyon, a, baslangic=0):
     ilk_acilis = acilis[baslangic]
     al_tut = a["baslangic_bakiye"] * (1 - ucret_o) * (kapanis[-1] / ilk_acilis)
 
-    return {
+    sonuc = {
         "getiri": (seri[-1] / a["baslangic_bakiye"] - 1) * 100,
         "al_tut_getiri": (al_tut / a["baslangic_bakiye"] - 1) * 100,
         "dusus": en_buyuk_dusus(seri),
@@ -192,6 +217,11 @@ def simule_et(df, pozisyon, a, baslangic=0):
         "piyasada": piyasada / (n - baslangic) * 100,
         "mum": n - baslangic,
     }
+    if detay_don:
+        sonuc["seri"] = seri
+        sonuc["zamanlar"] = zaman_sutunu[baslangic:] if zaman_sutunu else list(range(baslangic, n))
+        sonuc["islemler"] = islem_kayitlari
+    return sonuc
 
 
 # ============================================================
