@@ -1,0 +1,70 @@
+name: Sanal Trader
+
+# NE YAPAR: kaan_trade_panel/sanal_trader.py'yi periyodik olarak (saatte bir)
+# TEK SEFERLIK modda calistirir (--once), sonuclari (portfoy, pozisyonlar,
+# islem/rotasyon gecmisi) depoya geri yazar. Boylece bilgisayariniz kapali
+# olsa bile sistem calismaya devam eder -- GitHub'in kendi sunuculari
+# calistirir.
+#
+# GERCEK PARA / API ANAHTARI YOK: bu is akisinda hicbir borsa API
+# anahtari, sifre ya da hesap bilgisi kullanilmiyor -- sanal_trader.py
+# sadece HERKESE ACIK piyasa verisini okuyor (bkz. veri_kaynaklari.py).
+#
+# NOT: bu depoda AYRICA "Canli Sinyal Taramasi" (live_scan.yml) her 5
+# dakikada bir otomatik commit atiyor -- ayni depoda 2. bir otomatik-
+# commit isi oldugu icin, push'tan once pull --rebase + retry dongusu
+# kullaniyoruz (fetch_oi.yml'de daha once uygulanan ayni kalip).
+
+on:
+  schedule:
+    # Her saat 5. dakikada -- tam saat basinda (00) degil, GitHub'in
+    # yogunlugu dagitmak icin onerdigi gibi birkac dakika kaydirilmis.
+    - cron: "5 * * * *"
+  workflow_dispatch: {}   # Actions sekmesinden elle de tetiklenebilsin
+
+permissions:
+  contents: write   # sonuclari depoya geri commitleyebilmek icin
+
+concurrency:
+  group: sanal-trader
+  cancel-in-progress: false   # bir calisma surerken yenisi baslarsa, ONCEKI iptal edilmez, SIRAYA girer
+
+jobs:
+  calistir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: kaan_trade_panel
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kutuphaneleri kur
+        run: pip install -r requirements-sanal-trader.txt
+
+      - name: Sanal trader'i bir tur calistir
+        run: python sanal_trader.py --once
+
+      - name: Sonuclari depoya kaydet
+        # git pull --rebase + retry: bu checkout is basladiginda alinmisti
+        # (dakikalar once) -- o zamandan beri baska bir push (live_scan.yml
+        # ya da elle yapilan bir push) gelmis olabilir. Once pull etmeden
+        # push etmek "fetch first" hatasiyla TUM isi basarisiz kilar --
+        # rebase, kendi commit'imizi en guncel halin UZERINE tasir, birkac
+        # kez denenirse cakisma riski neredeyse sifira iner.
+        run: |
+          git config user.name "sanal-trader-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add cikti/sanal_trader/
+          git diff --staged --quiet || git commit -m "Sanal trader guncellemesi $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main -q && git push && break
+            echo "push basarisiz, tekrar deneniyor ($i/5)..."
+            sleep $((i * 5))
+          done

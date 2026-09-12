@@ -1,0 +1,27 @@
+# Panelin gorunum ve calisma ayarlari.
+# Bu dosyayi degistirdikten sonra uygulamayi yeniden baslatin.
+
+[server]
+port = 8501
+headless = true
+fileWatcherType = "auto"
+
+[browser]
+gatherUsageStats = false
+
+[client]
+# Sag ustteki menuyu kucultur, uygulama gibi gorunmesini saglar
+toolbarMode = "minimal"
+showErrorDetails = true
+
+[theme]
+# TradingView'in koyu temasina yakin bir palet.
+base = "dark"
+primaryColor = "#2962ff"
+backgroundColor = "#131722"
+secondaryBackgroundColor = "#1e222d"
+textColor = "#d1d4dc"
+font = "sans serif"
+
+[runner]
+fastReruns = true

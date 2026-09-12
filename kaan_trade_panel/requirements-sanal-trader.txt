@@ -1,0 +1,15 @@
+# sanal_trader.py'nin GitHub Actions gibi BASSIZ (headless) bir ortamda
+# calismasi icin gereken, DAR kutuphane listesi.
+#
+# NEDEN ANA requirements.txt DEGIL: o dosya masaustu uygulamasi icin --
+# streamlit, plotly, pywebview, pillow gibi GORSEL/masaustu kutuphaneleri
+# de icerir. pywebview ozellikle headless bir Linux sunucuda (GitHub
+# Actions runner'i gibi) GTK/webkit sistem kutuphaneleri gerektirdigi
+# icin kurulumu basarisiz olabilir -- ama sanal_trader.py'nin bunlarin
+# HICBIRINE ihtiyaci yok, sadece veri cekip hesap yapiyor.
+ccxt>=4.5
+pandas>=2.2
+numpy>=1.26
+requests>=2.31
+websockets>=13.0
+matplotlib>=3.8

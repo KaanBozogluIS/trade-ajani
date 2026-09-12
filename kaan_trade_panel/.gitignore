@@ -1,0 +1,27 @@
+# Sanal ortam ve derleme dosyalari -- herkes kendi bilgisayarinda kurar
+.venv/
+__pycache__/
+*.pyc
+
+# Indirilen gecmis fiyat verisi -- buyuk, gerektiginde yeniden indirilir
+veri/
+
+# Backtest/gerıye donuk test ciktilari -- yerel deneme sonuclari
+cikti/test_islemleri.csv
+cikti/test_grafik.png
+
+# NOT: cikti/sanal_trader/ BILEREK gitignore'da DEGIL -- GitHub Actions
+# bu klasordeki dosyalari (portfoy.json, pozisyonlar.json, islemler.csv,
+# rotasyon_gunlugu.csv, durum.json) her calismasinda depoya GERI YAZIYOR,
+# boylece sanal trader'in durumu iki calisma arasinda kaybolmuyor.
+
+# Eski/kullanilmayan prototip -- referans icin tutuluyor ama repoya gerek yok
+files_ESKI_kullanilmiyor/
+
+# Isletim sistemi / duzenleyici dosyalari
+.DS_Store
+Thumbs.db
+
+# Icerigini incelemedigim kisisel bir dosya -- herkese acik bir depoya
+# bilmeden yuklememek icin bilerek disarida birakildi.
+Document 28.pdf

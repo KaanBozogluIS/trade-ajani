@@ -1,0 +1,61 @@
+name: Sanal Trader
+
+# NE YAPAR: sanal_trader.py'yi periyodik olarak (varsayilan saatte bir)
+# TEK SEFERLIK modda calistirir (--once), sonuclari (portfoy, pozisyonlar,
+# islem/rotasyon gecmisi) depoya geri yazar. Boylece bilgisayariniz kapali
+# olsa bile sistem calismaya devam eder -- GitHub'in kendi sunuculari
+# calistirir.
+#
+# GERCEK PARA / API ANAHTARI YOK: bu is akisinda hicbir borsa API
+# anahtari, sifre ya da hesap bilgisi kullanilmiyor -- sanal_trader.py
+# sadece HERKESE ACIK piyasa verisini okuyor (bkz. veri_kaynaklari.py).
+
+on:
+  schedule:
+    # Her saat 5. dakikada -- tam saat basinda (00) degil, GitHub'in
+    # yogunlugu dagitmak icin onerdigi gibi birkac dakika kaydirilmis.
+    - cron: "5 * * * *"
+  workflow_dispatch: {}   # Actions sekmesinden elle de tetiklenebilsin
+
+permissions:
+  contents: write   # sonuclari depoya geri commitleyebilmek icin
+
+concurrency:
+  group: sanal-trader
+  cancel-in-progress: false   # bir calisma surerken yenisi baslarsa, ONCEKI iptal edilmez, SIRAYA girer
+
+jobs:
+  calistir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kutuphaneleri kur
+        run: pip install -r requirements-sanal-trader.txt
+
+      - name: Sanal trader'i bir tur calistir
+        run: python sanal_trader.py --once
+
+      - name: Sonuclari depoya kaydet
+        # git pull --rebase, git push'tan HEMEN ONCE: bu checkout, is
+        # basladiginda alinmisti (dakikalar once) -- o zamandan beri
+        # baska bir push (elle yapilan bir push, ya da SIRADAKI bir
+        # calisma) gelmis olabilir. Once pull etmeden push etmek, "fetch
+        # first" hatasiyla TUM isi basarisiz kilar (bu gercekten
+        # yasandi) -- rebase, kendi commit'imizi en guncel halin
+        # UZERINE tasir, cakisma riski neredeyse yok cunku bu is akisi
+        # SADECE kendi cikti klasorune yaziyor.
+        run: |
+          git config user.name "sanal-trader-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add cikti/sanal_trader/
+          git diff --staged --quiet || git commit -m "Sanal trader guncellemesi $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase origin main
+          git push
