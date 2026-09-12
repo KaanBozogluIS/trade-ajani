@@ -1792,10 +1792,13 @@ def sayfa_analiz_botu(depo, sembol, en_az_hacim):
 #
 # trade_ajani_stratejileri.py, "Trade-ajani" adli AYRI bir projede
 # (egitim/test - IS/OOS - ayrimli genis taramalarla dogrulanmis)
-# stratejilerin bu projenin kalibina (0.0=nakit, 1.0=pozisyonda,
-# LONG-only) uyarlanmis hali. Bu sayfa SADECE onlarin GUNCEL durumunu
-# gosterir - sanal_trader.py'yi (canli rotasyon botu) ETKILEMEZ, ayri
-# bir islevdir. Ayrintili bulgular: TRADE_AJANI_BULGULARI.md.
+# stratejilerin bu projenin kalibina uyarlanmis hali (-1.0=SHORT,
+# 0.0=nakit, 1.0=LONG -- 2026-09-12'de SHORT destegi ORIJINAL Trade-ajani
+# mantigina gore geri getirildi, ilk aktarimda LONG-only'ye
+# indirgenmisti). Bu sayfa SADECE onlarin GUNCEL durumunu gosterir -
+# sanal_trader.py (canli rotasyon botu) AYNI stratejileri kullanir ama
+# bu sayfa onu tetiklemez, sadece kendi anlik hesabini gosterir.
+# Ayrintili bulgular: TRADE_AJANI_BULGULARI.md.
 #
 # Gunluk mum ile calisan Analiz Botu'nun aksine bu sayfa 1 SAATLIK mum
 # kullanir (stratejiler o zaman diliminde dogrulandi) - o yuzden bu da
@@ -1803,6 +1806,7 @@ def sayfa_analiz_botu(depo, sembol, en_az_hacim):
 
 _TRADE_AJANI_DURUM_ETIKET = {
     "LONG": ("🟢", "Pozisyonda (LONG)"),
+    "SHORT": ("🔴", "Pozisyonda (SHORT)"),
     "NAKIT": ("⚪", "Nakitte"),
     "ISINIYOR": ("🟡", "Isınıyor (yetersiz geçmiş)"),
 }
@@ -1816,7 +1820,13 @@ def _trade_ajani_pozisyon_ozeti(poz: pd.Series, zaman: pd.Series) -> dict:
     degisim = gecerli[gecerli != gecerli.shift(1)]
     ilk_idx = gecerli.index[0]
     son_degisim_idx = degisim.index[-1] if len(degisim) else ilk_idx
-    return {"durum": "LONG" if son == 1.0 else "NAKIT", "beri": zaman.loc[son_degisim_idx]}
+    if son == 1.0:
+        durum = "LONG"
+    elif son == -1.0:
+        durum = "SHORT"
+    else:
+        durum = "NAKIT"
+    return {"durum": durum, "beri": zaman.loc[son_degisim_idx]}
 
 
 def sayfa_trade_ajani(sembol):
@@ -1824,11 +1834,12 @@ def sayfa_trade_ajani(sembol):
     st.markdown('<div class="bolum-basligi">Trade Ajanı Stratejileri</div>', unsafe_allow_html=True)
     st.info(
         "Bu 4 strateji **ayrı bir projede** (Trade-ajanı), eğitim/test (IS/OOS) "
-        "ayrımlı genış taramalarla doğrulandı ve buraya (LONG-only kalıba "
-        "uyarlanarak) aktarıldı. **Kırılım-GeriÇekilme-Toparlanma** küçük/orta "
+        "ayrımlı geniş taramalarla doğrulandı ve buraya **LONG+SHORT** (orijinal) "
+        "mantığıyla aktarıldı. **Kırılım-GeriÇekilme-Toparlanma** küçük/orta "
         "ölçekli altcoinler, **Major Trend Sürücüsü** büyük/likit coinler için "
-        "tasarlandı — seçili coin ikisine de uymayabilir. Bu sayfa sanal_trader.py'yi "
-        "(canlı rotasyon botu) **etkilemez**. Ayrıntılı doğrulama sonuçları: "
+        "tasarlandı — seçili coin ikisine de uymayabilir. Bu sayfa yalnızca "
+        "GÜNCEL durumu gösterir; canlı Sanal Trader botu aynı stratejileri "
+        "kendi rotasyonunda kullanır. Ayrıntılı doğrulama sonuçları: "
         "`TRADE_AJANI_BULGULARI.md`."
     )
 
@@ -1894,14 +1905,32 @@ def sayfa_trade_ajani(sembol):
 # oldugu icin bu hesap sayfa her yenilendiginde agir bir ag yuku
 # getirmez.
 
+def _pozisyon_degeri(poz, fiyat):
+    """
+    Bir pozisyonun (LONG ya da SHORT) o anki fiyatla degerini hesaplar --
+    sanal_trader.py'nin Portfoy.toplam_deger()'iyle AYNI mantik. LONG icin
+    miktar*fiyat (degismedi); SHORT icin o an kapatilsa donecek nakit
+    (maliyet +/- gerceklesmemis kar/zarar).
+    """
+    if fiyat is None:
+        return 0.0
+    if poz.get("yon") == "SHORT":
+        giris = poz.get("giris_fiyat") or fiyat
+        maliyet = poz.get("maliyet") or (poz["miktar"] * giris)
+        kar_zarar = maliyet * (giris - fiyat) / giris if giris else 0.0
+        return maliyet + kar_zarar
+    return poz["miktar"] * fiyat
+
+
 def _sanal_trader_egri_verisi(islemler):
     """
     islemler.csv'yi (her satir bir TAM acilis ya da TAM kapanis --
     sanal_trader.py'nin Portfoy sinifi hep tum pozisyonu acar/kapatir)
-    baştan sona "oynatarak" her andaki (nakit, {sembol: miktar}) durumunu
+    baştan sona "oynatarak" her andaki (nakit, {sembol: pozisyon}) durumunu
     cikarir, sonra o araliktaki HER tutulan sembolun SAATLIK kapanis
-    fiyatiyla carpip toplayarak SUREKLI, COKLU-POZISYONU DOGRU YANSITAN
-    bir portfoy degeri serisi uretir.
+    fiyatiyla degerini (_pozisyon_degeri -- LONG/SHORT'a gore) toplayarak
+    SUREKLI, COKLU-POZISYONU DOGRU YANSITAN bir portfoy degeri serisi
+    uretir.
     """
     if islemler is None or islemler.empty:
         return None
@@ -1927,7 +1956,7 @@ def _sanal_trader_egri_verisi(islemler):
         return float(alt_kume.iloc[-1]) if len(alt_kume) else None
 
     zamanlar, degerler = [], []
-    pozisyonlar = {}  # sembol -> miktar (bu satirdan itibaren gecerli)
+    pozisyonlar = {}  # sembol -> {"miktar","yon","giris_fiyat","maliyet"} (bu satirdan itibaren gecerli)
 
     for i in range(len(df)):
         baslangic = df["tarih"].iloc[i]
@@ -1936,8 +1965,12 @@ def _sanal_trader_egri_verisi(islemler):
         nakit = float(satir["nakit"])
 
         if satir["islem"] == "AL":
-            pozisyonlar[satir["sembol"]] = float(satir["miktar"])
-        elif str(satir["islem"]).startswith("SAT"):
+            pozisyonlar[satir["sembol"]] = {"miktar": float(satir["miktar"]), "yon": "LONG",
+                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"])}
+        elif satir["islem"] == "KISA_AC":
+            pozisyonlar[satir["sembol"]] = {"miktar": float(satir["miktar"]), "yon": "SHORT",
+                                            "giris_fiyat": float(satir["fiyat"]), "maliyet": float(satir["tutar"])}
+        elif str(satir["islem"]) in ("SAT", "KISA_KAPAT"):
             pozisyonlar.pop(satir["sembol"], None)
 
         if not pozisyonlar:
@@ -1956,21 +1989,19 @@ def _sanal_trader_egri_verisi(islemler):
 
         if not segment_zamanlari:
             deger = nakit
-            for sembol, miktar in pozisyonlar.items():
+            for sembol, poz in pozisyonlar.items():
                 fiyat = (float(satir["fiyat"]) if sembol == satir["sembol"]
                         else _fiyat_bul(sembol, baslangic))
-                if fiyat:
-                    deger += miktar * fiyat
+                deger += _pozisyon_degeri(poz, fiyat)
             zamanlar.append(baslangic)
             degerler.append(deger)
             continue
 
         for zaman in sorted(segment_zamanlari):
             deger = nakit
-            for sembol, miktar in pozisyonlar.items():
+            for sembol, poz in pozisyonlar.items():
                 fiyat = _fiyat_bul(sembol, zaman)
-                if fiyat:
-                    deger += miktar * fiyat
+                deger += _pozisyon_degeri(poz, fiyat)
             zamanlar.append(zaman)
             degerler.append(deger)
 
@@ -2135,7 +2166,16 @@ def _sanal_trader_icerik(depo):
         toplam_deger = portfoy_verisi["nakit"]
         for sembol, poz in pozisyonlar.items():
             fiyat = guncel_fiyatlar.get(sembol)
-            if fiyat:
+            if not fiyat:
+                continue
+            if poz.get("yon", "LONG") == "SHORT":
+                # SHORT: sanal_trader.py'nin Portfoy.toplam_deger'iyle AYNI
+                # mantik -- o an kapatilsa donecek nakit (maliyet +/- kar/zarar).
+                giris = poz.get("giris_fiyat", fiyat)
+                maliyet = poz.get("maliyet") or (poz["miktar"] * giris)
+                kar_zarar = maliyet * (giris - fiyat) / giris if giris else 0.0
+                toplam_deger += maliyet + kar_zarar
+            else:
                 toplam_deger += poz["miktar"] * fiyat
         if portfoy_verisi.get("baslangic"):
             kar_yuzde = (toplam_deger / portfoy_verisi["baslangic"] - 1) * 100
@@ -2166,9 +2206,16 @@ def _sanal_trader_icerik(depo):
         satirlar = []
         for sembol, poz in pozisyonlar.items():
             guncel = guncel_fiyatlar.get(sembol)
-            kar = ((guncel / poz["giris_fiyat"] - 1) * 100) if guncel else None
+            yon = poz.get("yon", "LONG")
+            if guncel and poz.get("giris_fiyat"):
+                # SHORT'ta kar/zarar YONU ters -- fiyat DUSTUKCE kazanc.
+                kar = ((poz["giris_fiyat"] / guncel - 1) * 100) if yon == "SHORT" \
+                    else ((guncel / poz["giris_fiyat"] - 1) * 100)
+            else:
+                kar = None
             satirlar.append({
-                "Coin": sembol.split("/")[0], "Strateji": poz["strateji"],
+                "Coin": sembol.split("/")[0], "Yön": "🔴 SHORT" if yon == "SHORT" else "🟢 LONG",
+                "Strateji": poz["strateji"],
                 "Giriş fiyatı": poz["giris_fiyat"], "Güncel fiyat": guncel,
                 "Kâr/zarar %": kar, "Miktar": poz["miktar"],
                 "Giriş zamanı": poz["giris_zamani"][:16].replace("T", " "),

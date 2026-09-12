@@ -67,6 +67,7 @@ import pandas as pd
 
 import canli_veri as cv
 import veri_kaynaklari as vk
+import trade_ajani_stratejileri as taj
 from dogrulama import simule_et
 from strateji_desenleri import DESEN_STRATEJILERI
 from strateji_desenleri import isinma_suresi as desen_isinma_suresi
@@ -219,8 +220,16 @@ class Portfoy:
     def bos_pozisyon_yeri(self, maks_pozisyon):
         return max(0, maks_pozisyon - len(self.pozisyonlar))
 
-    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde):
-        """<tutar> USDT'lik nakitle sembolu satin alir (sanal)."""
+    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG"):
+        """
+        <tutar> USDT'lik nakitle sembolde pozisyon acar (sanal).
+
+        <yon>: "LONG" (fiyat yukselirse kazanc) ya da "SHORT" (fiyat
+        duserse kazanc -- Trade-ajani'nin orijinal LONG+SHORT strateji
+        mantigi buraya tasinirken eklendi). Nakit muhasebesi HER IKI
+        yon icin de ayni (acilista <tutar> nakitten dusulur) -- fark
+        SADECE kapat()'taki kar/zarar hesabinda.
+        """
         if tutar < 1 or tutar > self.nakit:
             return None
         ucret = tutar * ucret_yuzde / 100
@@ -230,40 +239,70 @@ class Portfoy:
             "miktar": miktar, "strateji": strateji, "giris_fiyat": fiyat,
             "giris_zamani": datetime.now(timezone.utc).isoformat(),
             "maliyet": tutar,  # nakitten cikan TAM tutar (ucret dahil) -- kapat()'ta kar/zarar buna gore hesaplanir
+            "yon": yon,
         }
         self.islem_sayisi += 1
         return {"miktar": miktar, "tutar": tutar, "ucret": ucret}
 
     def kapat(self, sembol, fiyat, ucret_yuzde):
         """
-        Elimizdeki <sembol> pozisyonunun TAMAMINI satar (sanal) ve bu
+        Elimizdeki <sembol> pozisyonunun TAMAMINI kapatir (sanal) ve bu
         ISLEMIN kar/zararini hesaplar -- "hangi strateji ne zaman
         kazandirdi/kaybettirdi" sorusuna cevap vermek icin (bkz.
         islem_kaydet, panelde "Strateji performansı" tablosu).
+
+        YON'A GORE HESAP: eski (SHORT'tan once yazilmis) pozisyonlarda
+        "yon" alani YOK -- .get(..., "LONG") ile geriye uyumlu (mevcut
+        acik pozisyonlar LONG olarak yorumlanmaya devam eder, davranis
+        DEGISMEZ). SHORT icin kar/zarar formulu Trade-ajani'nin
+        core/backtest.py'sindeki "pos_dir * (exit/entry - 1)" ile AYNI
+        matematik (pos_dir=-1) -- fiyat DUSTUKCE kazanc.
         """
         pozisyon = self.pozisyonlar.get(sembol)
         if not pozisyon:
             return None
         miktar = pozisyon["miktar"]
-        brut = miktar * fiyat
-        ucret = brut * ucret_yuzde / 100
-        net = brut - ucret
+        yon = pozisyon.get("yon", "LONG")
+        giris_fiyat = pozisyon.get("giris_fiyat", fiyat)
+        maliyet = pozisyon.get("maliyet") or (miktar * giris_fiyat)
+
+        brut_islem = miktar * fiyat  # kapanista el degistiren notional -- ucret bunun uzerinden alinir (yon farketmez)
+        ucret = brut_islem * ucret_yuzde / 100
+
+        if yon == "SHORT":
+            kar_zarar = maliyet * (giris_fiyat - fiyat) / giris_fiyat - ucret if giris_fiyat else -ucret
+            net = maliyet + kar_zarar
+        else:
+            net = brut_islem - ucret
+            kar_zarar = net - maliyet
+
         self.nakit += net
         del self.pozisyonlar[sembol]
         self.islem_sayisi += 1
 
-        maliyet = pozisyon.get("maliyet") or (miktar * pozisyon.get("giris_fiyat", fiyat))
-        kar_zarar = net - maliyet
         kar_zarar_yuzde = (kar_zarar / maliyet * 100) if maliyet else 0.0
         return {"miktar": miktar, "tutar": net, "ucret": ucret,
                "kar_zarar": kar_zarar, "kar_zarar_yuzde": kar_zarar_yuzde}
 
     def toplam_deger(self, fiyatlar):
-        """fiyatlar: {sembol: fiyat} -- elimizdeki her pozisyon icin gerekir."""
+        """
+        fiyatlar: {sembol: fiyat} -- elimizdeki her pozisyon icin gerekir.
+
+        SHORT pozisyonlar icin, o an kapatilsa ne kadar nakit donecegi
+        (maliyet +/- gerceklesmemis kar/zarar) hesaba katilir -- LONG
+        icin davranis (miktar * fiyat) DEGISMEDI.
+        """
         deger = self.nakit
         for sembol, pozisyon in self.pozisyonlar.items():
             fiyat = fiyatlar.get(sembol)
-            if fiyat:
+            if not fiyat:
+                continue
+            if pozisyon.get("yon", "LONG") == "SHORT":
+                giris_fiyat = pozisyon.get("giris_fiyat", fiyat)
+                maliyet = pozisyon.get("maliyet") or (pozisyon["miktar"] * giris_fiyat)
+                kar_zarar = maliyet * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
+                deger += maliyet + kar_zarar
+            else:
                 deger += pozisyon["miktar"] * fiyat
         return deger
 
@@ -312,6 +351,13 @@ def _tum_stratejiler():
     (isim, fonksiyon, parametreler, isinma) -- "al ve tut" ve "rastgele"
     HARIC (onlar tarama.py'de oldugu gibi KIYAS/KONTROL amaclidir,
     "secilebilir bir strateji" degildir).
+
+    trade_ajani_stratejileri.STRATEJILER (Trade-ajani'ndan aktarilan, 2026-
+    09-12'de SHORT destegi geri getirilen 4 strateji) de listeye DAHIL --
+    aksi halde motor SHORT pozisyon acabilir hale gelse bile, rotasyonun
+    secebildigi HICBIR strateji -1.0 uretmedigi icin SHORT hicbir zaman
+    fiilen tetiklenmezdi (mevcut 16 klasik + 4 desen strateji, tasarim
+    geregi LONG-only kalmaya devam ediyor -- bkz. dosya basindaki notlar).
     """
     liste = []
     for isim, fn, params in STRATEJILER:
@@ -320,6 +366,8 @@ def _tum_stratejiler():
         liste.append((isim, fn, params, klasik_isinma_suresi(isim, params)))
     for isim, fn, params in DESEN_STRATEJILERI:
         liste.append((isim, fn, params, desen_isinma_suresi(isim, params)))
+    for isim, fn, params in taj.STRATEJILER:
+        liste.append((isim, fn, params, taj.isinma_suresi(isim, params)))
     return liste
 
 
@@ -574,7 +622,7 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         if bos_yer <= 0:
             return None
         tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
-        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"])
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="LONG")
         if sonuc:
             fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
             islem_kaydet(saat, "AL", strateji_isim, sembol, fiyat, sonuc, portfoy,
@@ -582,17 +630,35 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
             print(f"   >> SANAL ALIM: {sembol}  {sonuc['miktar']:.6f} "
                   f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")
             return "AL"
+    elif son_sinyal == -1.0 and not tutuluyor_mu:
+        # SHORT: Trade-ajani'ndan tasinan stratejilerin orijinal (LONG+
+        # SHORT) mantigi -1.0 uretebiliyor -- bkz. trade_ajani_stratejileri.py.
+        bos_yer = portfoy.bos_pozisyon_yeri(a["maks_pozisyon"])
+        if bos_yer <= 0:
+            return None
+        tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="SHORT")
+        if sonuc:
+            fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
+            islem_kaydet(saat, "KISA_AC", strateji_isim, sembol, fiyat, sonuc, portfoy,
+                        fiyatlar, "sinyal")
+            print(f"   >> SANAL KISA (SHORT) ACILIS: {sembol}  {sonuc['miktar']:.6f} "
+                  f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")
+            return "KISA_AC"
     elif son_sinyal == 0.0 and tutuluyor_mu:
         # ONCE fiyatlari topla (pozisyon hala listede), SONRA kapat --
-        # aksi halde satilan pozisyon toplam degerden eksik sayilirdi.
+        # aksi halde kapatilan pozisyon toplam degerden eksik sayilirdi.
+        yon = portfoy.pozisyonlar[sembol].get("yon", "LONG")
         fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
         sonuc = portfoy.kapat(sembol, fiyat, a["islem_ucreti_yuzde"])
         if sonuc:
-            islem_kaydet(saat, "SAT", strateji_isim, sembol, fiyat, sonuc, portfoy,
+            etiket = "SAT" if yon == "LONG" else "KISA_KAPAT"
+            islem_kaydet(saat, etiket, strateji_isim, sembol, fiyat, sonuc, portfoy,
                         fiyatlar, "sinyal")
-            print(f"   >> SANAL SATIS: {sembol}  {sonuc['miktar']:.6f} "
+            aciklama = "SATIS" if yon == "LONG" else "KISA KAPATMA"
+            print(f"   >> SANAL {aciklama}: {sembol}  {sonuc['miktar']:.6f} "
                   f"({sonuc['tutar']:,.2f} USDT)  [{strateji_isim}]")
-            return "SAT"
+            return etiket
     return None
 
 

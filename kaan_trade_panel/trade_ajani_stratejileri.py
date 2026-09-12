@@ -16,17 +16,20 @@ isterseniz asagidaki STRATEJILER listesini ilgili dosyaya birlestirin
 UYARLAMA KURALLARI (Trade-ajani -> kaan-trade):
   1) Sutun adlari: close/high/low/open/volume -> kapanis/yuksek/dusuk/
      acilis/hacim.
-  2) Trade-ajani'deki stratejilerin bir kismi SHORT (kisa pozisyon) da
-     uretiyordu. Bu proje LONG-ONLY (bkz. strateji_desenleri.py'deki ayni
-     kural) - o yuzden SHORT sinyalleri "pozisyondan CIK" olarak
-     yorumlandi, "kisa ac" olarak DEGIL (digerleriyle tutarli).
+  2) SHORT DESTEGI (2026-09-12'de geri getirildi): ilk aktarimda kaan-trade
+     LONG-ONLY oldugu icin (bkz. strateji_desenleri.py'deki ayni kural)
+     Trade-ajani'nin SHORT ureten dallari atlanmis, sadece 0.0/1.0
+     donduruluyordu. sanal_trader.py motoruna SHORT pozisyon destegi
+     eklenince (Portfoy.ac/kapat/toplam_deger, bkz. o dosyadaki yon alani)
+     bu 4 fonksiyon ORIJINAL Trade-ajani kaynaklarindaki (asagida) LONG+
+     SHORT mantigina gore YENIDEN uyarlandi - artik -1.0/0.0/1.0 donuyorlar.
   3) Trade-ajani'deki "bekleyen kurulum" (pending) durum makinesi (bolgeye
      deginme -> pencere icinde onay bekleme) BIREBIR korundu - bu,
      Trade-ajani'de defalarca (once ayni-barda-cok-kosul tuzagina
      dusulerek) sinanmis, dogru calisan mimari.
   4) Sabit stop-loss/take-profit (R-kati hedef) mantigi, kaan-trade'in
-     "pozisyondayim/degilim" (0/1) kalibina gore ADAPTE edildi: hedefe ya
-     da stopa DOKUNULDUGUNDA pozisyon KAPANIR (0.0 doner).
+     "pozisyondayim/degilim" (-1/0/1) kalibina gore ADAPTE edildi: hedefe
+     ya da stopa DOKUNULDUGUNDA pozisyon KAPANIR (0.0 doner).
 
 DURUSTLUK NOTU (kaan-trade'in kendi gelenegiyle AYNI): bu stratejiler
 Trade-ajani'de kendi veri kumeleri/zaman dilimlerinde dogrulandi - AYNI
@@ -83,10 +86,15 @@ def kirilim_geri_cekilme_toparlanma(df, sol=5, sag=5, pencere=150, tolerans_yuzd
                                      maks_bekleme=30, toparlanma_govde_orani=0.5,
                                      stop_atr_tamponu=0.3, hedef_r_kati=1.5):
     """
-    COKLU-DOKUNUSLU destek/direnc + KARARLI kirilim (kapanis-bazli) +
-    seviyeye GERI CEKILME + guclu kapanisli TOPARLANMA mumu ile giris.
+    LONG: COKLU-DOKUNUSLU destek + KARARLI YUKARI kirilim (kapanis-bazli)
+    + seviyeye GERI CEKILME + guclu kapanisli TOPARLANMA mumu ile giris.
     Trade-ajani'deki EN GUCLU tek sonuc (SEIUSDT 1sa: kazanma %56, kar
     faktoru 1.71) bu mekanikle bulundu.
+
+    SHORT (ORIJINAL Trade-ajani mantigi, core/strategies/
+    breakout_retest_recovery.py'den geri getirildi): AYNA mantik - COKLU-
+    DOKUNUSLU direnc + KARARLI ASAGI kirilim + seviyeye GERI CEKILME +
+    zayif kapanisli REDDEDIS mumu.
     """
     yuksek = df["yuksek"].to_numpy()
     dusuk = df["dusuk"].to_numpy()
@@ -114,11 +122,13 @@ def kirilim_geri_cekilme_toparlanma(df, sol=5, sag=5, pencere=150, tolerans_yuzd
     pozisyon = 0
     aktif_stop = aktif_hedef = None
     sonuc = np.full(n, np.nan)
-    bekleyen = None  # {'seviye':float, 'baslangic':int}
+    bekleyen = None  # {'yon':1/-1, 'seviye':float, 'baslangic':int}
 
     for i in range(n):
-        if pozisyon == 1:
-            if dusuk[i] <= aktif_stop or yuksek[i] >= aktif_hedef:
+        if pozisyon != 0:
+            stop_vuruldu = (pozisyon == 1 and dusuk[i] <= aktif_stop) or (pozisyon == -1 and yuksek[i] >= aktif_stop)
+            hedef_vuruldu = (pozisyon == 1 and yuksek[i] >= aktif_hedef) or (pozisyon == -1 and dusuk[i] <= aktif_hedef)
+            if stop_vuruldu or hedef_vuruldu:
                 pozisyon = 0
                 aktif_stop = aktif_hedef = None
 
@@ -131,30 +141,46 @@ def kirilim_geri_cekilme_toparlanma(df, sol=5, sag=5, pencere=150, tolerans_yuzd
 
         if pozisyon == 0 and not np.isnan(a[i]) and a[i] > 0:
             destek = _gecerli_bolge(son_dipler, en_buyuk_mu=False)
+            direnc = _gecerli_bolge(son_tepeler, en_buyuk_mu=True)
 
             if bekleyen is None:
-                if destek is not None and kapanis[i] < destek - kirilim_atr_kati * a[i]:
-                    # asagi kirilim - LONG icin degil, sadece pozisyondan
-                    # cikis anlamli (zaten pozisyon 0, bir sey yapmaya gerek yok)
-                    pass
-                elif destek is not None and kapanis[i] > destek + kirilim_atr_kati * a[i]:
-                    bekleyen = {"seviye": destek, "baslangic": i}
+                if destek is not None and kapanis[i] > destek + kirilim_atr_kati * a[i]:
+                    bekleyen = {"yon": 1, "seviye": destek, "baslangic": i}
+                elif direnc is not None and kapanis[i] < direnc - kirilim_atr_kati * a[i]:
+                    bekleyen = {"yon": -1, "seviye": direnc, "baslangic": i}
             else:
                 seviye = bekleyen["seviye"]
-                gecersiz = kapanis[i] < seviye - kirilim_atr_kati * a[i]
+                yon = bekleyen["yon"]
                 bar_araligi = max(yuksek[i] - dusuk[i], 1e-12)
-                guclu_kapanis = (kapanis[i] - dusuk[i]) / bar_araligi >= toparlanma_govde_orani
-                if gecersiz:
-                    bekleyen = None
-                elif dusuk[i] <= seviye + kirilim_atr_kati * a[i] and kapanis[i] > seviye \
-                        and guclu_kapanis and kapanis[i] > acilis[i]:
-                    pozisyon = 1
-                    aktif_stop = seviye - stop_atr_tamponu * a[i]
-                    risk = kapanis[i] - aktif_stop
-                    aktif_hedef = kapanis[i] + hedef_r_kati * risk
-                    bekleyen = None
-                elif i - bekleyen["baslangic"] > maks_bekleme:
-                    bekleyen = None
+
+                if yon == 1:
+                    gecersiz = kapanis[i] < seviye - kirilim_atr_kati * a[i]
+                    guclu_kapanis = (kapanis[i] - dusuk[i]) / bar_araligi >= toparlanma_govde_orani
+                    if gecersiz:
+                        bekleyen = None
+                    elif dusuk[i] <= seviye + kirilim_atr_kati * a[i] and kapanis[i] > seviye \
+                            and guclu_kapanis and kapanis[i] > acilis[i]:
+                        pozisyon = 1
+                        aktif_stop = seviye - stop_atr_tamponu * a[i]
+                        risk = kapanis[i] - aktif_stop
+                        aktif_hedef = kapanis[i] + hedef_r_kati * risk
+                        bekleyen = None
+                    elif i - bekleyen["baslangic"] > maks_bekleme:
+                        bekleyen = None
+                else:
+                    gecersiz = kapanis[i] > seviye + kirilim_atr_kati * a[i]
+                    zayif_kapanis = (yuksek[i] - kapanis[i]) / bar_araligi >= toparlanma_govde_orani
+                    if gecersiz:
+                        bekleyen = None
+                    elif yuksek[i] >= seviye - kirilim_atr_kati * a[i] and kapanis[i] < seviye \
+                            and zayif_kapanis and kapanis[i] < acilis[i]:
+                        pozisyon = -1
+                        aktif_stop = seviye + stop_atr_tamponu * a[i]
+                        risk = aktif_stop - kapanis[i]
+                        aktif_hedef = kapanis[i] - hedef_r_kati * risk
+                        bekleyen = None
+                    elif i - bekleyen["baslangic"] > maks_bekleme:
+                        bekleyen = None
 
         sonuc[i] = float(pozisyon)
 
@@ -176,7 +202,13 @@ def tepe_dip(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_deginme=2,
     """LONG tarafi: destek bolgesine deginme -> pencere icinde RSI'nin
     (rejime gore sig/derin) esige indigi VE momentumun (basit MACD
     histogram donusu) en az bir kez toparlandigi GORULMESI -> hacim
-    teyitli toparlanma mumuyla giris."""
+    teyitli toparlanma mumuyla giris.
+
+    SHORT (ORIJINAL Trade-ajani mantigi, core/strategies/
+    reversal_pullback.py'den geri getirildi): AYNA mantik - direnc
+    bolgesine deginme -> pencere icinde RSI'nin asiri-alim esigine
+    cikmasi VE momentumun (MACD histogram) en az bir kez TEPE yapip
+    donmesi -> hacim teyitli REDDEDIS (dusus) mumuyla giris."""
     yuksek = df["yuksek"].to_numpy()
     dusuk = df["dusuk"].to_numpy()
     acilis = df["acilis"].to_numpy()
@@ -207,14 +239,18 @@ def tepe_dip(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_deginme=2,
     dx = 100.0 * (plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan)
     adx = dx.ewm(alpha=1 / adx_periyot, adjust=False).mean().to_numpy()
 
+    rsi_asiri_alim_yatay = 100.0 - rsi_asiri_satim_yatay
+    rsi_asiri_alim_trend = 100.0 - rsi_asiri_satim_trend
+
+    son_tepeler = []
     son_dipler = []
     tol = tolerans_yuzde / 100.0
 
-    def _gecerli_bolge(noktalar):
+    def _gecerli_bolge(noktalar, en_buyuk_mu):
         if len(noktalar) < min_deginme:
             return None
         fiyatlar = [p for _, p in noktalar]
-        capa = min(fiyatlar)
+        capa = max(fiyatlar) if en_buyuk_mu else min(fiyatlar)
         kume = [p for p in fiyatlar if abs(p - capa) / capa <= tol]
         if len(kume) < min_deginme:
             return None
@@ -228,11 +264,16 @@ def tepe_dip(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_deginme=2,
     isinma = max(ema_trend_periyot, hacim_periyot, adx_periyot, rsi_periyot) + 2
 
     for i in range(n):
-        if pozisyon == 1:
-            if dusuk[i] <= aktif_stop or yuksek[i] >= aktif_hedef:
+        if pozisyon != 0:
+            stop_vuruldu = (pozisyon == 1 and dusuk[i] <= aktif_stop) or (pozisyon == -1 and yuksek[i] >= aktif_stop)
+            hedef_vuruldu = (pozisyon == 1 and yuksek[i] >= aktif_hedef) or (pozisyon == -1 and dusuk[i] <= aktif_hedef)
+            if stop_vuruldu or hedef_vuruldu:
                 pozisyon = 0
                 aktif_stop = aktif_hedef = None
 
+        if tepe_onay[i]:
+            son_tepeler.append((i, yuksek[i]))
+            son_tepeler[:] = [(j, p) for j, p in son_tepeler if i - j <= pencere]
         if dip_onay[i]:
             son_dipler.append((i, dusuk[i]))
             son_dipler[:] = [(j, p) for j, p in son_dipler if i - j <= pencere]
@@ -240,36 +281,66 @@ def tepe_dip(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_deginme=2,
         if pozisyon == 0 and i >= isinma and not np.isnan(a[i]) and a[i] > 0:
             tampon = stop_atr_tamponu * a[i]
             if bekleyen is None:
-                destek = _gecerli_bolge(son_dipler)
+                destek = _gecerli_bolge(son_dipler, en_buyuk_mu=False)
+                direnc = _gecerli_bolge(son_tepeler, en_buyuk_mu=True)
                 if destek is not None and dusuk[i] <= destek + tampon:
-                    bekleyen = {"seviye": destek, "baslangic": i, "en_dusuk_rsi": r[i], "momentum_gorulduu": False}
+                    bekleyen = {"yon": 1, "seviye": destek, "baslangic": i, "asiri_rsi": r[i], "momentum_gorulduu": False}
+                elif direnc is not None and yuksek[i] >= direnc - tampon:
+                    bekleyen = {"yon": -1, "seviye": direnc, "baslangic": i, "asiri_rsi": r[i], "momentum_gorulduu": False}
             else:
                 seviye = bekleyen["seviye"]
-                if not np.isnan(r[i]):
-                    bekleyen["en_dusuk_rsi"] = min(bekleyen["en_dusuk_rsi"], r[i])
-                if i >= 2 and hist[i] > hist[i - 1] <= hist[i - 2]:
-                    bekleyen["momentum_gorulduu"] = True
-
-                gecersiz = kapanis[i] < seviye - gecersizlik_atr_kati * a[i]
-                bar_araligi = max(yuksek[i] - dusuk[i], 1e-12)
-                toparlanma = (kapanis[i] - dusuk[i]) / bar_araligi >= toparlanma_govde_orani and kapanis[i] > acilis[i]
-                hacim_teyit = not np.isnan(hacim_ort[i]) and hacim[i] >= hacim_kati * hacim_ort[i]
+                yon = bekleyen["yon"]
                 trend_mi = not np.isnan(adx[i]) and adx[i] >= adx_trend_esigi
-                yukselis_mi = kapanis[i] > ema_trend[i]
-                rsi_uygun = (trend_mi and yukselis_mi and bekleyen["en_dusuk_rsi"] <= rsi_asiri_satim_trend) or \
-                            ((not trend_mi) and bekleyen["en_dusuk_rsi"] <= rsi_asiri_satim_yatay)
+                bar_araligi = max(yuksek[i] - dusuk[i], 1e-12)
 
-                if gecersiz:
-                    bekleyen = None
-                elif toparlanma and hacim_teyit and bekleyen["momentum_gorulduu"] and rsi_uygun:
-                    pozisyon = 1
-                    aktif_stop = min(seviye, dusuk[i]) - tampon
-                    risk = kapanis[i] - aktif_stop
-                    r_kati = hedef_r_kati_trend if trend_mi else hedef_r_kati_yatay
-                    aktif_hedef = kapanis[i] + r_kati * risk
-                    bekleyen = None
-                elif i - bekleyen["baslangic"] > maks_onay_bekleme:
-                    bekleyen = None
+                if yon == 1:
+                    if not np.isnan(r[i]):
+                        bekleyen["asiri_rsi"] = min(bekleyen["asiri_rsi"], r[i])
+                    if i >= 2 and hist[i] > hist[i - 1] <= hist[i - 2]:
+                        bekleyen["momentum_gorulduu"] = True
+
+                    gecersiz = kapanis[i] < seviye - gecersizlik_atr_kati * a[i]
+                    toparlanma = (kapanis[i] - dusuk[i]) / bar_araligi >= toparlanma_govde_orani and kapanis[i] > acilis[i]
+                    hacim_teyit = not np.isnan(hacim_ort[i]) and hacim[i] >= hacim_kati * hacim_ort[i]
+                    yukselis_mi = kapanis[i] > ema_trend[i]
+                    rsi_uygun = (trend_mi and yukselis_mi and bekleyen["asiri_rsi"] <= rsi_asiri_satim_trend) or \
+                                ((not trend_mi) and bekleyen["asiri_rsi"] <= rsi_asiri_satim_yatay)
+
+                    if gecersiz:
+                        bekleyen = None
+                    elif toparlanma and hacim_teyit and bekleyen["momentum_gorulduu"] and rsi_uygun:
+                        pozisyon = 1
+                        aktif_stop = min(seviye, dusuk[i]) - tampon
+                        risk = kapanis[i] - aktif_stop
+                        r_kati = hedef_r_kati_trend if trend_mi else hedef_r_kati_yatay
+                        aktif_hedef = kapanis[i] + r_kati * risk
+                        bekleyen = None
+                    elif i - bekleyen["baslangic"] > maks_onay_bekleme:
+                        bekleyen = None
+                else:
+                    if not np.isnan(r[i]):
+                        bekleyen["asiri_rsi"] = max(bekleyen["asiri_rsi"], r[i])
+                    if i >= 2 and hist[i] < hist[i - 1] >= hist[i - 2]:
+                        bekleyen["momentum_gorulduu"] = True
+
+                    gecersiz = kapanis[i] > seviye + gecersizlik_atr_kati * a[i]
+                    dusus_reddi = (yuksek[i] - kapanis[i]) / bar_araligi >= toparlanma_govde_orani and kapanis[i] < acilis[i]
+                    hacim_teyit = not np.isnan(hacim_ort[i]) and hacim[i] >= hacim_kati * hacim_ort[i]
+                    dusus_mu = kapanis[i] < ema_trend[i]
+                    rsi_uygun = (trend_mi and dusus_mu and bekleyen["asiri_rsi"] >= rsi_asiri_alim_trend) or \
+                                ((not trend_mi) and bekleyen["asiri_rsi"] >= rsi_asiri_alim_yatay)
+
+                    if gecersiz:
+                        bekleyen = None
+                    elif dusus_reddi and hacim_teyit and bekleyen["momentum_gorulduu"] and rsi_uygun:
+                        pozisyon = -1
+                        aktif_stop = max(seviye, yuksek[i]) + tampon
+                        risk = aktif_stop - kapanis[i]
+                        r_kati = hedef_r_kati_trend if trend_mi else hedef_r_kati_yatay
+                        aktif_hedef = kapanis[i] - r_kati * risk
+                        bekleyen = None
+                    elif i - bekleyen["baslangic"] > maks_onay_bekleme:
+                        bekleyen = None
 
         sonuc[i] = float(pozisyon)
 
@@ -287,7 +358,12 @@ def hacim_uyumsuzlugu(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_de
     """LONG tarafi: destek bolgesinde, HACIM (efor) anormal yuksekken
     fiyat araligi (sonuc) ATR'a gore KUCUKSE bu bir "absorbsiyon" mumu -
     buyuk hacim satisi KARSI TARAF EMMIS demek. Bu mumun UCU KIRILIRSA
-    (yon teyidi) giris tetiklenir."""
+    (yon teyidi) giris tetiklenir.
+
+    SHORT (ORIJINAL Trade-ajani mantigi, core/strategies/
+    volume_absorption.py'den geri getirildi): AYNA mantik - direnc
+    bolgesinde AYNI absorbsiyon mumu (buyuk hacim + kucuk aralik), bu
+    kez mumun DIP UCU KIRILIRSA (asagi yon teyidi) giris tetiklenir."""
     yuksek = df["yuksek"].to_numpy()
     dusuk = df["dusuk"].to_numpy()
     kapanis = df["kapanis"].to_numpy()
@@ -298,14 +374,15 @@ def hacim_uyumsuzlugu(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_de
     a = atr(df, atr_periyot).to_numpy()
     hacim_ort = df["hacim"].rolling(hacim_periyot, min_periods=hacim_periyot).mean().to_numpy()
 
+    son_tepeler = []
     son_dipler = []
     tol = tolerans_yuzde / 100.0
 
-    def _gecerli_bolge(noktalar):
+    def _gecerli_bolge(noktalar, en_buyuk_mu):
         if len(noktalar) < min_deginme:
             return None
         fiyatlar = [p for _, p in noktalar]
-        capa = min(fiyatlar)
+        capa = max(fiyatlar) if en_buyuk_mu else min(fiyatlar)
         kume = [p for p in fiyatlar if abs(p - capa) / capa <= tol]
         if len(kume) < min_deginme:
             return None
@@ -318,11 +395,16 @@ def hacim_uyumsuzlugu(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_de
     isinma = max(hacim_periyot, atr_periyot) + 2
 
     for i in range(n):
-        if pozisyon == 1:
-            if dusuk[i] <= aktif_stop or yuksek[i] >= aktif_hedef:
+        if pozisyon != 0:
+            stop_vuruldu = (pozisyon == 1 and dusuk[i] <= aktif_stop) or (pozisyon == -1 and yuksek[i] >= aktif_stop)
+            hedef_vuruldu = (pozisyon == 1 and yuksek[i] >= aktif_hedef) or (pozisyon == -1 and dusuk[i] <= aktif_hedef)
+            if stop_vuruldu or hedef_vuruldu:
                 pozisyon = 0
                 aktif_stop = aktif_hedef = None
 
+        if tepe_onay[i]:
+            son_tepeler.append((i, yuksek[i]))
+            son_tepeler[:] = [(j, p) for j, p in son_tepeler if i - j <= pencere]
         if dip_onay[i]:
             son_dipler.append((i, dusuk[i]))
             son_dipler[:] = [(j, p) for j, p in son_dipler if i - j <= pencere]
@@ -334,27 +416,51 @@ def hacim_uyumsuzlugu(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_de
             absorbsiyon_mumu = hacim_orani >= absorbsiyon_hacim_kati and aralik_orani <= absorbsiyon_aralik_kati
 
             if bekleyen is None:
-                destek = _gecerli_bolge(son_dipler)
+                destek = _gecerli_bolge(son_dipler, en_buyuk_mu=False)
+                direnc = _gecerli_bolge(son_tepeler, en_buyuk_mu=True)
                 if destek is not None and dusuk[i] <= destek + tampon:
-                    bekleyen = {"seviye": destek, "baslangic": i, "gorulduu": False, "teyit_seviyesi": None}
+                    bekleyen = {"yon": 1, "seviye": destek, "baslangic": i, "gorulduu": False, "teyit_seviyesi": None}
+                elif direnc is not None and yuksek[i] >= direnc - tampon:
+                    bekleyen = {"yon": -1, "seviye": direnc, "baslangic": i, "gorulduu": False, "teyit_seviyesi": None}
             else:
                 seviye = bekleyen["seviye"]
-                gecersiz = kapanis[i] < seviye - gecersizlik_atr_kati * a[i]
-                if gecersiz:
-                    bekleyen = None
+                yon = bekleyen["yon"]
+
+                if yon == 1:
+                    gecersiz = kapanis[i] < seviye - gecersizlik_atr_kati * a[i]
+                    if gecersiz:
+                        bekleyen = None
+                    else:
+                        if absorbsiyon_mumu:
+                            bekleyen["gorulduu"] = True
+                            bekleyen["teyit_seviyesi"] = max(bekleyen["teyit_seviyesi"] or 0.0, yuksek[i])
+                        if bekleyen["gorulduu"] and bekleyen["teyit_seviyesi"] is not None \
+                                and kapanis[i] > bekleyen["teyit_seviyesi"]:
+                            pozisyon = 1
+                            aktif_stop = min(seviye, dusuk[i]) - tampon
+                            risk = kapanis[i] - aktif_stop
+                            aktif_hedef = kapanis[i] + hedef_r_kati * risk
+                            bekleyen = None
+                        elif i - bekleyen["baslangic"] > maks_onay_bekleme:
+                            bekleyen = None
                 else:
-                    if absorbsiyon_mumu:
-                        bekleyen["gorulduu"] = True
-                        bekleyen["teyit_seviyesi"] = max(bekleyen["teyit_seviyesi"] or 0.0, yuksek[i])
-                    if bekleyen["gorulduu"] and bekleyen["teyit_seviyesi"] is not None \
-                            and kapanis[i] > bekleyen["teyit_seviyesi"]:
-                        pozisyon = 1
-                        aktif_stop = min(seviye, dusuk[i]) - tampon
-                        risk = kapanis[i] - aktif_stop
-                        aktif_hedef = kapanis[i] + hedef_r_kati * risk
+                    gecersiz = kapanis[i] > seviye + gecersizlik_atr_kati * a[i]
+                    if gecersiz:
                         bekleyen = None
-                    elif i - bekleyen["baslangic"] > maks_onay_bekleme:
-                        bekleyen = None
+                    else:
+                        if absorbsiyon_mumu:
+                            bekleyen["gorulduu"] = True
+                            onceki = bekleyen["teyit_seviyesi"]
+                            bekleyen["teyit_seviyesi"] = dusuk[i] if onceki is None else min(onceki, dusuk[i])
+                        if bekleyen["gorulduu"] and bekleyen["teyit_seviyesi"] is not None \
+                                and kapanis[i] < bekleyen["teyit_seviyesi"]:
+                            pozisyon = -1
+                            aktif_stop = max(seviye, yuksek[i]) + tampon
+                            risk = aktif_stop - kapanis[i]
+                            aktif_hedef = kapanis[i] - hedef_r_kati * risk
+                            bekleyen = None
+                        elif i - bekleyen["baslangic"] > maks_onay_bekleme:
+                            bekleyen = None
 
         sonuc[i] = float(pozisyon)
 
@@ -371,6 +477,15 @@ def hacim_uyumsuzlugu(df, sol=5, sag=5, pencere=150, tolerans_yuzde=0.15, min_de
 def major_trend_surucusu(df, kirilim_periyot=55, adx_periyot=14, adx_min=20.0,
                           hacim_periyot=20, hacim_kati=1.3, atr_periyot=14,
                           ema_trend_periyot=100, chandelier_kati=3.0):
+    """
+    LONG: Donchian UST kirilimi + ADX + hacim + ana trend teyidi, "candan"
+    (chandelier) iz suren stopla takip -- sabit hedef YOK, trend surdukce
+    tasinir.
+
+    SHORT (ORIJINAL Trade-ajani mantigi, core/strategies/
+    major_trend_rider.py'den geri getirildi): AYNA mantik - Donchian ALT
+    kirilimi + AYNI teyitler, asagi yonlu candan stopla takip edilir.
+    """
     yuksek = df["yuksek"].to_numpy()
     dusuk = df["dusuk"].to_numpy()
     kapanis_s = df["kapanis"]
@@ -379,6 +494,7 @@ def major_trend_surucusu(df, kirilim_periyot=55, adx_periyot=14, adx_min=20.0,
     n = len(df)
 
     ust = df["yuksek"].shift(1).rolling(kirilim_periyot, min_periods=kirilim_periyot).max().to_numpy()
+    alt = df["dusuk"].shift(1).rolling(kirilim_periyot, min_periods=kirilim_periyot).min().to_numpy()
     a = atr(df, atr_periyot).to_numpy()
     ema_trend = kapanis_s.ewm(span=ema_trend_periyot, adjust=False).mean().to_numpy()
     hacim_ort = df["hacim"].rolling(hacim_periyot, min_periods=hacim_periyot).mean().to_numpy()
@@ -393,9 +509,10 @@ def major_trend_surucusu(df, kirilim_periyot=55, adx_periyot=14, adx_min=20.0,
     adx = dx.ewm(alpha=1 / adx_periyot, adjust=False).mean().to_numpy()
 
     giris_long = (kapanis > ust) & (adx >= adx_min) & (hacim >= hacim_kati * hacim_ort) & (kapanis > ema_trend)
+    giris_short = (kapanis < alt) & (adx >= adx_min) & (hacim >= hacim_kati * hacim_ort) & (kapanis < ema_trend)
 
     pozisyon = 0
-    en_yuksek_beri = None
+    en_yuksek_beri = en_dusuk_beri = None
     sonuc = np.full(n, np.nan)
 
     for i in range(n):
@@ -404,10 +521,19 @@ def major_trend_surucusu(df, kirilim_periyot=55, adx_periyot=14, adx_min=20.0,
             iz_stop = en_yuksek_beri - chandelier_kati * a[i]
             if kapanis[i] < iz_stop:
                 pozisyon = 0
+        elif pozisyon == -1:
+            en_dusuk_beri = min(en_dusuk_beri, dusuk[i])
+            iz_stop = en_dusuk_beri + chandelier_kati * a[i]
+            if kapanis[i] > iz_stop:
+                pozisyon = 0
 
-        if pozisyon == 0 and not np.isnan(a[i]) and a[i] > 0 and not np.isnan(giris_long[i]) and giris_long[i]:
-            pozisyon = 1
-            en_yuksek_beri = yuksek[i]
+        if pozisyon == 0 and not np.isnan(a[i]) and a[i] > 0:
+            if not np.isnan(giris_long[i]) and giris_long[i]:
+                pozisyon = 1
+                en_yuksek_beri = yuksek[i]
+            elif not np.isnan(giris_short[i]) and giris_short[i]:
+                pozisyon = -1
+                en_dusuk_beri = dusuk[i]
 
         sonuc[i] = float(pozisyon)
 

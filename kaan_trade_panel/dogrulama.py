@@ -91,6 +91,14 @@ def simule_et(df, pozisyon, a, baslangic=0):
     Islemler, sinyalin gorulduğu mumun SONRASINDAKI mumun acilisinda
     yapilir -- cunku gercek hayatta kapanis fiyatini ancak mum kapaninca
     ogrenirsiniz.
+
+    SHORT DESTEGI (2026-09-12): bu aracın kendi stratejileri (sma_trend,
+    tarama.py/strateji_desenleri.py'deki tumu) HEP 0/1 uretir -- bu yuzden
+    asagidaki -1 dallari onlar icin hicbir zaman calismaz, davranis AYNEN
+    korunur. -1, SADECE Trade-ajani'ndan aktarilan (ve sanal_trader.py'nin
+    rotasyonuna eklenen) stratejilerden gelir -- SHORT ekonomisi
+    sanal_trader.py'nin Portfoy.kapat()'iyle AYNI matematik (fiyat
+    dustukce kazanc): kar_zarar = tutar * (giris_fiyat - kapanis_fiyat) / giris_fiyat.
     """
     acilis = df["acilis"].tolist()
     kapanis = df["kapanis"].tolist()
@@ -98,13 +106,15 @@ def simule_et(df, pozisyon, a, baslangic=0):
     n = len(df)
 
     nakit, coin = a["baslangic_bakiye"], 0.0
+    yon = None  # None / "LONG" / "SHORT" -- SADECE SHORT icin kullanilir, LONG hala "coin" ile takip edilir
+    kisa_miktar = kisa_giris_fiyat = kisa_tutar = None
     ucret_o = a["islem_ucreti_yuzde"] / 100
     bekleyen, acik_tutar = None, None
     turlar, seri = [], []
     odenen_ucret, piyasada = 0.0, 0
 
     for i in range(baslangic, n):
-        if bekleyen == "AL" and coin == 0:
+        if bekleyen == "AL" and coin == 0 and yon is None:
             harcanan = nakit * a["islem_orani"]
             if harcanan >= 1:
                 ucret = harcanan * ucret_o
@@ -112,6 +122,16 @@ def simule_et(df, pozisyon, a, baslangic=0):
                 nakit -= harcanan
                 odenen_ucret += ucret
                 acik_tutar = harcanan
+        elif bekleyen == "KISA_AC" and coin == 0 and yon is None:
+            harcanan = nakit * a["islem_orani"]
+            if harcanan >= 1:
+                ucret = harcanan * ucret_o
+                kisa_miktar = (harcanan - ucret) / acilis[i]
+                nakit -= harcanan
+                odenen_ucret += ucret
+                kisa_giris_fiyat, kisa_tutar = acilis[i], harcanan
+                acik_tutar = harcanan
+                yon = "SHORT"
         elif bekleyen == "SAT" and coin > 0:
             brut = coin * acilis[i]
             ucret = brut * ucret_o
@@ -121,18 +141,38 @@ def simule_et(df, pozisyon, a, baslangic=0):
                 turlar.append((brut - ucret - acik_tutar) / acik_tutar * 100)
                 acik_tutar = None
             coin = 0.0
+        elif bekleyen == "SAT" and yon == "SHORT":
+            brut_islem = kisa_miktar * acilis[i]
+            ucret = brut_islem * ucret_o
+            kar_zarar = kisa_tutar * (kisa_giris_fiyat - acilis[i]) / kisa_giris_fiyat - ucret
+            net = kisa_tutar + kar_zarar
+            nakit += net
+            odenen_ucret += ucret
+            if acik_tutar:
+                turlar.append((net - acik_tutar) / acik_tutar * 100)
+                acik_tutar = None
+            kisa_miktar = kisa_giris_fiyat = kisa_tutar = None
+            yon = None
         bekleyen = None
 
         # Sinyal uret (son mumda uretmiyoruz, cunku islenecek mum kalmaz)
         if i >= 1 and i < n - 1 and not pd.isna(poz[i]):
-            if poz[i] == 1 and coin == 0:
+            if poz[i] == 1 and coin == 0 and yon is None:
                 bekleyen = "AL"
-            elif poz[i] == 0 and coin > 0:
+            elif poz[i] == -1 and coin == 0 and yon is None:
+                bekleyen = "KISA_AC"
+            elif poz[i] == 0 and (coin > 0 or yon == "SHORT"):
                 bekleyen = "SAT"
 
         if coin > 0:
             piyasada += 1
-        seri.append(nakit + coin * kapanis[i])
+            seri.append(nakit + coin * kapanis[i])
+        elif yon == "SHORT":
+            piyasada += 1
+            deger = kisa_tutar * (kisa_giris_fiyat - kapanis[i]) / kisa_giris_fiyat if kisa_giris_fiyat else 0.0
+            seri.append(nakit + kisa_tutar + deger)
+        else:
+            seri.append(nakit)
 
     if not seri:
         return None
