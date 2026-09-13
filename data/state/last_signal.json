@@ -91,12 +91,12 @@
   },
   "binance:ONGUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-09-13 13:00:00+00:00",
-    "price": 0.07909
+    "time": "2026-09-13 14:00:00+00:00",
+    "price": 0.07987
   },
   "binance:DOTUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-09-13 13:00:00+00:00",
-    "price": 1.016
+    "time": "2026-09-13 14:00:00+00:00",
+    "price": 1.023
   }
 }
