@@ -13,28 +13,12 @@
     "giris_zamani": "2026-09-05T04:23:45.932575+00:00",
     "maliyet": 125.37871366489956
   },
-  "DASH/USDT": {
-    "miktar": 1.9332128945191316,
-    "strateji": "Donchian 20/10",
-    "giris_fiyat": 66.41,
-    "giris_zamani": "2026-09-05T04:23:46.677617+00:00",
-    "maliyet": 128.51318150652205
-  },
   "TRX/USDT": {
     "miktar": 361.90994651309194,
     "strateji": "Dusuk oynaklik",
     "giris_fiyat": 0.3406,
     "giris_zamani": "2026-09-12T14:43:47.896704+00:00",
     "maliyet": 123.38991770005917
-  },
-  "SOL/USDT": {
-    "miktar": 7.886153318360042,
-    "strateji": "MACD",
-    "giris_fiyat": 101.52,
-    "giris_zamani": "2026-09-17T18:27:47.142674+00:00",
-    "maliyet": 125.82606793022096,
-    "yon": "LONG",
-    "kaldirac": 6.3691387782451585
   },
   "UNI/USDT": {
     "miktar": 77.23932918939454,
@@ -45,13 +29,31 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "DOGE/USDT": {
-    "miktar": 10046.957384285402,
-    "strateji": "Donchian 20/10",
-    "giris_fiyat": 0.08177,
-    "giris_zamani": "2026-09-17T18:27:48.077512+00:00",
-    "maliyet": 124.35531999492521,
+  "SUI/USDT": {
+    "miktar": 835.5559388888586,
+    "strateji": "SMA trend 100",
+    "giris_fiyat": 0.8264,
+    "giris_zamani": "2026-09-20T04:24:08.172572+00:00",
+    "maliyet": 138.2389245040546,
     "yon": "LONG",
-    "kaldirac": 6.6130027039772585
+    "kaldirac": 5.0
+  },
+  "ENA/USDT": {
+    "miktar": 3678.480970535974,
+    "strateji": "SMA trend 200",
+    "giris_fiyat": 0.1971,
+    "giris_zamani": "2026-09-20T04:24:08.350532+00:00",
+    "maliyet": 145.15087072925735,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "BNB/USDT": {
+    "miktar": 1.8586772095553143,
+    "strateji": "Momentum 90",
+    "giris_fiyat": 750.47,
+    "giris_zamani": "2026-09-20T04:24:09.053315+00:00",
+    "maliyet": 162.9840034699184,
+    "yon": "LONG",
+    "kaldirac": 8.566961993149855
   }
 }
