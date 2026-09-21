@@ -55,5 +55,14 @@
     "maliyet": 162.9840034699184,
     "yon": "LONG",
     "kaldirac": 8.566961993149855
+  },
+  "BTC/USDT": {
+    "miktar": 0.010292870988412826,
+    "strateji": "MACD",
+    "giris_fiyat": 85466.34,
+    "giris_zamani": "2026-09-21T14:25:49.499468+00:00",
+    "maliyet": 112.94816081717389,
+    "yon": "LONG",
+    "kaldirac": 7.796272021491759
   }
 }
