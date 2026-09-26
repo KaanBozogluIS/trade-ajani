@@ -47,15 +47,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "BNB/USDT": {
-    "miktar": 1.8586772095553143,
-    "strateji": "Momentum 90",
-    "giris_fiyat": 750.47,
-    "giris_zamani": "2026-09-20T04:24:09.053315+00:00",
-    "maliyet": 162.9840034699184,
-    "yon": "LONG",
-    "kaldirac": 8.566961993149855
-  },
   "BTC/USDT": {
     "miktar": 0.010292870988412826,
     "strateji": "MACD",
@@ -64,5 +55,14 @@
     "maliyet": 112.94816081717389,
     "yon": "LONG",
     "kaldirac": 7.796272021491759
+  },
+  "ONDO/USDT": {
+    "miktar": 1875.6883366315674,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.5492,
+    "giris_zamani": "2026-09-26T00:30:13.784084+00:00",
+    "maliyet": 206.23183873434573,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
