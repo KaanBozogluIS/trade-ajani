@@ -52,13 +52,21 @@ class TelegramNotifier:
 def format_signal_message(*, provider: str, symbol: str, timeframe: str, strategy: str,
                            side: str, price: float, bar_time,
                            stop_loss: float | None = None, take_profit: float | None = None,
-                           risk_per_trade_pct: float = 1.5, max_leverage: float = 10.0) -> str:
+                           risk_per_trade_pct: float = 1.5, max_leverage: float = 10.0,
+                           bars_ago: int = 0, signal_start_time=None,
+                           signal_start_price: float | None = None) -> str:
     arrow = {"LONG": "\U0001F7E2 LONG", "SHORT": "\U0001F534 SHORT", "FLAT": "⚪ FLAT (kapat)"}[side]
     lines = [
         f"*{arrow}*  `{symbol}` ({provider}, {timeframe})",
         f"Strateji: `{strategy}`",
         f"Giris (guncel fiyat): `{price:.6g}`",
     ]
+    if bars_ago > 0 and signal_start_time is not None and signal_start_price:
+        degisim = (price / signal_start_price - 1) * 100
+        lines.append(
+            f"⚠️ Gec tespit: sinyal `{bars_ago}` mum once basladi "
+            f"(`{format_istanbul(signal_start_time)}`, fiyat `{signal_start_price:.6g}`) - "
+            f"o zamandan beri fiyat `%{degisim:+.2f}` degisti")
 
     # FLAT (pozisyon kapatma) sinyalinde giris/stop/kaldirac anlamsiz -
     # sadece kapat bilgisi yeterli.
@@ -67,10 +75,18 @@ def format_signal_message(*, provider: str, symbol: str, timeframe: str, strateg
             lines.append(f"Stop: `{stop_loss:.6g}`")
             sizing = suggest_leverage(price, stop_loss, risk_per_trade_pct, max_leverage)
             if sizing is not None:
+                # suggested_leverage = pozisyon buyuklugu / TUM sermaye. 1'in
+                # altindaysa bu bir "kaldirac" degil, sermayenin bir KISMIYLA
+                # kaldiracsiz girmek demektir -- "0.3x kaldirac" yazmak yaniltici.
+                carpan = sizing.suggested_leverage
+                if carpan < 1:
+                    boyut = f"sermayenin `%{carpan * 100:.0f}`'i ile, kaldiracsiz"
+                else:
+                    boyut = f"`{carpan:.1f}x` kaldirac (tum sermaye uzerinden)"
                 lines.append(
-                    f"Onerilen kaldirac: `{sizing.suggested_leverage:.1f}x` "
-                    f"(stop mesafesi %{sizing.stop_distance_pct:.2f}, "
-                    f"islem basi risk %{sizing.risk_per_trade_pct:g})"
+                    f"Pozisyon buyuklugu: {boyut} - stop vurursa sermayenin "
+                    f"%{sizing.risk_per_trade_pct:g}'i kaybedilir (stop mesafesi "
+                    f"%{sizing.stop_distance_pct:.2f})"
                 )
         else:
             lines.append("Stop: _bu strateji sabit stop kullanmiyor (iz suren/dinamik) - panelden takip et_")

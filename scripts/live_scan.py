@@ -124,6 +124,17 @@ def main() -> None:
         prev_signal = state.get(key, {}).get("signal")
         changed = prev_signal != last_signal
 
+        # GitHub'in zamanlayicisi "5 dakikada bir" isi olcumlere gore saatlerce
+        # geciktirebiliyor -- sinyal tespit edildiginde aslinda birkac mum
+        # ONCE baslamis olabilir. Kullanici "simdi girsem mi" kararini
+        # verebilsin diye sinyalin GERCEK baslangici mesaja eklenir.
+        sig = result.signal
+        degisim_idx = sig.ne(sig.shift()).to_numpy().nonzero()[0]
+        start_pos = int(degisim_idx[-1]) if len(degisim_idx) else 0
+        bars_ago = len(sig) - 1 - start_pos
+        signal_start_time = df.index[start_pos]
+        signal_start_price = float(df["close"].iloc[start_pos])
+
         label = _SIGNAL_NAME[last_signal]
         from core.tz import format_istanbul
         print(f"{key:55s} -> {label:6s} @ {last_price:g}  ({format_istanbul(last_time)})"
@@ -139,17 +150,26 @@ def main() -> None:
                 stop_loss=last_sl, take_profit=last_tp,
                 risk_per_trade_pct=entry.get("risk_per_trade_pct", 1.5),
                 max_leverage=entry.get("max_leverage", 10.0),
+                bars_ago=bars_ago, signal_start_time=signal_start_time,
+                signal_start_price=signal_start_price,
             )
             if args.dry_run:
                 print("  (dry-run, gonderilmedi)\n" + msg)
             elif not entry_notify:
                 print("  (gozlem modu - notify:false, gonderilmedi)\n" + msg)
-            else:
-                notifier.send(msg)
+            elif not notifier.send(msg):
+                # Gonderilemediyse durumu GUNCELLEME: bir sonraki taramada
+                # sinyal yine "yeni" gorunur ve tekrar denenir. Aksi halde
+                # gecici bir ag/Telegram hatasi sinyali KALICI olarak yutardi.
+                print(f"  [!] {key} gonderilemedi, durum guncellenmedi - sonraki taramada tekrar denenecek")
+                continue
 
         state[key] = {"signal": last_signal, "time": str(last_time), "price": last_price}
 
-    save_state(state)
+    if args.dry_run:
+        print("(dry-run: sinyal durumu dosyaya YAZILMADI - gercek bildirimler etkilenmez)")
+    else:
+        save_state(state)
 
 
 if __name__ == "__main__":
