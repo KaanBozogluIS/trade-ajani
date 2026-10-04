@@ -1,11 +1,4 @@
 {
-  "ZEC/USDT": {
-    "miktar": 0.1175599598018688,
-    "strateji": "SMA trend 200",
-    "giris_fiyat": 1024.79,
-    "giris_zamani": "2026-09-05T04:23:44.481166+00:00",
-    "maliyet": 120.59486607142856
-  },
   "NEAR/USDT": {
     "miktar": 56.29363368594816,
     "strateji": "Dusuk oynaklik",
@@ -38,15 +31,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "ENA/USDT": {
-    "miktar": 3678.480970535974,
-    "strateji": "SMA trend 200",
-    "giris_fiyat": 0.1971,
-    "giris_zamani": "2026-09-20T04:24:08.350532+00:00",
-    "maliyet": 145.15087072925735,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "BTC/USDT": {
     "miktar": 0.010292870988412826,
     "strateji": "MACD",
@@ -64,5 +48,23 @@
     "maliyet": 206.23183873434573,
     "yon": "LONG",
     "kaldirac": 5.0
+  },
+  "BNB/USDT": {
+    "miktar": 2.0091062725167186,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 787.15,
+    "giris_zamani": "2026-10-04T15:17:18.184514+00:00",
+    "maliyet": 158.3051053465,
+    "yon": "LONG",
+    "kaldirac": 10.0
+  },
+  "LTC/USDT": {
+    "miktar": 26.968847933317733,
+    "strateji": "MA kesisme 20/100",
+    "giris_fiyat": 72.1,
+    "giris_zamani": "2026-10-04T15:17:20.561063+00:00",
+    "maliyet": 289.79460668144725,
+    "yon": "LONG",
+    "kaldirac": 6.716482265206856
   }
 }
