@@ -52,6 +52,7 @@ jobs:
         run: python sanal_trader.py --once
 
       - name: Sonuclari depoya kaydet
+        if: always()
         # git pull --rebase + retry: bu checkout is basladiginda alinmisti
         # (dakikalar once) -- o zamandan beri baska bir push (live_scan.yml
         # ya da elle yapilan bir push) gelmis olabilir. Once pull etmeden
@@ -68,3 +69,16 @@ jobs:
             echo "push basarisiz, tekrar deneniyor ($i/5)..."
             sleep $((i * 5))
           done
+
+      - name: Saglik kontrolu (veri yoksa calismayi BASARISIZ isaretle)
+        # 2026-09-26 - 10-04 arasi bot mum verisi alamadi ama HER calisma
+        # "basarili" (yesil) gorundu -- 8 gun kimse fark etmedi. Artik veri
+        # alinamazsa bu adim kirmizi olur ve GitHub depo sahibine e-posta
+        # bildirimi gonderir. Sonuclar yukarida ZATEN kaydedildi (if: always).
+        run: |
+          python -c "
+          import json, sys
+          s = json.load(open('cikti/sanal_trader/saglik.json', encoding='utf-8'))
+          print(json.dumps(s, indent=2, ensure_ascii=False))
+          sys.exit(0 if s.get('mum_verisi_ok') else 1)
+          "

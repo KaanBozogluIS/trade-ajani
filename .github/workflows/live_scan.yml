@@ -42,4 +42,11 @@ jobs:
           git config user.name "GitHub Actions"
           git add data/state/last_signal.json
           git diff --staged --quiet || git commit -m "sinyal durumu guncellendi [skip ci]"
-          git push
+          # Ayni depoya sanal_trader.yml de commit atiyor -- once pull etmeden
+          # push etmek "fetch first" hatasiyla basarisiz olur ve sinyal durumu
+          # kaybolur (bir sonraki taramada AYNI sinyal tekrar gonderilir).
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main -q && git push && break
+            echo "push basarisiz, tekrar deneniyor ($i/5)..."
+            sleep $((i * 5))
+          done

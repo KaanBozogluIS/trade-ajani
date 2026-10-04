@@ -2278,6 +2278,20 @@ def _sanal_trader_icerik(depo):
         if portfoy_verisi.get("baslangic"):
             kar_yuzde = (toplam_deger / portfoy_verisi["baslangic"] - 1) * 100
 
+    try:
+        saglik = json.loads(strd.SAGLIK_DOSYASI.read_text(encoding="utf-8"))
+    except Exception:
+        saglik = None
+    if saglik and not saglik.get("mum_verisi_ok", True):
+        st.error(
+            f"**Bot son çalışmasında ({saglik.get('zaman', '?')[:16].replace('T', ' ')} UTC) "
+            "geçmiş fiyat verisi ALAMADI** — bu sürede rotasyon, çıkış sinyalleri ve "
+            "likidasyon kontrolü YAPILAMADI; aşağıdaki pozisyonlar dondurulmuş durumda. "
+            f"Sebep: `{saglik.get('hata')}`")
+    elif saglik and saglik.get("verisiz_coin"):
+        st.warning(f"Son çalışmada şu coinler için veri alınamadı (kontrol edilemedi): "
+                   f"{', '.join(saglik['verisiz_coin'])}")
+
     st.markdown(canli_gosterge(depo), unsafe_allow_html=True)
     s = st.columns(5)
     with s[0]:

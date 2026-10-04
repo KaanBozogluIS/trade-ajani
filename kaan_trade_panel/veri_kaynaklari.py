@@ -33,6 +33,17 @@ _oturum.headers.update({"User-Agent": "kaan-trade/1.0"})
 _spot = None
 _vadeli = None
 
+# mum_verisi icin: data-api.binance.vision, Binance'in SADECE herkese acik
+# piyasa verisi sunan resmi adresidir ve cografi olarak kisitlanmaz.
+# api.binance.com ise ABD IP'lerinden (GitHub Actions sunuculari dahil)
+# HTTP 451 doner -- 2026-09-26'dan itibaren sanal_trader.py'nin bulutta
+# HIC mum verisi alamamasinin (ve bu yuzden 8 gun boyunca kor kalmasinin)
+# sebebi buydu. Sira onemli: once kisitlamasiz adres denenir.
+_MUM_ADRESLERI = ("https://data-api.binance.vision", "https://api.binance.com")
+_ZAMAN_DILIMI_MS = {"1m": 60_000, "5m": 300_000, "15m": 900_000, "30m": 1_800_000,
+                    "1h": 3_600_000, "4h": 14_400_000, "1d": 86_400_000}
+son_mum_hatasi = None  # mum_verisi basarisiz olursa SEBEBI -- cagiran taraf loglayabilsin
+
 
 def spot_borsa():
     global _spot
@@ -95,24 +106,49 @@ def mum_verisi(sembol="BTC/USDT", zaman_dilimi="1d", adet=400):
     "canli" hissi kaybettirmez, sadece onu doğru yerden -- WebSocket'ten
     -- almamizi saglar.)
     """
-    try:
-        borsa = spot_borsa()
-        # +1 istiyoruz: son mum kapanmamis diye atarsak bile, geriye
-        # yine istenen <adet> kadar KAPANMIS mum kalsin.
-        ham = borsa.fetch_ohlcv(sembol, timeframe=zaman_dilimi, limit=adet + 1)
-        if not ham:
-            return None
-
-        sure_ms = borsa.parse_timeframe(zaman_dilimi) * 1000
-        if ham[-1][0] + sure_ms > borsa.milliseconds():
-            ham = ham[:-1]
-
-        df = pd.DataFrame(ham, columns=["zaman", "acilis", "yuksek", "dusuk",
-                                        "kapanis", "hacim"])
-        df["zaman"] = pd.to_datetime(df["zaman"], unit="ms", utc=True)
-        return df.tail(adet).reset_index(drop=True)
-    except Exception:
+    global son_mum_hatasi
+    sure_ms = _ZAMAN_DILIMI_MS.get(zaman_dilimi)
+    if sure_ms is None:
+        son_mum_hatasi = f"desteklenmeyen zaman dilimi: {zaman_dilimi}"
         return None
+    # +1 istiyoruz: son mum kapanmamis diye atarsak bile, geriye yine
+    # istenen <adet> kadar KAPANMIS mum kalsin.
+    istenen = adet + 1
+    for taban in _MUM_ADRESLERI:
+        try:
+            ham, bitis = [], None
+            while len(ham) < istenen:
+                parametre = {"symbol": sembol.replace("/", ""), "interval": zaman_dilimi,
+                             "limit": min(1000, istenen - len(ham))}
+                if bitis is not None:
+                    parametre["endTime"] = bitis
+                y = _oturum.get(f"{taban}/api/v3/klines", params=parametre, timeout=ZAMAN_ASIMI)
+                y.raise_for_status()
+                parca = y.json()
+                if not parca:
+                    break
+                ham = parca + ham
+                if len(parca) < parametre["limit"]:
+                    break
+                bitis = parca[0][0] - 1
+            if not ham:
+                son_mum_hatasi = f"{taban}: bos yanit ({sembol})"
+                continue
+
+            simdi_ms = pd.Timestamp.now(tz="UTC").value // 1_000_000
+            if ham[-1][0] + sure_ms > simdi_ms:
+                ham = ham[:-1]
+
+            df = pd.DataFrame([r[:6] for r in ham], columns=["zaman", "acilis", "yuksek",
+                                                            "dusuk", "kapanis", "hacim"])
+            df[["acilis", "yuksek", "dusuk", "kapanis", "hacim"]] = \
+                df[["acilis", "yuksek", "dusuk", "kapanis", "hacim"]].astype(float)
+            df["zaman"] = pd.to_datetime(df["zaman"], unit="ms", utc=True)
+            son_mum_hatasi = None
+            return df.tail(adet).reset_index(drop=True)
+        except Exception as e:
+            son_mum_hatasi = f"{taban}: {type(e).__name__}: {str(e)[:160]}"
+    return None
 
 
 def emir_defteri_ozeti(sembol="BTC/USDT", derinlik=50):

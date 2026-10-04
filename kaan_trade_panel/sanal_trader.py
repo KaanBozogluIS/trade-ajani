@@ -227,6 +227,13 @@ DURUM_DOSYASI = CIKTI_KLASORU / "durum.json"
 # (ve konsoldan izleyen kullanici) "hicbir sey olmuyor mu?" diye
 # tereddut eder. Rotasyon bitince silinir (bkz. rotasyonu_uygula).
 CALISMA_DOSYASI = CIKTI_KLASORU / "calisma_durumu.json"
+# Her calismanin SAGLIK raporu: mum verisi alinabildi mi, kac coin icin
+# veri alinamadi. Panel bunu gosterir; GitHub Actions is akisi da buna
+# bakip veri yoksa calismayi BASARISIZ (kirmizi) isaretler -- boylece
+# "her sey yesil ama bot aslinda kor" durumu bir daha fark edilmeden
+# gunlerce surmez.
+SAGLIK_DOSYASI = CIKTI_KLASORU / "saglik.json"
+_saglik = {"mum_verisi_ok": True, "hata": None, "verisiz_coin": []}
 
 
 # ============================================================
@@ -563,6 +570,12 @@ def rotasyon_zamani_mi(durum, a):
     return (datetime.now(timezone.utc) - son).total_seconds() >= a["rotasyon_periyodu_saat"] * 3600
 
 
+def _saglik_kaydet():
+    _atomik_yaz(SAGLIK_DOSYASI, json.dumps({
+        **_saglik, "zaman": datetime.now(timezone.utc).isoformat(),
+    }, indent=2, ensure_ascii=False))
+
+
 def durumu_yukle():
     if DURUM_DOSYASI.exists():
         try:
@@ -602,13 +615,19 @@ def rotasyonu_uygula(portfoy, durum, depo, a):
         # saglayici IP araliklarini engelleyebilir.
         deneme = vk.mum_verisi(evren[0], a["zaman_dilimi"], 50)
         if deneme is None:
-            print(f"[!] TEYIT BASARISIZ: {evren[0]} icin mum verisi alinamadi. "
-                  "Muhtemel sebep: bu sunucunun IP adresi borsa tarafindan "
-                  "engellenmis olabilir (GitHub Actions gibi bulut "
-                  "saglayicilarda bilinen bir sorun) ya da gecici bir ag "
-                  "sorunu var. Rotasyonun geri kalani da basarisiz olabilir.")
-        else:
-            print(f"[i] Teyit basarili: {evren[0]} icin {len(deneme)} mum alindi.")
+            # ROTASYON ATLANIR: veri yokken devam etmek, 40 coinin HEPSINI
+            # "atanamadi" sayip mevcut atamalari silerdi ve son_rotasyon'u
+            # guncelleyerek bir sonraki denemeyi de geciktirirdi
+            # (2026-09-26 - 10-04 arasi tam olarak bu oldu: bot 8 gun
+            # boyunca sessizce kordu). durum AYNEN korunur, bir sonraki
+            # calismada tekrar denenir.
+            print(f"[!] TEYIT BASARISIZ: {evren[0]} icin mum verisi alinamadi "
+                  f"-- sebep: {vk.son_mum_hatasi}. Rotasyon ATLANIYOR, mevcut "
+                  "atamalar korunuyor.")
+            _saglik["mum_verisi_ok"] = False
+            _saglik["hata"] = vk.son_mum_hatasi
+            return durum
+        print(f"[i] Teyit basarili: {evren[0]} icin {len(deneme)} mum alindi.")
 
     atamalar, gunluk_satirlari = rotasyonu_degerlendir(evren, a)
     rotasyon_kaydet(atamalar, gunluk_satirlari)
@@ -737,24 +756,40 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         return None
     fn, params, isinma = aday
 
-    df = vk.mum_verisi(sembol, a["zaman_dilimi"], isinma + 60)
+    gerekli = isinma + 60
+    giris_zamani = None
+    if tutuluyor_mu and portfoy.pozisyonlar[sembol].get("giris_zamani"):
+        # Likidasyon kontrolu GIRISTEN BERI tum mumlari kapsamali (asagiya
+        # bkz.) -- uzun suredir acik bir pozisyon icin daha fazla mum gerekir.
+        giris_zamani = pd.Timestamp(portfoy.pozisyonlar[sembol]["giris_zamani"])
+        gecen_saat = (pd.Timestamp.now(tz="UTC") - giris_zamani).total_seconds() / 3600
+        gerekli = max(gerekli, min(int(gecen_saat / _SAAT_PER_MUM.get(a["zaman_dilimi"], 1)) + 3, 2000))
+
+    df = vk.mum_verisi(sembol, a["zaman_dilimi"], gerekli)
     if df is None or len(df) < isinma + 30:
+        _saglik["verisiz_coin"].append(sembol)
         return None
 
     saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    # LIKIDASYON KONTROLU (kaldiracli pozisyonlar icin): son mumun ic
-    # fiyat aralinginda (yuksek/dusuk) marjini tuketen bir hareket oldu
-    # mu diye bakilir -- bu, STRATEJININ sinyalinden BAGIMSIZDIR (strateji
-    # hatasi/degisimi beklemeden, bir onceki kontrolden bu yana marjin
-    # gittiyse hemen kapatilir). Spot (kaldiracsiz) pozisyonlarda
-    # _likidasyon_fiyati None doner, bu blok hicbir sey yapmaz.
+    # LIKIDASYON KONTROLU (kaldiracli pozisyonlar icin): GIRISTEN BERI
+    # tum mumlarin ic fiyat araligina (yuksek/dusuk) bakilir -- sadece son
+    # muma degil. NEDEN: GitHub'in zamanlayicisi "saatte bir" isi olcumlere
+    # gore 8 saate kadar geciktirebiliyor; sadece son muma bakmak, aradaki
+    # saatlerde likidasyon seviyesine degip geri donen bir hareketi
+    # KACIRIRDI (gercek bir borsada pozisyon o an kapanmis olurdu). Spot
+    # (kaldiracsiz) pozisyonlarda _likidasyon_fiyati None doner, blok
+    # hicbir sey yapmaz.
     if tutuluyor_mu:
         acik_poz = portfoy.pozisyonlar[sembol]
         likit_fiyat = _likidasyon_fiyati(acik_poz)
         if likit_fiyat is not None:
-            son_yuksek = float(df["yuksek"].iloc[-1])
-            son_dusuk = float(df["dusuk"].iloc[-1])
+            mum_suresi = pd.Timedelta(hours=_SAAT_PER_MUM.get(a["zaman_dilimi"], 1))
+            donem = df[df["zaman"] + mum_suresi > giris_zamani] if giris_zamani is not None else df.tail(1)
+            if donem.empty:
+                donem = df.tail(1)
+            son_yuksek = float(donem["yuksek"].max())
+            son_dusuk = float(donem["dusuk"].min())
             likide_oldu = (acik_poz.get("yon", "LONG") == "LONG" and son_dusuk <= likit_fiyat) or \
                           (acik_poz.get("yon") == "SHORT" and son_yuksek >= likit_fiyat)
             if likide_oldu:
@@ -861,6 +896,8 @@ def bir_dongu(portfoy, durum, depo, a):
     "izlenecek hicbir sey yok" demek oldugu icin, zamanindan once
     tekrar denemenin bir sakincasi yok.
     """
+    _saglik.update({"mum_verisi_ok": True, "hata": None, "verisiz_coin": []})
+
     atama_yok = not (durum or {}).get("pozisyon_stratejileri")
     if rotasyon_zamani_mi(durum, a) or atama_yok:
         durum = rotasyonu_uygula(portfoy, durum, depo, a)
@@ -868,6 +905,7 @@ def bir_dongu(portfoy, durum, depo, a):
     atamalar = (durum or {}).get("pozisyon_stratejileri", {})
     if not atamalar:
         print("[!] Henuz coin/strateji ataması yok.")
+        _saglik_kaydet()
         return durum
 
     islem_oldu = False
@@ -878,6 +916,16 @@ def bir_dongu(portfoy, durum, depo, a):
 
     if islem_oldu:
         portfoy.kaydet()
+
+    verisiz = _saglik["verisiz_coin"]
+    if verisiz:
+        print(f"[!] {len(verisiz)}/{len(atamalar)} coin icin mum verisi alinamadi "
+              f"(sinyal/likidasyon KONTROL EDILEMEDI): {', '.join(verisiz[:10])} "
+              f"-- son hata: {vk.son_mum_hatasi}")
+        if len(verisiz) * 2 > len(atamalar):
+            _saglik["mum_verisi_ok"] = False
+            _saglik["hata"] = _saglik["hata"] or vk.son_mum_hatasi
+    _saglik_kaydet()
 
     fiyatlar = _portfoy_fiyatlari(portfoy, depo)
     saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
