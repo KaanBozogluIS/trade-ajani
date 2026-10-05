@@ -13,15 +13,6 @@
     "giris_zamani": "2026-09-12T14:43:47.896704+00:00",
     "maliyet": 123.38991770005917
   },
-  "UNI/USDT": {
-    "miktar": 77.23932918939454,
-    "strateji": "Momentum 90",
-    "giris_fiyat": 7.659,
-    "giris_zamani": "2026-09-17T18:27:47.613202+00:00",
-    "maliyet": 118.43363809040497,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "SUI/USDT": {
     "miktar": 835.5559388888586,
     "strateji": "SMA trend 100",
@@ -30,15 +21,6 @@
     "maliyet": 138.2389245040546,
     "yon": "LONG",
     "kaldirac": 5.0
-  },
-  "BTC/USDT": {
-    "miktar": 0.010292870988412826,
-    "strateji": "MACD",
-    "giris_fiyat": 85466.34,
-    "giris_zamani": "2026-09-21T14:25:49.499468+00:00",
-    "maliyet": 112.94816081717389,
-    "yon": "LONG",
-    "kaldirac": 7.796272021491759
   },
   "ONDO/USDT": {
     "miktar": 1875.6883366315674,
@@ -66,5 +48,23 @@
     "maliyet": 289.79460668144725,
     "yon": "LONG",
     "kaldirac": 6.716482265206856
+  },
+  "SOL/USDT": {
+    "miktar": 10.560927812016851,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 121.69,
+    "giris_zamani": "2026-10-05T08:55:34.178733+00:00",
+    "maliyet": 128.6445751195526,
+    "yon": "LONG",
+    "kaldirac": 10.0
+  },
+  "MUBARAK/USDT": {
+    "miktar": 14830.342871486737,
+    "strateji": "ATR kirilma",
+    "giris_fiyat": 0.07509,
+    "giris_zamani": "2026-10-05T08:55:35.840522+00:00",
+    "maliyet": 222.94503427826606,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
