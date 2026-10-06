@@ -13,15 +13,6 @@
     "giris_zamani": "2026-09-12T14:43:47.896704+00:00",
     "maliyet": 123.38991770005917
   },
-  "SUI/USDT": {
-    "miktar": 835.5559388888586,
-    "strateji": "SMA trend 100",
-    "giris_fiyat": 0.8264,
-    "giris_zamani": "2026-09-20T04:24:08.172572+00:00",
-    "maliyet": 138.2389245040546,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "ONDO/USDT": {
     "miktar": 1875.6883366315674,
     "strateji": "Dusuk oynaklik",
@@ -66,5 +57,14 @@
     "maliyet": 225.40931431206744,
     "yon": "LONG",
     "kaldirac": 5.53751337548952
+  },
+  "ADA/USDT": {
+    "miktar": 7949.189946810492,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.2701,
+    "giris_zamani": "2026-10-06T07:32:22.279957+00:00",
+    "maliyet": 429.84508601271557,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
