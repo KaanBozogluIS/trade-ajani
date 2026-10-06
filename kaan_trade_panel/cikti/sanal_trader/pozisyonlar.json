@@ -31,15 +31,6 @@
     "yon": "LONG",
     "kaldirac": 10.0
   },
-  "LTC/USDT": {
-    "miktar": 26.968847933317733,
-    "strateji": "MA kesisme 20/100",
-    "giris_fiyat": 72.1,
-    "giris_zamani": "2026-10-04T15:17:20.561063+00:00",
-    "maliyet": 289.79460668144725,
-    "yon": "LONG",
-    "kaldirac": 6.716482265206856
-  },
   "SOL/USDT": {
     "miktar": 10.560927812016851,
     "strateji": "Dusuk oynaklik",
@@ -64,6 +55,15 @@
     "giris_fiyat": 0.2701,
     "giris_zamani": "2026-10-06T07:32:22.279957+00:00",
     "maliyet": 429.84508601271557,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "MARSCOIN/USDT": {
+    "miktar": 10740.245045246853,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.1137,
+    "giris_zamani": "2026-10-06T15:05:26.867442+00:00",
+    "maliyet": 244.4776499788923,
     "yon": "LONG",
     "kaldirac": 5.0
   }
