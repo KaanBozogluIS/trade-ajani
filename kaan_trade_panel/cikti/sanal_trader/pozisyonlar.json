@@ -40,15 +40,6 @@
     "yon": "LONG",
     "kaldirac": 10.0
   },
-  "ACE/USDT": {
-    "miktar": 6470.985396315681,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.1927,
-    "giris_zamani": "2026-10-06T00:48:19.731523+00:00",
-    "maliyet": 225.40931431206744,
-    "yon": "LONG",
-    "kaldirac": 5.53751337548952
-  },
   "ADA/USDT": {
     "miktar": 7949.189946810492,
     "strateji": "Dusuk oynaklik",
