@@ -57,5 +57,14 @@
     "maliyet": 107.56806933050662,
     "yon": "SHORT",
     "kaldirac": 5.0
+  },
+  "OGN/USDT": {
+    "miktar": 577.0001141600956,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 0.04656,
+    "giris_zamani": "2026-10-08T22:03:55.145975+00:00",
+    "maliyet": 5.378403466525335,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
