@@ -31,15 +31,6 @@
     "yon": "LONG",
     "kaldirac": 10.0
   },
-  "SOL/USDT": {
-    "miktar": 10.560927812016851,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 121.69,
-    "giris_zamani": "2026-10-05T08:55:34.178733+00:00",
-    "maliyet": 128.6445751195526,
-    "yon": "LONG",
-    "kaldirac": 10.0
-  },
   "ADA/USDT": {
     "miktar": 7949.189946810492,
     "strateji": "Dusuk oynaklik",
@@ -49,13 +40,22 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "MARSCOIN/USDT": {
-    "miktar": 10740.245045246853,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.1137,
-    "giris_zamani": "2026-10-06T15:05:26.867442+00:00",
-    "maliyet": 244.4776499788923,
-    "yon": "LONG",
+  "DOGE/USDT": {
+    "miktar": 6190.620283961617,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 0.08266,
+    "giris_zamani": "2026-10-08T16:27:42.668696+00:00",
+    "maliyet": 102.44578031476821,
+    "yon": "SHORT",
+    "kaldirac": 5.0
+  },
+  "UNI/USDT": {
+    "miktar": 73.36189326950854,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 7.324,
+    "giris_zamani": "2026-10-08T16:27:43.030061+00:00",
+    "maliyet": 107.56806933050662,
+    "yon": "SHORT",
     "kaldirac": 5.0
   }
 }
