@@ -24,19 +24,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 7/24 sunucu (scripts/sunucu_7x24.py) calisiyorsa bu turu atla --
+      # sunucu durursa GitHub otomatik olarak yedek gorevine doner.
+      - name: Sunucu calisiyor mu?
+        id: nabiz
+        run: python3 scripts/sunucu_nabzi_taze_mi.py
+
       - uses: actions/setup-python@v5
+        if: steps.nabiz.outputs.atla != 'true'
         with:
           python-version: "3.12"
 
-      - run: pip install -r requirements.txt
+      - if: steps.nabiz.outputs.atla != 'true'
+        run: pip install -r requirements.txt
 
       - name: Sinyalleri kontrol et, degisen varsa Telegram'a gonder
+        if: steps.nabiz.outputs.atla != 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python scripts/live_scan.py
 
       - name: Sinyal durumunu repoya geri yaz
+        if: steps.nabiz.outputs.atla != 'true'
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"

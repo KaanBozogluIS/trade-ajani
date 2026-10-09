@@ -1,0 +1,37 @@
+name: Testler
+
+# Kod degistiginde otomatik testleri calistirir (AG ERISIMI YOK -- tum veri
+# taklit ediliyor). Botlarin veri commit'leri (data/, cikti/) bunu
+# tetiklemez -- sadece .py / gereksinim / is akisi degisiklikleri.
+
+on:
+  push:
+    paths: ["**.py", "**/requirements*.txt", ".github/workflows/**"]
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  trade-ajani:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q -r requirements.txt pytest
+      - run: python -m pytest tests -q
+
+  kaan-trade-panel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: kaan_trade_panel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r requirements-sanal-trader.txt pytest
+      - run: python -m pytest tests -q

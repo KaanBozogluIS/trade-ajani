@@ -2010,11 +2010,36 @@ def _pozisyon_degeri(poz, fiyat):
             kar_zarar = maliyet * kaldirac * (giris - fiyat) / giris if giris else 0.0
         else:
             kar_zarar = maliyet * kaldirac * (fiyat / giris - 1) if giris else 0.0
+        kar_zarar -= maliyet * kaldirac * strd.AYARLAR["islem_ucreti_yuzde"] / 100  # odenmis giris komisyonu
         return max(0.0, maliyet + kar_zarar)
     if yon == "SHORT":
         kar_zarar = maliyet * (giris - fiyat) / giris if giris else 0.0
         return maliyet + kar_zarar
     return poz["miktar"] * fiyat
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _btc_kiyas(baslangic_iso, kaldirac=5.0):
+    """
+    Bot ile AYNI donemde (ilk islemden bugune) BTC'yi sadece al-tut
+    yapsaydik: 1x ve <kaldirac>x. Kaldiracli versiyonda fiyat herhangi
+    bir saatte likidasyon seviyesine indiyse sonuc -%100 -- botun
+    kaldiracli LONG'larinin "yukselen piyasada herkes kazanir" etkisinden
+    ne kadarini asip asmadigini gormek icin.
+    """
+    baslangic = pd.Timestamp(baslangic_iso, tz="UTC")
+    saat = int((pd.Timestamp.now(tz="UTC") - baslangic).total_seconds() // 3600) + 2
+    df = c_mumlar("BTC/USDT", "1h", max(saat, 30))
+    if df is None or df.empty:
+        return None
+    df = df[df["zaman"] >= baslangic.floor("h")]
+    if df.empty:
+        return None
+    giris, son = float(df["acilis"].iloc[0]), float(df["kapanis"].iloc[-1])
+    bir_x = (son / giris - 1) * 100
+    likide = float(df["dusuk"].min()) <= giris * (1 - 1 / kaldirac)
+    kaldiracli = -100.0 if likide else max(-100.0, bir_x * kaldirac - kaldirac * 0.2)
+    return {"bir_x": bir_x, "kaldiracli": kaldiracli, "likide": likide, "kaldirac": kaldirac}
 
 
 def _sanal_trader_egri_verisi(islemler):
@@ -2311,6 +2336,36 @@ def _sanal_trader_icerik(depo):
         except Exception:
             st.metric("Son rotasyon", "—")
 
+    # --- Kiyas: ayni donemde sadece BTC al-tut ----------------
+    try:
+        _isl = pd.read_csv(strd.ISLEM_DOSYASI)
+    except Exception:
+        _isl = pd.DataFrame()
+    if not _isl.empty and kar_yuzde is not None:
+        kiyas = _btc_kiyas(str(_isl["tarih"].iloc[0]))
+        if kiyas:
+            st.markdown('<div class="bolum-basligi" style="margin-top:14px;">'
+                        'Kıyas — aynı dönemde sadece BTC tutsaydık</div>', unsafe_allow_html=True)
+            k = st.columns(4)
+            with k[0]:
+                st.metric("Bot", yuzde(kar_yuzde))
+            with k[1]:
+                st.metric("BTC al-tut (1x)", yuzde(kiyas["bir_x"]),
+                          f"bot farkı {kar_yuzde - kiyas['bir_x']:+.1f} puan")
+            with k[2]:
+                st.metric(f"BTC al-tut ({kiyas['kaldirac']:.0f}x)",
+                          "LİKİDE" if kiyas["likide"] else yuzde(kiyas["kaldiracli"]),
+                          None if kiyas["likide"] else f"bot farkı {kar_yuzde - kiyas['kaldiracli']:+.1f} puan")
+            with k[3]:
+                acilis = _isl[_isl["islem"].isin(["AL", "KISA_AC"])]
+                st.metric("Açılan LONG / SHORT",
+                          f"{(acilis['islem'] == 'AL').sum()} / {(acilis['islem'] == 'KISA_AC').sum()}")
+            st.caption(
+                f"Dönem: ilk işlemden ({str(_isl['tarih'].iloc[0])[:10]}) bugüne. Botun pozisyonlarının "
+                "çoğu 5-10x kaldıraçlı LONG — yükselen bir piyasada kaldıraçlı LONG tutan HER sistem "
+                "kâr eder. Botun gerçek katkısı, BTC'yi aynı kaldıraçla tutmaktan DAHA İYİ olup "
+                "olmadığıdır; tek ayın sonucu da şans eseri olabilir.")
+
     # --- Acik pozisyonlar tablosu ------------------------------
     if pozisyonlar:
         st.markdown('<div class="bolum-basligi" style="margin-top:14px;">'
@@ -2325,7 +2380,8 @@ def _sanal_trader_icerik(depo):
                 # Kaldiracli pozisyonlarda fiyat hareketi kaldirac KATI buyutulur.
                 temel = ((poz["giris_fiyat"] / guncel - 1) * 100) if yon == "SHORT" \
                     else ((guncel / poz["giris_fiyat"] - 1) * 100)
-                kar = max(-100.0, temel * kaldirac)  # likidasyonda -%100'un altina inmez
+                ucret_payi = kaldirac * strd.AYARLAR["islem_ucreti_yuzde"] if kaldirac > 1.0 else 0.0
+                kar = max(-100.0, temel * kaldirac - ucret_payi)  # likidasyonda -%100'un altina inmez
             else:
                 kar = None
             satirlar.append({

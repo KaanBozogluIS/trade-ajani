@@ -1,0 +1,16 @@
+[Unit]
+Description=Trade-ajani 7/24 calistirici (Telegram taramasi + Sanal Trader)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__KULLANICI__
+WorkingDirectory=__DEPO__
+ExecStart=__DEPO__/.venv/bin/python scripts/sunucu_7x24.py
+Restart=always
+RestartSec=30
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

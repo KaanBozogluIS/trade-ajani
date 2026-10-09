@@ -105,6 +105,34 @@ def _atomik_yaz(yol, metin):
     os.replace(gecici, yol)
 
 
+# Bu dongude olan islemler -- dongu SONUNDA tek bir Telegram mesajinda
+# toplu gonderilir (her islem icin ayri mesaj = gereksiz bildirim yagmuru).
+_olaylar = []
+
+
+def _telegram_gonder(metin):
+    """
+    TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID ortam degiskenleri varsa (GitHub
+    Secrets ya da sunucudaki .env) mesaj gonderir; yoksa sessizce atlar
+    (yerel denemelerde bildirim gitmesin). Duz metin -- Markdown ozel
+    karakterleri (sembol/strateji adlarindaki _ gibi) mesaji bozamasin.
+    """
+    token, sohbet = os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("TELEGRAM_CHAT_ID")
+    if not token or not sohbet:
+        return False
+    try:
+        import requests
+        y = requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
+                          json={"chat_id": sohbet, "text": metin,
+                                "disable_web_page_preview": True}, timeout=15)
+        if y.status_code != 200:
+            print(f"[telegram] gonderilemedi ({y.status_code}): {y.text[:200]}")
+        return y.status_code == 200
+    except Exception as e:
+        print(f"[telegram] hata: {e}")
+        return False
+
+
 # ============================================================
 #  1) AYARLAR
 # ============================================================
@@ -161,6 +189,16 @@ AYARLAR = {
     "maks_kaldirac": 10.0,
     "risk_per_islem_yuzde": 12.0,   # kaldirac = risk_per_islem_yuzde / (stop_atr_kati*ATR/fiyat*100), sonra klemplenir
     "stop_atr_kati": 2.0,           # varsayilan stop mesafesi ~= bu kati * ATR(14)
+
+    # MAKSIMUM TUTMA SURESI (2026-10-04): bir pozisyon bu kadar gunden uzun
+    # aciksa, stratejisinin sinyalinden BAGIMSIZ olarak kapatilir. NEDEN:
+    # bazi trend stratejileri (or. "SMA trend 200", "Dusuk oynaklik") cikis
+    # sinyalini haftalarca vermiyor -- 8 slotun bir kismi aylarca kilitli
+    # kaliyor ve nakit ~0'a indiginde bot YENI hicbir firsati
+    # degerlendiremiyor (Eylul 2026'da tam olarak bu oldu). Kapanan coin,
+    # bir sonraki kontrolde rotasyonun GUNCEL stratejisiyle yeniden
+    # degerlendirilir -- sinyal hala lehteyse TAZE kaldiracla yeniden acilir.
+    "maks_tutma_gun": 14,
 }
 
 # Zaman dilimine gore bir mumun kac saat surdugu -- "gun" cinsinden
@@ -353,10 +391,15 @@ class Portfoy:
         ucret = brut_islem * ucret_yuzde / 100
 
         if kaldirac > 1.0:
+            # Giris komisyonu (ac()'ta notional uzerinden alindi) burada da
+            # dusulur -- 2026-10-04'e kadar UNUTULUYORDU: 10x'te islem basina
+            # marjinin ~%1'i kadar fazla kar gorunuyordu.
+            giris_ucreti = maliyet * kaldirac * ucret_yuzde / 100
             if yon == "SHORT":
-                kar_zarar = maliyet * kaldirac * (giris_fiyat - fiyat) / giris_fiyat - ucret if giris_fiyat else -ucret
+                kar_zarar = maliyet * kaldirac * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
             else:
-                kar_zarar = maliyet * kaldirac * (fiyat / giris_fiyat - 1) - ucret if giris_fiyat else -ucret
+                kar_zarar = maliyet * kaldirac * (fiyat / giris_fiyat - 1) if giris_fiyat else 0.0
+            kar_zarar -= ucret + giris_ucreti
             net = maliyet + kar_zarar
             if net < 0:
                 # LIKIDASYON: marjinin tamami gitti, daha fazla kaybedilemez.
@@ -403,6 +446,7 @@ class Portfoy:
                     kar_zarar = maliyet * kaldirac * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
                 else:
                     kar_zarar = maliyet * kaldirac * (fiyat / giris_fiyat - 1) if giris_fiyat else 0.0
+                kar_zarar -= maliyet * kaldirac * AYARLAR["islem_ucreti_yuzde"] / 100  # odenmis giris komisyonu
                 deger += max(0.0, maliyet + kar_zarar)
             elif yon == "SHORT":
                 kar_zarar = maliyet * (giris_fiyat - fiyat) / giris_fiyat if giris_fiyat else 0.0
@@ -478,6 +522,7 @@ def _tum_stratejiler():
 
 _STRATEJILER_TUMU = _tum_stratejiler()
 _STRATEJI_SOZLUGU = {isim: (fn, params, isinma) for isim, fn, params, isinma in _STRATEJILER_TUMU}
+_MAKS_ISINMA = max(isinma for *_, isinma in _STRATEJILER_TUMU)
 
 
 # ============================================================
@@ -515,20 +560,30 @@ def rotasyonu_degerlendir(evren, a):
             print(f"   ... {i}/{toplam} coin tarandi ({coin})")
         _calisma_durumu_kaydet(i, toplam)
         sonuclar = []
+        # Coin basina TEK istek: eskiden her strateji icin ayri cekiliyordu
+        # (40 coin x 23 strateji = 920 istek); her strateji kendi
+        # ihtiyaci kadarini bu tek veriden kesip alir -- sonuc ayni.
+        tum_df = vk.mum_verisi(coin, a["zaman_dilimi"], _MAKS_ISINMA + pencere_mum + 15)
+        if tum_df is None:
+            _saglik["verisiz_coin"].append(coin)
+            continue
+        # Puanlama CANLI ISLEMLE AYNI kaldiracla (ve likidasyon riskiyle)
+        # yapilir -- spot puanlama, 10x'te likide olacak stratejileri odullendirirdi.
+        kaldirac = _kaldirac_hesapla(tum_df, a)
         for isim, fn, params, isinma in _STRATEJILER_TUMU:
-            gerekli_mum = isinma + pencere_mum + 15
-            df = vk.mum_verisi(coin, a["zaman_dilimi"], gerekli_mum)
-            if df is None or len(df) < isinma + 30:
+            df = tum_df.tail(isinma + pencere_mum + 15).reset_index(drop=True)
+            if len(df) < isinma + 30:
                 continue
             try:
                 poz = fn(df, **params)
             except Exception:
                 continue
-            sonuc = simule_et(df, poz, a, baslangic=isinma)
+            sonuc = simule_et(df, poz, a, baslangic=isinma, kaldirac=kaldirac)
             if sonuc is None:
                 continue
             sonuclar.append({"isim": isim, "getiri": sonuc["getiri"],
-                             "dusus": sonuc["dusus"], "piyasada": sonuc["piyasada"]})
+                             "dusus": sonuc["dusus"], "piyasada": sonuc["piyasada"],
+                             "likidasyon": sonuc.get("likidasyon", 0)})
 
         if not sonuclar:
             continue
@@ -537,8 +592,9 @@ def rotasyonu_degerlendir(evren, a):
         atamalar[coin] = {"strateji": en_iyi["isim"], "getiri": en_iyi["getiri"],
                           "dusus": en_iyi["dusus"], "piyasada": en_iyi["piyasada"]}
         gunluk_satirlari.append({
-            "coin": coin, "en_iyi_5": " | ".join(
-                f"{r['isim']}:{r['getiri']:+.1f}%" for r in sonuclar[:5]),
+            "coin": coin, "en_iyi_5": f"[{kaldirac:.1f}x] " + " | ".join(
+                f"{r['isim']}:{r['getiri']:+.1f}%" + (f"(L{r['likidasyon']})" if r["likidasyon"] else "")
+                for r in sonuclar[:5]),
         })
 
     return atamalar, gunluk_satirlari
@@ -718,6 +774,18 @@ def islem_kaydet(saat, islem, strateji, sembol, fiyat, sonuc, portfoy, fiyatlar,
             "kaldirac": round(kaldirac, 3) if kaldirac else 1.0,
         })
 
+    simge = {"AL": "🟢 LONG AC", "KISA_AC": "🔴 SHORT AC", "SAT": "⚪ LONG KAPAT",
+             "KISA_KAPAT": "⚪ SHORT KAPAT", "LIKIDASYON": "💥 LIKIDASYON"}.get(islem, islem)
+    satir = f"{simge} {sembol} @ {fiyat:.6g}"
+    if islem in ("AL", "KISA_AC"):
+        satir += f" · {kaldirac:.1f}x" if kaldirac and kaldirac > 1 else " · spot"
+        satir += f" · marjin {sonuc['tutar']:,.0f}$"
+    elif "kar_zarar" in sonuc:
+        satir += f" · K/Z {sonuc['kar_zarar']:+,.2f}$ ({sonuc['kar_zarar_yuzde']:+.1f}%)"
+    if sebep == "sure_doldu":
+        satir += f" · {AYARLAR['maks_tutma_gun']} gun doldu"
+    _olaylar.append(f"{satir} · [{strateji}]")
+
 
 def _portfoy_fiyatlari(portfoy, depo, guncel_sembol=None, guncel_fiyat=None):
     """
@@ -803,6 +871,24 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
                           f"(marjin kaybedildi, {acik_kaldirac:.1f}x)  [{strateji_isim}]")
                     return "LIKIDASYON"
 
+    fiyat = float(df["kapanis"].iloc[-1])
+
+    # MAKSIMUM TUTMA SURESI -- bkz. AYARLAR["maks_tutma_gun"].
+    if tutuluyor_mu and giris_zamani is not None and a.get("maks_tutma_gun"):
+        tutulan_gun = (pd.Timestamp.now(tz="UTC") - giris_zamani).total_seconds() / 86400
+        if tutulan_gun >= a["maks_tutma_gun"]:
+            acik_poz = portfoy.pozisyonlar[sembol]
+            yon = acik_poz.get("yon", "LONG")
+            kapanan_kaldirac = acik_poz.get("kaldirac", 1.0)
+            fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
+            sonuc = portfoy.kapat(sembol, fiyat, a["islem_ucreti_yuzde"])
+            if sonuc:
+                etiket = "SAT" if yon == "LONG" else "KISA_KAPAT"
+                islem_kaydet(saat, etiket, strateji_isim, sembol, fiyat, sonuc, portfoy,
+                            fiyatlar, "sure_doldu", kaldirac=kapanan_kaldirac)
+                print(f"   >> SURE DOLDU ({tutulan_gun:.0f} gun): {sembol} kapatildi  [{strateji_isim}]")
+                return etiket
+
     try:
         poz = fn(df, **params)
     except Exception:
@@ -810,8 +896,6 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
     son_sinyal = poz.iloc[-1]
     if pd.isna(son_sinyal):
         return None
-
-    fiyat = float(df["kapanis"].iloc[-1])
 
     if son_sinyal == 1.0 and not tutuluyor_mu:
         bos_yer = portfoy.bos_pozisyon_yeri(a["maks_pozisyon"])
@@ -905,7 +989,7 @@ def bir_dongu(portfoy, durum, depo, a):
     atamalar = (durum or {}).get("pozisyon_stratejileri", {})
     if not atamalar:
         print("[!] Henuz coin/strateji ataması yok.")
-        _saglik_kaydet()
+        _dongu_sonu(portfoy, depo, a, 0)
         return durum
 
     islem_oldu = False
@@ -917,22 +1001,51 @@ def bir_dongu(portfoy, durum, depo, a):
     if islem_oldu:
         portfoy.kaydet()
 
-    verisiz = _saglik["verisiz_coin"]
+    _dongu_sonu(portfoy, depo, a, len(atamalar))
+    return durum
+
+
+def _dongu_sonu(portfoy, depo, a, atama_sayisi):
+    """
+    Her dongunun sonu: saglik raporunu yaz, saglik DURUMU DEGISTIYSE
+    (saglikli <-> veri yok) Telegram'a uyari at, bu dongudeki islemleri
+    TEK mesajda gonder, ozeti yazdir.
+    """
+    verisiz = sorted(set(_saglik["verisiz_coin"]))
+    _saglik["verisiz_coin"] = verisiz
     if verisiz:
-        print(f"[!] {len(verisiz)}/{len(atamalar)} coin icin mum verisi alinamadi "
+        print(f"[!] {len(verisiz)} coin icin mum verisi alinamadi "
               f"(sinyal/likidasyon KONTROL EDILEMEDI): {', '.join(verisiz[:10])} "
               f"-- son hata: {vk.son_mum_hatasi}")
-        if len(verisiz) * 2 > len(atamalar):
+        if len(verisiz) * 2 > max(atama_sayisi, 1):
             _saglik["mum_verisi_ok"] = False
             _saglik["hata"] = _saglik["hata"] or vk.son_mum_hatasi
+
+    try:
+        onceki_ok = json.loads(SAGLIK_DOSYASI.read_text(encoding="utf-8")).get("mum_verisi_ok", True)
+    except Exception:
+        onceki_ok = True
     _saglik_kaydet()
+    if onceki_ok and not _saglik["mum_verisi_ok"]:
+        _telegram_gonder("⚠️ SANAL TRADER VERİ ALAMIYOR\nRotasyon, çıkış sinyalleri ve "
+                         "likidasyon kontrolü yapılamıyor; pozisyonlar donmuş durumda.\n"
+                         f"Sebep: {_saglik['hata']}")
+    elif not onceki_ok and _saglik["mum_verisi_ok"]:
+        _telegram_gonder("✅ Sanal Trader yeniden veri alabiliyor, kontroller normale döndü.")
 
     fiyatlar = _portfoy_fiyatlari(portfoy, depo)
+    toplam = portfoy.toplam_deger(fiyatlar)
+    kar = portfoy.kar_yuzdesi(fiyatlar)
     saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{saat}] {len(portfoy.pozisyonlar)}/{a['maks_pozisyon']} pozisyon acik  "
-          f"toplam={portfoy.toplam_deger(fiyatlar):,.2f} USDT "
-          f"({portfoy.kar_yuzdesi(fiyatlar):+.2f}%)")
-    return durum
+          f"toplam={toplam:,.2f} USDT ({kar:+.2f}%)")
+
+    if _olaylar:
+        _telegram_gonder(
+            "📒 Sanal Trader — SANAL para, gerçek işlem DEĞİL\n\n" + "\n".join(_olaylar)
+            + f"\n\nPortföy: {toplam:,.0f}$ ({kar:+.1f}%) · "
+              f"{len(portfoy.pozisyonlar)}/{a['maks_pozisyon']} pozisyon · nakit {portfoy.nakit:,.0f}$")
+        _olaylar.clear()
 
 
 def _canli_veriye_baglan():

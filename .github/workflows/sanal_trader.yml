@@ -40,19 +40,33 @@ jobs:
       - name: Depoyu al
         uses: actions/checkout@v4
 
+      # 7/24 sunucu (scripts/sunucu_7x24.py) calisiyorsa bu turu atla --
+      # sunucu durursa GitHub otomatik olarak yedek gorevine doner.
+      - name: Sunucu calisiyor mu?
+        id: nabiz
+        working-directory: .
+        run: python3 scripts/sunucu_nabzi_taze_mi.py
+
       - name: Python kur
+        if: steps.nabiz.outputs.atla != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Kutuphaneleri kur
+        if: steps.nabiz.outputs.atla != 'true'
         run: pip install -r requirements-sanal-trader.txt
 
       - name: Sanal trader'i bir tur calistir
+        if: steps.nabiz.outputs.atla != 'true'
+        env:
+          # Islem/saglik bildirimleri icin (live_scan.yml ile AYNI bot/sohbet).
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python sanal_trader.py --once
 
       - name: Sonuclari depoya kaydet
-        if: always()
+        if: always() && steps.nabiz.outputs.atla != 'true'
         # git pull --rebase + retry: bu checkout is basladiginda alinmisti
         # (dakikalar once) -- o zamandan beri baska bir push (live_scan.yml
         # ya da elle yapilan bir push) gelmis olabilir. Once pull etmeden
@@ -71,6 +85,7 @@ jobs:
           done
 
       - name: Saglik kontrolu (veri yoksa calismayi BASARISIZ isaretle)
+        if: steps.nabiz.outputs.atla != 'true'
         # 2026-09-26 - 10-04 arasi bot mum verisi alamadi ama HER calisma
         # "basarili" (yesil) gorundu -- 8 gun kimse fark etmedi. Artik veri
         # alinamazsa bu adim kirmizi olur ve GitHub depo sahibine e-posta

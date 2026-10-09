@@ -86,7 +86,7 @@ def drop_unclosed_bar(df: pd.DataFrame, timeframe: str, now: pd.Timestamp | None
         return df
     from core.timeframes import to_timedelta
 
-    now = pd.Timestamp.utcnow() if now is None else now
+    now = pd.Timestamp.now("UTC") if now is None else now
     if now.tzinfo is None:
         now = now.tz_localize("UTC")
     delta = to_timedelta(timeframe)
