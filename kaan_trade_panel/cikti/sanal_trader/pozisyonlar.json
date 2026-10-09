@@ -40,15 +40,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "OGN/USDT": {
-    "miktar": 577.0001141600956,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.04656,
-    "giris_zamani": "2026-10-08T22:03:55.145975+00:00",
-    "maliyet": 5.378403466525335,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "STRK/USDT": {
     "miktar": 6865.426546594706,
     "strateji": "Dusuk oynaklik",
@@ -58,12 +49,21 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "RLC/USDT": {
-    "miktar": 374.54315372071653,
-    "strateji": "MACD",
-    "giris_fiyat": 1.0332,
-    "giris_zamani": "2026-10-09T08:59:22.485318+00:00",
-    "maliyet": 77.47307035520406,
+  "AVAX/USDT": {
+    "miktar": 5.74364628774836,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 10.196,
+    "giris_zamani": "2026-10-09T16:09:53.494641+00:00",
+    "maliyet": 11.724167677654112,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "TAO/USDT": {
+    "miktar": 0.22368253338441765,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 274.9,
+    "giris_zamani": "2026-10-09T16:09:53.730021+00:00",
+    "maliyet": 12.310376061536818,
     "yon": "LONG",
     "kaldirac": 5.0
   }
