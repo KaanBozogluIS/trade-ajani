@@ -40,15 +40,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "UNI/USDT": {
-    "miktar": 73.36189326950854,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 7.324,
-    "giris_zamani": "2026-10-08T16:27:43.030061+00:00",
-    "maliyet": 107.56806933050662,
-    "yon": "SHORT",
-    "kaldirac": 5.0
-  },
   "OGN/USDT": {
     "miktar": 577.0001141600956,
     "strateji": "MA kesisme 50/200",
@@ -58,13 +49,22 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "HYPE/USDT": {
-    "miktar": 5.9229661686394275,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 84.75,
-    "giris_zamani": "2026-10-09T02:05:55.313776+00:00",
-    "maliyet": 84.7902088025836,
-    "yon": "SHORT",
-    "kaldirac": 5.926083491771395
+  "STRK/USDT": {
+    "miktar": 6865.426546594706,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.07127,
+    "giris_zamani": "2026-10-09T08:59:21.620820+00:00",
+    "maliyet": 97.95774774290385,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "RLC/USDT": {
+    "miktar": 374.54315372071653,
+    "strateji": "MACD",
+    "giris_fiyat": 1.0332,
+    "giris_zamani": "2026-10-09T08:59:22.485318+00:00",
+    "maliyet": 77.47307035520406,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
