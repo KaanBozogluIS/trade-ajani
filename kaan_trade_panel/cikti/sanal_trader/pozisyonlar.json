@@ -1,18 +1,4 @@
 {
-  "NEAR/USDT": {
-    "miktar": 56.29363368594816,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 2.225,
-    "giris_zamani": "2026-09-05T04:23:45.932575+00:00",
-    "maliyet": 125.37871366489956
-  },
-  "TRX/USDT": {
-    "miktar": 361.90994651309194,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.3406,
-    "giris_zamani": "2026-09-12T14:43:47.896704+00:00",
-    "maliyet": 123.38991770005917
-  },
   "ONDO/USDT": {
     "miktar": 1875.6883366315674,
     "strateji": "Dusuk oynaklik",
@@ -40,15 +26,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "STRK/USDT": {
-    "miktar": 6865.426546594706,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.07127,
-    "giris_zamani": "2026-10-09T08:59:21.620820+00:00",
-    "maliyet": 97.95774774290385,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "AVAX/USDT": {
     "miktar": 5.74364628774836,
     "strateji": "Destek/Direnc kirilmasi",
@@ -64,6 +41,33 @@
     "giris_fiyat": 274.9,
     "giris_zamani": "2026-10-09T16:09:53.730021+00:00",
     "maliyet": 12.310376061536818,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "OGN/USDT": {
+    "miktar": 21896.698803764404,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 0.03887,
+    "giris_zamani": "2026-10-09T19:28:49.632046+00:00",
+    "maliyet": 170.3953318322968,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "SPCXB/USDT": {
+    "miktar": 8.080272527074149,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 161.05,
+    "giris_zamani": "2026-10-09T19:28:49.773813+00:00",
+    "maliyet": 178.91509842391162,
+    "yon": "LONG",
+    "kaldirac": 7.28071880171855
+  },
+  "AAVE/USDT": {
+    "miktar": 3.6519863407147284,
+    "strateji": "MACD",
+    "giris_fiyat": 168.25,
+    "giris_zamani": "2026-10-09T19:28:51.899484+00:00",
+    "maliyet": 123.0123527177684,
     "yon": "LONG",
     "kaldirac": 5.0
   }
