@@ -151,6 +151,65 @@ def mum_verisi(sembol="BTC/USDT", zaman_dilimi="1d", adet=400):
     return None
 
 
+_HISSE_ARALIK = {"1d": ("1d", "max"), "1h": ("60m", "730d")}
+
+
+def hisse_mum_verisi(sembol="MSTR", zaman_dilimi="1d", adet=1000):
+    """
+    ABD hisseleri icin mum_verisi'nin AYNI bicimde (zaman/acilis/yuksek/
+    dusuk/kapanis/hacim, zaman UTC) karsiligi -- Yahoo Finance (yfinance).
+    Boylece kripto icin yazilmis stratejiler hisselerde de DEGISIKLIK
+    OLMADAN calisir.
+
+    Yahoo kisitlari: gunluk tam gecmis; saatlik en fazla 730 gun. Fiyatlar
+    bolunme/temettu duzeltilmis (auto_adjust) -- yoksa bolunme gunlerinde
+    sahte %50 dususler stratejileri yaniltir.
+
+    Kripto 7/24 isler, hisse sadece seans saatlerinde (09:30-16:00 New York):
+    saatlik veride gunde 7 mum vardir, geceleri/hafta sonlari bosluk olur.
+    Kapanmamis son mum (seans surerken bugunun gunlugu ya da surmekte olan
+    saat) mum_verisi'ndeki AYNI sebeple atilir.
+    """
+    global son_mum_hatasi
+    if zaman_dilimi not in _HISSE_ARALIK:
+        son_mum_hatasi = f"hisse icin desteklenmeyen zaman dilimi: {zaman_dilimi} (1d ya da 1h)"
+        return None
+    try:
+        import yfinance as yf
+        aralik, donem = _HISSE_ARALIK[zaman_dilimi]
+        ham = yf.download(sembol.upper().strip(), interval=aralik, period=donem, auto_adjust=True,
+                          progress=False, threads=False)
+        if ham is None or ham.empty:
+            son_mum_hatasi = f"Yahoo: {sembol} icin veri yok (sembol yanlis ya da islem gormuyor olabilir)"
+            return None
+        if isinstance(ham.columns, pd.MultiIndex):
+            ham.columns = ham.columns.get_level_values(0)
+        ham = ham.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].dropna()
+
+        ny_simdi = pd.Timestamp.now(tz="America/New_York")
+        if zaman_dilimi == "1d":
+            son = ham.index[-1]
+            if son.date() == ny_simdi.date() and ny_simdi.hour < 16:
+                ham = ham.iloc[:-1]
+            zaman = pd.to_datetime(ham.index).tz_localize("UTC") if ham.index.tz is None \
+                else ham.index.tz_convert("UTC")
+        else:
+            idx = ham.index if ham.index.tz is not None else ham.index.tz_localize("America/New_York")
+            bitis = (idx + pd.Timedelta(hours=1)).map(
+                lambda t: min(t, t.normalize() + pd.Timedelta(hours=16)))
+            ham = ham[bitis <= ny_simdi]
+            zaman = (idx[bitis <= ny_simdi]).tz_convert("UTC")
+
+        df = pd.DataFrame({"zaman": zaman, "acilis": ham["open"].to_numpy(float),
+                           "yuksek": ham["high"].to_numpy(float), "dusuk": ham["low"].to_numpy(float),
+                           "kapanis": ham["close"].to_numpy(float), "hacim": ham["volume"].to_numpy(float)})
+        son_mum_hatasi = None
+        return df.tail(adet).reset_index(drop=True)
+    except Exception as e:
+        son_mum_hatasi = f"Yahoo: {type(e).__name__}: {str(e)[:160]}"
+        return None
+
+
 def emir_defteri_ozeti(sembol="BTC/USDT", derinlik=50):
     """
     Emir defteri: o anda alicilarin ve saticilarin bekleyen emirleri.

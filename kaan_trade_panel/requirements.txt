@@ -9,3 +9,4 @@ plotly>=5.20
 pywebview>=5.0
 pillow>=10.0
 feedparser>=6.0
+yfinance>=0.2.40

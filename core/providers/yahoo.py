@@ -5,7 +5,8 @@ Fiyatlar TL cinsindendir.
 
 ONEMLI KISITLAR (Yahoo tarafindan dayatiliyor, bizim secimimiz degil):
   * 1m  -> son 7 gun
-  * <1d -> son 60 gun
+  * 5m-30m -> son 60 gun
+  * 1h (60m) -> son ~730 gun (2026-10'da olculdu; eskiden burada 60 yaziyordu)
   * 1d/1w -> tam gecmis
 Bu yuzden intraday stratejilerin gecmisi kisa. Kripto tarafinda boyle bir
 sinir yok; intraday arastirmayi once Binance uzerinde yapmak daha saglikli.
@@ -23,7 +24,7 @@ _TF_MAP = {
 }
 
 # gun cinsinden azami geriye bakis
-_LOOKBACK_LIMIT_DAYS = {"1m": 7, "5m": 60, "15m": 60, "30m": 60, "1h": 60}
+_LOOKBACK_LIMIT_DAYS = {"1m": 7, "5m": 60, "15m": 60, "30m": 60, "1h": 729}
 
 
 class YahooProvider(DataProvider):

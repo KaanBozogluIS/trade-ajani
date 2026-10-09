@@ -5,5 +5,5 @@ cd /d "%~dp0"
 echo Panel baslatiliyor, tarayici birazdan acilacak...
 echo Kapatmak icin bu pencerede Ctrl+C yapin.
 echo.
-".venv\Scripts\streamlit.exe" run uygulama.py
+".venv\Scripts\python.exe" -m streamlit run uygulama.py
 pause

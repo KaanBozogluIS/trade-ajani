@@ -25,6 +25,7 @@ st.set_page_config(page_title="kaan-trade", page_icon="📊",
 
 import html
 import json
+import re
 import subprocess
 import threading
 import time
@@ -1830,9 +1831,170 @@ def _trade_ajani_pozisyon_ozeti(poz: pd.Series, zaman: pd.Series) -> dict:
     return {"durum": durum, "beri": zaman.loc[son_degisim_idx]}
 
 
+@st.cache_data(ttl=900, show_spinner=False)
+def c_hisse_mumlar(sembol, dilim, adet):
+    return vk.hisse_mum_verisi(sembol, dilim, adet)
+
+
+_ANALIZ_AYAR = {"baslangic_bakiye": 1000.0, "islem_ucreti_yuzde": 0.1, "islem_orani": 0.95}
+_VARSAYILAN_HISSELER = "AMPX, ANNX, MSTR"
+_SINYAL_METNI = {"LONG": "🟢 LONG — yükseliş", "SHORT": "🔴 SHORT — düşüş",
+                 "NAKIT": "⚪ Nakit — sinyal yok", "ISINIYOR": "🟡 Isınıyor"}
+
+
+def _strateji_karnesi(df, poz, isinma):
+    """
+    Bir stratejinin BIR hissedeki gecmis karnesi: tum donem + egitim (ilk
+    %70) / test (son %30) ayri ayri. Bu stratejilerin ayarlari KRIPTO
+    verisinde belirlendi -- hisse verisinin tamami onlar icin "gorulmemis"
+    veridir; yine de iki donem ayri raporlanir ki tek bir sansli donem
+    tum sonucu tasimasin.
+
+    Guvenilirlik etiketi (bilerek basit ve kati):
+      ✅ gecmiste tutarli : >= 10 islem VE egitim ile test donemlerinin
+                            IKISINDE DE kar
+      ⚪ yetersiz islem   : < 10 islem -- karar verecek kadar ornek yok
+      ⚠️ kanitlanmamis    : geri kalan her sey
+    """
+    a = _ANALIZ_AYAR
+    tum = simule_et(df, poz, a, baslangic=isinma)
+    ayir = int(len(df) * 0.7)
+    egitim = simule_et(df.iloc[:ayir].reset_index(drop=True), poz.iloc[:ayir].reset_index(drop=True),
+                       a, baslangic=isinma) if ayir > isinma + 30 else None
+    bas = max(0, ayir - isinma)
+    test = simule_et(df.iloc[bas:].reset_index(drop=True), poz.iloc[bas:].reset_index(drop=True),
+                     a, baslangic=ayir - bas) if len(df) - ayir > 30 else None
+    if tum is None or tum["tur"] < 10:
+        etiket = "⚪ Yetersiz işlem"
+    elif egitim and test and egitim["getiri"] > 0 and test["getiri"] > 0:
+        etiket = "✅ Geçmişte tutarlı"
+    else:
+        etiket = "⚠️ Kanıtlanmamış"
+    return {"guven": etiket,
+            "tum": tum["getiri"] if tum else None, "al_tut": tum["al_tut_getiri"] if tum else None,
+            "islem": tum["tur"] if tum else 0,
+            "egitim": egitim["getiri"] if egitim else None, "test": test["getiri"] if test else None}
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def _hisse_sinyal_tablosu(hisseler, dilim):
+    satirlar, hatalar = [], []
+    for hisse in hisseler:
+        df = vk.hisse_mum_verisi(hisse, dilim, 5000)
+        if df is None or len(df) < 260:
+            hatalar.append(f"{hisse}: {vk.son_mum_hatasi or 'yeterli geçmiş veri yok (en az 260 mum gerekli)'}")
+            continue
+        for isim, fn, params in taj.STRATEJILER:
+            try:
+                poz = fn(df, **params)
+            except Exception as exc:
+                hatalar.append(f"{hisse} / {isim}: {exc}")
+                continue
+            ozet = _trade_ajani_pozisyon_ozeti(poz, df["zaman"])
+            karne = _strateji_karnesi(df, poz, taj.isinma_suresi(isim, params))
+            satirlar.append({
+                "Hisse": hisse, "Strateji": isim, "durum": ozet["durum"],
+                "Sinyal": _SINYAL_METNI[ozet["durum"]],
+                "Beri (UTC)": ozet["beri"].strftime("%Y-%m-%d %H:%M") if ozet["beri"] is not None else "—",
+                "Son fiyat $": float(df["kapanis"].iloc[-1]),
+                "Güvenilirlik": karne["guven"],
+                "Tüm dönem %": karne["tum"], "Al-tut %": karne["al_tut"], "İşlem": karne["islem"],
+                "Eğitim %": karne["egitim"], "Test %": karne["test"],
+                "Veri": f"{df['zaman'].iloc[0]:%Y-%m-%d} → {df['zaman'].iloc[-1]:%Y-%m-%d}",
+            })
+    return satirlar, hatalar
+
+
+def _gecmise_donuk_analiz(anahtar, etiket, veri_getir, max_gun, varsayilan_gun, gun_aciklama):
+    """
+    Kullanicinin SECTIGI strateji + gun sayisiyla, "Calistir"a basinca
+    calisan tek seferlik geriye donuk test (kripto ve hisse ORTAK).
+    <veri_getir>(gun, isinma) yeterli gecmisi iceren bir df dondurur; burada
+    secilen tarih araligina (isinma payi dahil) kesilir.
+    """
+    st.markdown('<div class="bolum-basligi" style="margin-top:20px;">Geçmişe Dönük Analiz</div>',
+                unsafe_allow_html=True)
+    st.caption(
+        f"Seçtiğiniz stratejiyi **{etiket}** için geçmiş veride tek seferlik çalıştırır — getiri, "
+        "en büyük düşüş, işlem listesi ve portföy eğrisi gösterir. **Bu bir garanti değildir**: "
+        "geçmişte iyi giden bir strateji geleceği garanti etmez ve burada tek bir dönemin "
+        "sonucu gösterilir.")
+    kontrol = st.columns([2, 2, 1])
+    with kontrol[0]:
+        secilen_isim = st.selectbox(
+            "Strateji", [isim for isim, _, _ in taj.STRATEJILER], key=f"{anahtar}_strateji")
+    with kontrol[1]:
+        gun_sayisi = st.slider("Kaç gün geriye bakılsın", min_value=7, max_value=max_gun,
+                               value=varsayilan_gun, step=1, key=f"{anahtar}_gun", help=gun_aciklama)
+    with kontrol[2]:
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        calistir = st.button("Çalıştır", key=f"{anahtar}_calistir", width="stretch")
+    if not calistir:
+        return
+
+    fn, params = {isim: (fn, params) for isim, fn, params in taj.STRATEJILER}[secilen_isim]
+    isinma = taj.isinma_suresi(secilen_isim, params)
+    df_tum = veri_getir(gun_sayisi, isinma)
+    if df_tum is None or len(df_tum) < isinma + 30:
+        st.warning(f"{etiket} için seçilen aralıkta yeterli veri alınamadı.")
+        return
+    ilk = int((df_tum["zaman"] < df_tum["zaman"].iloc[-1] - pd.Timedelta(days=gun_sayisi)).sum())
+    bas = max(0, ilk - isinma)
+    df_analiz = df_tum.iloc[bas:].reset_index(drop=True)
+    try:
+        poz = fn(df_analiz, **params)
+    except Exception as exc:
+        st.error(f"Strateji çalıştırılamadı: {exc}")
+        return
+    sonuc = simule_et(df_analiz, poz, _ANALIZ_AYAR,
+                      baslangic=min(max(ilk - bas, isinma), len(df_analiz) - 2), detay_don=True)
+    if sonuc is None:
+        st.warning("Bu ayarlarla simülasyon sonucu üretilemedi.")
+        return
+
+    m = st.columns(5)
+    with m[0]:
+        st.metric("Getiri", f"{sonuc['getiri']:+.1f}%")
+    with m[1]:
+        st.metric("Al-tut getirisi", f"{sonuc['al_tut_getiri']:+.1f}%")
+    with m[2]:
+        st.metric("En büyük düşüş", f"{sonuc['dusus']:.1f}%")
+    with m[3]:
+        st.metric("İşlem sayısı", f"{sonuc['tur']}")
+    with m[4]:
+        st.metric("Kazanma oranı", f"{sonuc['kazanma']:.0f}%" if sonuc["tur"] else "—")
+
+    egri_df = pd.DataFrame({"Zaman": sonuc["zamanlar"], "Portföy değeri": sonuc["seri"]})
+    st.line_chart(egri_df.set_index("Zaman"))
+
+    if sonuc["islemler"]:
+        islem_df = pd.DataFrame(sonuc["islemler"]).rename(columns={
+            "zaman": "Giriş zamanı", "fiyat": "Giriş fiyatı", "yon": "Yön",
+            "cikis_zaman": "Çıkış zamanı", "cikis_fiyat": "Çıkış fiyatı", "getiri_yuzde": "Getiri %",
+        })
+        st.dataframe(
+            islem_df.sort_values("Giriş zamanı", ascending=False), width="stretch", hide_index=True,
+            column_config={
+                "Giriş fiyatı": st.column_config.NumberColumn(format="%.6g"),
+                "Çıkış fiyatı": st.column_config.NumberColumn(format="%.6g"),
+                "Getiri %": st.column_config.NumberColumn(format="%+.2f%%"),
+            })
+    else:
+        st.info("Seçilen dönemde bu strateji hiç işlem tetiklemedi.")
+
+
 def sayfa_trade_ajani(sembol):
-    kod = sembol.split("/")[0]
     st.markdown('<div class="bolum-basligi">Trade Ajanı Stratejileri</div>', unsafe_allow_html=True)
+    piyasa = st.radio("Piyasa", ["Kripto", "ABD Hisse"], horizontal=True, key="ta_piyasa",
+                      label_visibility="collapsed")
+    if piyasa == "Kripto":
+        _trade_ajani_kripto(sembol)
+    else:
+        _trade_ajani_hisse()
+
+
+def _trade_ajani_kripto(sembol):
+    kod = sembol.split("/")[0]
     st.info(
         "Bu 4 strateji **ayrı bir projede** (Trade-ajanı), eğitim/test (IS/OOS) "
         "ayrımlı geniş taramalarla doğrulandı ve buraya **LONG+SHORT** (orijinal) "
@@ -1872,88 +2034,85 @@ def sayfa_trade_ajani(sembol):
 
     st.caption(f"{kod} · 1 saatlik mumlar · son {len(df)} bar · coin değiştirince yenilenir.")
 
-    # --- GECMISE DONUK ANALIZ (2026-09-12'de eklendi) -----------
-    # Kullanicinin KENDI SECTIGI strateji + coin + gun sayisiyla, ayri bir
-    # "Calistir" butonuna basinca calisan, tek seferlik bir geriye donuk
-    # test. Sayfanin geri kalani (yukaridaki durum kartlari) SURESIZ/
-    # otomatik calisirken, bu bolum BILEREK sadece butona basinca calisir
-    # -- 40 gunluk saatlik veri + simulasyon her navigasyonda/1 saniyede
-    # bir kosarsa gereksiz agir olur.
-    st.markdown('<div class="bolum-basligi" style="margin-top:20px;">Geçmişe Dönük Analiz</div>',
+    _gecmise_donuk_analiz(
+        "ta_analiz", kod,
+        lambda gun, isinma: c_mumlar(sembol, "1h", gun * 24 + isinma + 20),
+        max_gun=90, varsayilan_gun=30,
+        gun_aciklama="1 saatlik mumlar; en fazla 90 gün (~2160 mum).")
+
+
+def _trade_ajani_hisse():
+    st.warning(
+        "**Önce bunu okuyun:** bu 4 strateji **KRİPTO** için tasarlanıp orada doğrulandı. "
+        "Hisselerde hiç doğrulanmadılar: hisseler sadece seans saatlerinde işlem görür, "
+        "geceleri ve hafta sonları fiyat boşlukları olur, bilanço veya FDA gibi tek bir "
+        "haber fiyatı bir gecede %50 oynatabilir. İlk testlerde çoğu hisse-strateji "
+        "kombinasyonu ya hiç işlem açmadı ya da al-tut'un gerisinde kaldı. Bu yüzden her "
+        "sinyalin yanında, o stratejinin **o hissedeki** geçmiş karnesi var. "
+        "**⚠️ Kanıtlanmamış** etiketli bir sinyal yazı-tura kadar güvenilirdir. Sinyal, "
+        "bir kuralın şu anki durumudur; fiyat tahmini ya da yatırım tavsiyesi değildir.")
+
+    kol = st.columns([3, 2])
+    with kol[0]:
+        metin = st.text_input("Hisseler (virgülle ayırın, en fazla 15)", value=_VARSAYILAN_HISSELER,
+                              key="ta_hisseler", help="ABD borsasındaki kodlar: AMPX, MSTR, NVDA, TSLA...")
+    with kol[1]:
+        dilim_etiket = st.radio("Zaman dilimi", ["Saatlik (1h)", "Günlük (1d)"], horizontal=True,
+                                key="ta_hisse_dilim",
+                                help="Stratejiler saatlik veri için tasarlandı. Günlükte bölge tabanlı "
+                                     "üç strateji yıllar içinde çok az işlem açar.")
+    dilim = "1h" if "1h" in dilim_etiket else "1d"
+    hisseler = tuple(dict.fromkeys(
+        h for h in (re.sub(r"[^A-Z0-9.\-]", "", p.upper()) for p in re.split(r"[,;\s]+", metin)) if h))[:15]
+    if not hisseler:
+        st.info("En az bir hisse kodu girin (örnek: AMPX, ANNX, MSTR).")
+        return
+
+    with st.spinner("Hisse verisi indiriliyor ve stratejiler hesaplanıyor (ilk seferde ~30 sn)..."):
+        satirlar, hatalar = _hisse_sinyal_tablosu(hisseler, dilim)
+    for hata in hatalar:
+        st.warning(hata)
+    if not satirlar:
+        return
+    tablo = pd.DataFrame(satirlar)
+
+    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">Şu anki sinyaller</div>',
                 unsafe_allow_html=True)
+    ozet_kol = st.columns(2)
+    for hedef, durum, baslik in ((ozet_kol[0], "LONG", "🟢 Yükseliş sinyali verenler"),
+                                  (ozet_kol[1], "SHORT", "🔴 Düşüş sinyali verenler")):
+        with hedef:
+            st.markdown(f"**{baslik}**")
+            secili = tablo[tablo["durum"] == durum]
+            if secili.empty:
+                st.caption("Şu an hiçbir strateji bu yönde sinyal vermiyor.")
+            for _, r in secili.iterrows():
+                st.markdown(f"- **{r['Hisse']}** — {r['Strateji']} · {r['Güvenilirlik']} · beri {r['Beri (UTC)']}")
+
+    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">Tüm sinyaller ve geçmiş karne</div>',
+                unsafe_allow_html=True)
+    sira = {"LONG": 0, "SHORT": 1, "NAKIT": 2, "ISINIYOR": 3}
+    tablo = tablo.assign(_s=tablo["durum"].map(sira)).sort_values(["_s", "Hisse"]).drop(columns=["_s", "durum"])
+    st.dataframe(tablo, width="stretch", hide_index=True, column_config={
+        "Son fiyat $": st.column_config.NumberColumn(format="%.4g"),
+        "Tüm dönem %": st.column_config.NumberColumn(format="%+.0f%%"),
+        "Al-tut %": st.column_config.NumberColumn(format="%+.0f%%"),
+        "Eğitim %": st.column_config.NumberColumn(format="%+.0f%%"),
+        "Test %": st.column_config.NumberColumn(format="%+.0f%%"),
+    })
     st.caption(
-        "Seçtiğiniz stratejiyi, seçili coin için geçmiş veride tek seferlik çalıştırır — "
-        "getiri, en büyük düşüş, işlem listesi ve bir portföy eğrisi gösterir. **Bu bir "
-        "garanti değildir**: geçmişte iyi giden bir strateji geleceği garanti etmez, "
-        "burada IS/OOS (eğitim/test) ayrımı da yapılmaz — sadece tek bir dönemin "
-        "sonucunu gösterir (tarafsız doğrulama için bkz. `research/` klasöründeki "
-        "Trade-ajanı taramaları)."
-    )
-    kontrol = st.columns([2, 2, 1])
-    with kontrol[0]:
-        secilen_isim = st.selectbox(
-            "Strateji", [isim for isim, _, _ in taj.STRATEJILER], key="ta_analiz_strateji")
-    with kontrol[1]:
-        gun_sayisi = st.slider(
-            "Kaç gün geriye bakılsın", min_value=7, max_value=40, value=30, step=1,
-            key="ta_analiz_gun", help="1 saatlik mumlarla tek bir borsa isteğinin "
-            "güvenle döndürebildiği üst sınıra göre 40 günle sınırlandı.")
-    with kontrol[2]:
-        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
-        calistir = st.button("Çalıştır", key="ta_analiz_calistir", width="stretch")
+        "**Tüm dönem / Al-tut:** stratejinin o hissedeki tüm geçmiş verideki getirisi ve aynı "
+        "dönemde hisseyi sadece alıp tutmanın getirisi (kaldıraçsız, %0.1 komisyon). "
+        "**Eğitim / Test:** verinin ilk %70'i ve son %30'u ayrı ayrı. **✅ Geçmişte tutarlı:** "
+        "en az 10 işlem ve iki dönemde de kâr (bu bile geleceği garanti etmez). "
+        f"Zaman dilimi: {dilim}. Veriler Yahoo Finance'tan, 15 dk önbellekli.")
 
-    if calistir:
-        strateji_sozlugu = {isim: (fn, params) for isim, fn, params in taj.STRATEJILER}
-        fn, params = strateji_sozlugu[secilen_isim]
-        isinma = taj.isinma_suresi(secilen_isim, params)
-        adet = gun_sayisi * 24 + isinma + 20
-        df_analiz = c_mumlar(sembol, "1h", adet)
-        if df_analiz is None or len(df_analiz) < isinma + 30:
-            st.warning(f"{kod} için seçilen aralıkta yeterli veri alınamadı.")
-        else:
-            try:
-                poz = fn(df_analiz, **params)
-            except Exception as exc:
-                st.error(f"Strateji çalıştırılamadı: {exc}")
-                poz = None
-            if poz is not None:
-                a_ayarlar = {"baslangic_bakiye": 1000.0, "islem_ucreti_yuzde": 0.1, "islem_orani": 0.95}
-                sonuc = simule_et(df_analiz, poz, a_ayarlar, baslangic=min(isinma, len(df_analiz) - 2),
-                                  detay_don=True)
-                if sonuc is None:
-                    st.warning("Bu ayarlarla simülasyon sonucu üretilemedi.")
-                else:
-                    m = st.columns(5)
-                    with m[0]:
-                        st.metric("Getiri", f"{sonuc['getiri']:+.1f}%")
-                    with m[1]:
-                        st.metric("Al-tut getirisi", f"{sonuc['al_tut_getiri']:+.1f}%")
-                    with m[2]:
-                        st.metric("En büyük düşüş", f"{sonuc['dusus']:.1f}%")
-                    with m[3]:
-                        st.metric("İşlem sayısı", f"{sonuc['tur']}")
-                    with m[4]:
-                        st.metric("Kazanma oranı", f"{sonuc['kazanma']:.0f}%" if sonuc["tur"] else "—")
-
-                    egri_df = pd.DataFrame({"Zaman": sonuc["zamanlar"], "Portföy değeri": sonuc["seri"]})
-                    st.line_chart(egri_df.set_index("Zaman"))
-
-                    if sonuc["islemler"]:
-                        islem_df = pd.DataFrame(sonuc["islemler"]).rename(columns={
-                            "zaman": "Giriş zamanı", "fiyat": "Giriş fiyatı", "yon": "Yön",
-                            "cikis_zaman": "Çıkış zamanı", "cikis_fiyat": "Çıkış fiyatı",
-                            "getiri_yuzde": "Getiri %",
-                        })
-                        st.dataframe(
-                            islem_df.sort_values("Giriş zamanı", ascending=False),
-                            width="stretch", hide_index=True,
-                            column_config={
-                                "Giriş fiyatı": st.column_config.NumberColumn(format="%.6g"),
-                                "Çıkış fiyatı": st.column_config.NumberColumn(format="%.6g"),
-                                "Getiri %": st.column_config.NumberColumn(format="%+.2f%%"),
-                            })
-                    else:
-                        st.info("Seçilen dönemde bu strateji hiç işlem tetiklemedi.")
+    analiz_hisse = st.selectbox("Geçmişe dönük analiz için hisse", hisseler, key="ta_hisse_analiz")
+    _gecmise_donuk_analiz(
+        f"ta_hisse_{dilim}", analiz_hisse,
+        lambda gun, isinma: c_hisse_mumlar(analiz_hisse, dilim, 5000),
+        max_gun=700 if dilim == "1h" else 3650, varsayilan_gun=180 if dilim == "1h" else 730,
+        gun_aciklama="Saatlikte Yahoo en fazla ~730 gün verir; günlükte tüm geçmiş.")
 
 
 # ============================================================
@@ -2712,9 +2871,9 @@ elif st.session_state.sayfa == "Sanal Trader":
                "değiştirdiğinizde tazelenir. Tamamen sanal para kullanır, "
                "gerçek emir göndermez.")
 elif st.session_state.sayfa == "Trade Ajanı":
-    st.caption("Bu stratejiler ayrı bir projeden (Trade-ajanı) aktarıldı ve "
-               "canlı Sanal Trader botunu etkilemez. · 1 saatlik mumlarla "
-               "hesaplanır, coin değiştirince yenilenir. · Tavsiye değildir.")
+    st.caption("Kripto: Binance 1 saatlik mumlar, coin değiştirince yenilenir · "
+               "ABD hisse: Yahoo Finance, 15 dk önbellek · Sinyaller bir kuralın "
+               "şu anki durumudur, tahmin ya da yatırım tavsiyesi değildir.")
 elif st.session_state.anlik:
     st.caption(f"Fiyat ve özet sayılar {st.session_state.aralik} saniyede "
                "bir canlı veriden yenileniyor. Grafikler ve tablolar siz "

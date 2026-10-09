@@ -47,12 +47,14 @@ def streamlit_baslat():
         print("Sunucu zaten calisiyor, ona baglaniyorum.")
         return None
 
-    streamlit = KLASOR / ".venv" / "Scripts" / "streamlit.exe"
-    if not streamlit.exists():
-        # Sanal ortam yoksa mevcut Python ile dene
-        komut = [sys.executable, "-m", "streamlit", "run", "uygulama.py"]
-    else:
-        komut = [str(streamlit), "run", "uygulama.py"]
+    # streamlit.exe DEGIL, "python -m streamlit": .venv baska bir klasorden
+    # kopyalandiginda (2026-09 birlestirmesinde oldugu gibi) streamlit.exe
+    # icine gomulu ESKI klasorun python.exe yolunu kullanmaya devam eder --
+    # panel sessizce eski klasorun kutuphaneleriyle calisir, yeni kurulan
+    # paketleri goremez ve eski klasor silinince hic acilmaz. python.exe ise
+    # kendi klasorundeki pyvenv.cfg'yi okur, her zaman DOGRU ortami kullanir.
+    python = KLASOR / ".venv" / "Scripts" / "python.exe"
+    komut = [str(python) if python.exists() else sys.executable, "-m", "streamlit", "run", "uygulama.py"]
 
     komut += ["--server.port", str(PORT),
               "--server.address", "127.0.0.1",
