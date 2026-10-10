@@ -26,15 +26,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "TAO/USDT": {
-    "miktar": 0.22368253338441765,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 274.9,
-    "giris_zamani": "2026-10-09T16:09:53.730021+00:00",
-    "maliyet": 12.310376061536818,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "OGN/USDT": {
     "miktar": 21896.698803764404,
     "strateji": "Momentum 180",
@@ -70,5 +61,14 @@
     "maliyet": 81.97229342554684,
     "yon": "LONG",
     "kaldirac": 10.0
+  },
+  "ZK/USDT": {
+    "miktar": 6319.438923680854,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 0.01355,
+    "giris_zamani": "2026-10-10T08:25:26.300774+00:00",
+    "maliyet": 17.142822305480596,
+    "yon": "LONG",
+    "kaldirac": 5.0
   }
 }
