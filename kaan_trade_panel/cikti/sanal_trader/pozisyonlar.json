@@ -17,15 +17,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "AVAX/USDT": {
-    "miktar": 5.74364628774836,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 10.196,
-    "giris_zamani": "2026-10-09T16:09:53.494641+00:00",
-    "maliyet": 11.724167677654112,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "OGN/USDT": {
     "miktar": 21896.698803764404,
     "strateji": "Momentum 180",
@@ -68,6 +59,15 @@
     "giris_fiyat": 0.0827,
     "giris_zamani": "2026-10-10T15:17:14.046606+00:00",
     "maliyet": 128.76309770282745,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "FET/USDT": {
+    "miktar": 410.43590683128565,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.2243,
+    "giris_zamani": "2026-10-10T23:29:13.496625+00:00",
+    "maliyet": 18.43058536581729,
     "yon": "LONG",
     "kaldirac": 5.0
   }
