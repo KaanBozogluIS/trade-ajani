@@ -1,13 +1,4 @@
 {
-  "ONDO/USDT": {
-    "miktar": 1875.6883366315674,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.5492,
-    "giris_zamani": "2026-09-26T00:30:13.784084+00:00",
-    "maliyet": 206.23183873434573,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "BNB/USDT": {
     "miktar": 2.0091062725167186,
     "strateji": "Dusuk oynaklik",
@@ -70,5 +61,14 @@
     "maliyet": 123.0123527177684,
     "yon": "LONG",
     "kaldirac": 5.0
+  },
+  "U/USDT": {
+    "miktar": 818.5757810088094,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 1.0004,
+    "giris_zamani": "2026-10-10T01:42:46.712828+00:00",
+    "maliyet": 81.97229342554684,
+    "yon": "LONG",
+    "kaldirac": 10.0
   }
 }
