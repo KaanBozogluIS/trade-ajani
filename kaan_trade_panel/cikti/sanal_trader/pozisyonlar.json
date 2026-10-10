@@ -44,15 +44,6 @@
     "yon": "LONG",
     "kaldirac": 7.28071880171855
   },
-  "AAVE/USDT": {
-    "miktar": 3.6519863407147284,
-    "strateji": "MACD",
-    "giris_fiyat": 168.25,
-    "giris_zamani": "2026-10-09T19:28:51.899484+00:00",
-    "maliyet": 123.0123527177684,
-    "yon": "LONG",
-    "kaldirac": 5.0
-  },
   "U/USDT": {
     "miktar": 818.5757810088094,
     "strateji": "Dusuk oynaklik",
@@ -68,6 +59,15 @@
     "giris_fiyat": 0.01355,
     "giris_zamani": "2026-10-10T08:25:26.300774+00:00",
     "maliyet": 17.142822305480596,
+    "yon": "LONG",
+    "kaldirac": 5.0
+  },
+  "ERA/USDT": {
+    "miktar": 7777.166542026883,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 0.0827,
+    "giris_zamani": "2026-10-10T15:17:14.046606+00:00",
+    "maliyet": 128.76309770282745,
     "yon": "LONG",
     "kaldirac": 5.0
   }
