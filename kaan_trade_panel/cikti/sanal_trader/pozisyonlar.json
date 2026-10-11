@@ -61,5 +61,14 @@
     "maliyet": 18.43058536581729,
     "yon": "LONG",
     "kaldirac": 5.0
+  },
+  "BTC/USDT": {
+    "miktar": 0.022861936395059814,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 83824.0,
+    "giris_zamani": "2026-10-11T18:01:24.095190+00:00",
+    "maliyet": 191.8297253633127,
+    "yon": "LONG",
+    "kaldirac": 10.0
   }
 }
