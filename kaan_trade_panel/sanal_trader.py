@@ -59,7 +59,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import ccxt
@@ -199,6 +199,20 @@ AYARLAR = {
     # bir sonraki kontrolde rotasyonun GUNCEL stratejisiyle yeniden
     # degerlendirilir -- sinyal hala lehteyse TAZE kaldiracla yeniden acilir.
     "maks_tutma_gun": 14,
+
+    # Kaldirac hesabinda kisa ATR(14) ile birlikte bakilan UZUN ATR (saatlik
+    # mumda 168 = ~7 gun) -- bkz. _kaldirac_hesapla, "sakin donem tuzagi".
+    "kaldirac_uzun_atr_mum": 168,
+
+    # PORTFOY DEVRE KESICISI (2026-10-11): toplam deger, ulastigi en yuksek
+    # seviyeden bu kadar yuzde duserse bekleme suresi boyunca YENI pozisyon
+    # ACILMAZ. Acik pozisyonlar kendi cikis sinyali / likidasyon / sure
+    # kuraliyla devam eder. Sure dolunca zirve o anki degere sifirlanir ve
+    # normal isleme donulur. NEDEN: 4-9 Ekim 2026'da portfoy zirveden ~%55
+    # dustu -- kaybederken ayni hizla yeni kaldiracli pozisyon acmaya devam
+    # etmek, kotu bir piyasa rejiminde kaybi buyutur.
+    "devre_kesici_dusus_yuzde": 25.0,
+    "devre_kesici_bekleme_saat": 48,
 }
 
 # Zaman dilimine gore bir mumun kac saat surdugu -- "gun" cinsinden
@@ -222,7 +236,13 @@ def _kaldirac_hesapla(df, a):
     seri = atr(df, 14)
     if seri is None or len(seri) == 0:
         return a["min_kaldirac"]
-    a_deger = float(seri.iloc[-1])
+    # Kisa (14 mum) VE uzun (~7 gun) oynakligin BUYUGU kullanilir. Sadece
+    # kisa ATR'a bakmak "sakin donem tuzagina" dusuyordu: birkac sakin
+    # saatte kaldirac 10x'e cikiyor, oynaklik geri donunce pozisyon likide
+    # oluyordu (2026-10-08: SOL 10x ve MARSCOIN 5x bu sekilde marjinin
+    # tamamini kaybetti). Uzun ATR yakin gecmisteki oynakligi "hatirlar".
+    uzun = atr(df, a.get("kaldirac_uzun_atr_mum", 168))
+    a_deger = max(float(seri.iloc[-1]), float(uzun.iloc[-1]) if len(uzun) else 0.0)
     fiyat = float(df["kapanis"].iloc[-1])
     if pd.isna(a_deger) or a_deger <= 0 or fiyat <= 0:
         return a["min_kaldirac"]
@@ -294,11 +314,14 @@ class Portfoy:
         self.pozisyonlar = {}          # sembol -> {"miktar","strateji","giris_fiyat","giris_zamani"}
         self.baslangic = baslangic_bakiye
         self.islem_sayisi = 0
+        self.zirve = None                 # devre kesici icin ulasilan en yuksek toplam deger
+        self.devre_kesici_bitis = None    # ISO zaman -- doluysa o zamana kadar yeni pozisyon acilmaz
 
     def kaydet(self):
         _atomik_yaz(PORTFOY_DOSYASI, json.dumps({
             "nakit": self.nakit, "baslangic": self.baslangic,
             "islem_sayisi": self.islem_sayisi,
+            "zirve": self.zirve, "devre_kesici_bitis": self.devre_kesici_bitis,
         }, indent=2))
         _atomik_yaz(POZISYON_DOSYASI,
                     json.dumps(self.pozisyonlar, indent=2, ensure_ascii=False))
@@ -312,6 +335,8 @@ class Portfoy:
                 p.nakit = float(v["nakit"])
                 p.baslangic = float(v.get("baslangic", baslangic_bakiye))
                 p.islem_sayisi = int(v.get("islem_sayisi", 0))
+                p.zirve = v.get("zirve")
+                p.devre_kesici_bitis = v.get("devre_kesici_bitis")
                 print(f"[i] Onceki portfoy bulundu ve yuklendi ({PORTFOY_DOSYASI.name})")
             except Exception as e:
                 print(f"[!] portfoy.json okunamadi, sifirdan baslaniyor: {e}")
@@ -323,7 +348,35 @@ class Portfoy:
         return p
 
     def bos_pozisyon_yeri(self, maks_pozisyon):
+        if self.devre_kesici_aktif_mi():
+            return 0
         return max(0, maks_pozisyon - len(self.pozisyonlar))
+
+    def devre_kesici_aktif_mi(self):
+        return bool(self.devre_kesici_bitis) and \
+            datetime.now(timezone.utc) < datetime.fromisoformat(self.devre_kesici_bitis)
+
+    def devre_kesiciyi_guncelle(self, toplam_deger, a):
+        """
+        Her dongu sonunda cagrilir. Donen: "TETIKLENDI", "BITTI" ya da None.
+        Zirve yoksa (ilk calisma / bu ozellikten onceki portfoy) o anki
+        deger zirve kabul edilir -- gecmisteki dususler aniden kesiciyi
+        tetiklemesin, olcum bugunden baslasin.
+        """
+        if self.devre_kesici_bitis and not self.devre_kesici_aktif_mi():
+            self.devre_kesici_bitis = None
+            self.zirve = toplam_deger
+            return "BITTI"
+        if self.devre_kesici_aktif_mi():
+            return None
+        if self.zirve is None or toplam_deger > self.zirve:
+            self.zirve = toplam_deger
+            return None
+        if toplam_deger <= self.zirve * (1 - a["devre_kesici_dusus_yuzde"] / 100):
+            bitis = datetime.now(timezone.utc) + timedelta(hours=a["devre_kesici_bekleme_saat"])
+            self.devre_kesici_bitis = bitis.isoformat()
+            return "TETIKLENDI"
+        return None
 
     def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG", kaldirac=1.0):
         """
@@ -1039,6 +1092,28 @@ def _dongu_sonu(portfoy, depo, a, atama_sayisi):
     saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{saat}] {len(portfoy.pozisyonlar)}/{a['maks_pozisyon']} pozisyon acik  "
           f"toplam={toplam:,.2f} USDT ({kar:+.2f}%)")
+
+    # Devre kesici SADECE tum pozisyonlarin canli fiyati varken ve veri
+    # sagliklıyken guncellenir: eksik fiyatli bir pozisyon toplam_deger'e
+    # hic eklenmez, portfoy oldugundan dusuk gorunur ve kesici YANLISLIKLA
+    # tetiklenirdi.
+    if _saglik["mum_verisi_ok"] and len(fiyatlar) == len(portfoy.pozisyonlar):
+        onceki = (portfoy.zirve, portfoy.devre_kesici_bitis)
+        olay = portfoy.devre_kesiciyi_guncelle(toplam, a)
+        if (portfoy.zirve, portfoy.devre_kesici_bitis) != onceki:
+            portfoy.kaydet()
+        if olay == "TETIKLENDI":
+            print(f"[!] DEVRE KESICI: portfoy zirveden %{a['devre_kesici_dusus_yuzde']:g}+ dustu, "
+                  f"{a['devre_kesici_bekleme_saat']} saat yeni pozisyon acilmayacak")
+            _olaylar.append(
+                f"🛑 DEVRE KESİCİ: portföy zirvesinden ({portfoy.zirve:,.0f}$) "
+                f"%{(1 - toplam / portfoy.zirve) * 100:.0f} düştü. {a['devre_kesici_bekleme_saat']} saat "
+                "boyunca YENİ pozisyon açılmayacak; açık pozisyonlar kendi kurallarıyla devam ediyor.")
+        elif olay == "BITTI":
+            _olaylar.append("✅ Devre kesici süresi doldu, yeni pozisyon açılabilir (zirve sıfırlandı).")
+
+    if portfoy.devre_kesici_aktif_mi():
+        print(f"[i] Devre kesici aktif -- bitis: {portfoy.devre_kesici_bitis[:16]} UTC")
 
     if _olaylar:
         _telegram_gonder(

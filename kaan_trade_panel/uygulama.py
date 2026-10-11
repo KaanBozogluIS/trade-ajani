@@ -2472,7 +2472,14 @@ def _sanal_trader_icerik(depo):
             "geçmiş fiyat verisi ALAMADI** — bu sürede rotasyon, çıkış sinyalleri ve "
             "likidasyon kontrolü YAPILAMADI; aşağıdaki pozisyonlar dondurulmuş durumda. "
             f"Sebep: `{saglik.get('hata')}`")
-    elif saglik and saglik.get("verisiz_coin"):
+    kesici = (portfoy_verisi or {}).get("devre_kesici_bitis")
+    if kesici and datetime.fromisoformat(kesici) > datetime.now(timezone.utc):
+        st.warning(
+            f"🛑 **Devre kesici aktif** — portföy zirvesinden "
+            f"%{strd.AYARLAR['devre_kesici_dusus_yuzde']:g}+ düştüğü için "
+            f"{kesici[:16].replace('T', ' ')} UTC'ye kadar YENİ pozisyon açılmıyor. Açık pozisyonlar "
+            "kendi çıkış/likidasyon kurallarıyla devam ediyor.")
+    if saglik and saglik.get("mum_verisi_ok", True) and saglik.get("verisiz_coin"):
         st.warning(f"Son çalışmada şu coinler için veri alınamadı (kontrol edilemedi): "
                    f"{', '.join(saglik['verisiz_coin'])}")
 
