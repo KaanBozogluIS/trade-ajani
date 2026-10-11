@@ -194,7 +194,8 @@ def _canli_mum_ekle(df, canli_fiyat):
 def mum_grafigi(df, baslik="", ortalamalar=(20, 50, 200), ortalama_tipi="SMA",
                 rsi_periyot=None, bollinger=False, hacim=True, yukseklik=None,
                 macd_panel=False, stokastik_panel=False, vwap_cizgisi=False,
-                parabolik_sar=False, fibonacci=False, canli_fiyat=None):
+                parabolik_sar=False, fibonacci=False, canli_fiyat=None,
+                para_birimi="USDT"):
     """
     Mum grafigi. Istege gore ustune ve altina TradingView'de yaygin
     olan gostergeler eklenir.
@@ -393,7 +394,7 @@ def mum_grafigi(df, baslik="", ortalamalar=(20, 50, 200), ortalama_tipi="SMA",
 
     figur.update_xaxes(showspikes=True, spikemode="across", spikethickness=1,
                        spikedash="dot", spikecolor="#888888")
-    figur.update_yaxes(title_text="Fiyat (USDT)", row=1, col=1, side="right")
+    figur.update_yaxes(title_text=f"Fiyat ({para_birimi})", row=1, col=1, side="right")
     figur.update_layout(
         xaxis_rangeslider_visible=False,
         # Kalemle yeni cizilen sekillerin varsayilan gorunumu (renk,

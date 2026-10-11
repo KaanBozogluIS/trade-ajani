@@ -73,3 +73,26 @@ def test_bos_yanit_none_ve_sebep(sahte_yf):
 
 def test_desteklenmeyen_zaman_dilimi():
     assert vk.hisse_mum_verisi("MSTR", "4h") is None and "4h" in vk.son_mum_hatasi
+
+
+def test_haftalik_gunlukten_turetilir_ve_biten_hafta_atilir(sahte_yf, monkeypatch):
+    # Persembe 13:00 NY: bu hafta (Pzt-Cum) henuz bitmedi -> son tam hafta onceki hafta
+    _simdi(monkeypatch, "2026-10-08 13:00")
+    sahte_yf["tablo"] = _yahoo_tablosu(pd.date_range("2026-09-01", "2026-10-08", freq="B"))
+    df = vk.hisse_mum_verisi("MSTR", "1w", 100)
+    assert df["zaman"].iloc[-1].date() == pd.Timestamp("2026-09-28").date()  # Pazartesi etiketi
+    assert (df["zaman"].dt.weekday == 0).all()
+    gun = vk.hisse_mum_verisi("MSTR", "1d", 1000)
+    hafta = gun[(gun["zaman"] >= "2026-09-28") & (gun["zaman"] <= "2026-10-03")]
+    son = df.iloc[-1]
+    assert son["acilis"] == hafta["acilis"].iloc[0] and son["kapanis"] == hafta["kapanis"].iloc[-1]
+    assert son["yuksek"] == hafta["yuksek"].max() and son["hacim"] == hafta["hacim"].sum()
+
+
+def test_goreli_guc_kiyas_adi():
+    import analiz_botu as ab
+    yukselen = pd.DataFrame({"kapanis": np.linspace(10, 20, 40)})
+    duz = pd.DataFrame({"kapanis": np.full(40, 10.0)})
+    g = ab.gozlem_goreli_guc(yukselen, duz, "AMPX", kiyas_adi="S&P 500")
+    assert g and "S&P 500 karşısında daha güçlü" in g[0]["baslik"] and "BTC" not in g[0]["aciklama"]
+    assert "BTC karşısında" in ab.gozlem_goreli_guc(yukselen, duz, "ETH")[0]["baslik"]  # coin varsayilani

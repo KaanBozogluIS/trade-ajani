@@ -1985,12 +1985,8 @@ def _gecmise_donuk_analiz(anahtar, etiket, veri_getir, max_gun, varsayilan_gun, 
 
 def sayfa_trade_ajani(sembol):
     st.markdown('<div class="bolum-basligi">Trade Ajanı Stratejileri</div>', unsafe_allow_html=True)
-    piyasa = st.radio("Piyasa", ["Kripto", "ABD Hisse"], horizontal=True, key="ta_piyasa",
-                      label_visibility="collapsed")
-    if piyasa == "Kripto":
-        _trade_ajani_kripto(sembol)
-    else:
-        _trade_ajani_hisse()
+    st.caption("ABD hisseleri için bu stratejilerin sinyalleri ve karnesi **ABD Hisseler** sekmesinde.")
+    _trade_ajani_kripto(sembol)
 
 
 def _trade_ajani_kripto(sembol):
@@ -2041,34 +2037,270 @@ def _trade_ajani_kripto(sembol):
         gun_aciklama="1 saatlik mumlar; en fazla 90 gün (~2160 mum).")
 
 
-def _trade_ajani_hisse():
-    st.warning(
-        "**Önce bunu okuyun:** bu 4 strateji **KRİPTO** için tasarlanıp orada doğrulandı. "
-        "Hisselerde hiç doğrulanmadılar: hisseler sadece seans saatlerinde işlem görür, "
-        "geceleri ve hafta sonları fiyat boşlukları olur, bilanço veya FDA gibi tek bir "
-        "haber fiyatı bir gecede %50 oynatabilir. İlk testlerde çoğu hisse-strateji "
-        "kombinasyonu ya hiç işlem açmadı ya da al-tut'un gerisinde kaldı. Bu yüzden her "
-        "sinyalin yanında, o stratejinin **o hissedeki** geçmiş karnesi var. "
-        "**⚠️ Kanıtlanmamış** etiketli bir sinyal yazı-tura kadar güvenilirdir. Sinyal, "
-        "bir kuralın şu anki durumudur; fiyat tahmini ya da yatırım tavsiyesi değildir.")
+# ============================================================
+#  ABD HISSELERI  (Yahoo Finance -- coin sayfalarinin hisse karsiligi)
+# ============================================================
+#
+# Coin tarafindaki Piyasa / Coin analizi / Analiz Botu / Trade Ajani
+# sayfalarinin YAPTIGINI, bir takip listesindeki ABD hisseleri icin yapar.
+# Canli WebSocket yok (Yahoo ucretsiz verisi ~15 dk gecikmeli olabilir ve
+# seans disinda fiyat zaten degismez) -- o yuzden bu sayfa canli parcanin
+# DISINDA, 15 dk onbellekli ve "Verileri yenile" dugmesiyle tazelenir.
+# Coin'lere ozgu vadeli piyasa (fonlama, acik pozisyon) ve emir defteri
+# gozlemleri hisselerde YOK; goreli guc BTC yerine S&P 500'e (SPY) gore.
 
-    kol = st.columns([3, 2])
+_NY = "America/New_York"
+_ABD_ENDEKSLER = (("SPY", "S&P 500 (SPY)"), ("QQQ", "Nasdaq 100 (QQQ)"), ("^VIX", "Korku endeksi (VIX)"))
+_HISSE_GRAFIK_DILIMLERI = {"1 saat": "1h", "1 gün": "1d", "1 hafta": "1w"}
+
+
+def _hisse_kodlari(metin, en_fazla=15):
+    return tuple(dict.fromkeys(
+        h for h in (re.sub(r"[^A-Z0-9.\-]", "", p.upper()) for p in re.split(r"[,;\s]+", metin)) if h))[:en_fazla]
+
+
+def _seans_durumu():
+    ny = pd.Timestamp.now(tz=_NY)
+    acik = ny.weekday() < 5 and (ny.hour, ny.minute) >= (9, 30) and ny.hour < 16
+    return acik, ny
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def _hisse_ozeti(hisse):
+    """
+    Bir hissenin "Piyasa" satiri: son fiyat, donem getirileri, 52 hafta
+    zirvesine uzaklik, hacim, RSI, trend ve sikisma taramasi.
+
+    Son fiyat: seans surerken bugunun gunlugu henuz kapanmadigi icin
+    (hisse_mum_verisi onu atar) en son KAPANMIS SAATLIK mum kullanilir;
+    1 gunluk degisim, onceki seans kapanisina gore hesaplanir.
+    """
+    gun = vk.hisse_mum_verisi(hisse, "1d", 400)
+    if gun is None or len(gun) < 30:
+        return {"Hisse": hisse, "hata": vk.son_mum_hatasi or "yeterli geçmiş veri yok"}
+    son_fiyat, son_zaman = float(gun["kapanis"].iloc[-1]), gun["zaman"].iloc[-1]
+    son_tarih = son_zaman.date()
+    saat = vk.hisse_mum_verisi(hisse, "1h", 30)
+    if saat is not None and len(saat) and saat["zaman"].iloc[-1] > son_zaman:
+        son_fiyat, son_zaman = float(saat["kapanis"].iloc[-1]), saat["zaman"].iloc[-1]
+        son_tarih = son_zaman.tz_convert(_NY).date()
+    onceki = gun.loc[gun["zaman"].dt.date < son_tarih, "kapanis"]
+    if onceki.empty:
+        return {"Hisse": hisse, "hata": "önceki seans kapanışı bulunamadı"}
+
+    def getiri(n):
+        return (son_fiyat / float(onceki.iloc[-n]) - 1) * 100 if len(onceki) >= n else None
+
+    kapanis = gun["kapanis"]
+    yil = gun.tail(252)
+    zirve = max(float(yil["yuksek"].max()), son_fiyat)
+    ort50 = kapanis.rolling(50).mean().iloc[-1]
+    ort200 = kapanis.rolling(200).mean().iloc[-1]
+    if pd.isna(ort200):
+        trend = "—"
+    elif son_fiyat > ort50 > ort200:
+        trend = "🟢 Yükseliş"
+    elif son_fiyat < ort50 < ort200:
+        trend = "🔴 Düşüş"
+    else:
+        trend = "⚪ Karışık"
+    r = rsi(kapanis, 14).iloc[-1]
+    hacim_ort = gun["hacim"].iloc[-21:-1].mean()
+    aday = ab.tarama_adayi(gun)
+    tarama = {"guclu": "Sıkışma + yukarı hacim", "sikisma": "Sıkışma"}.get(aday["seviye"], "—") if aday else "—"
+    return {
+        "Hisse": hisse, "Fiyat $": son_fiyat,
+        "1G %": getiri(1), "5G %": getiri(5), "1A %": getiri(21), "3A %": getiri(63), "1Y %": getiri(252),
+        "52H zirveden %": (son_fiyat / zirve - 1) * 100,
+        "Hacim (x ort.)": float(gun["hacim"].iloc[-1] / hacim_ort) if hacim_ort else None,
+        "RSI": None if pd.isna(r) else float(r), "Trend": trend, "Tarama": tarama,
+        "Son veri": son_zaman.tz_convert(_NY).strftime("%d.%m %H:%M") + " NY",
+        "hata": None,
+    }
+
+
+def sayfa_abd_hisseler():
+    st.markdown('<div class="bolum-basligi">ABD Hisseleri</div>', unsafe_allow_html=True)
+    acik, ny = _seans_durumu()
+    st.caption(
+        f"{'🟢 Seans açık' if acik else '⚪ Seans kapalı'} · New York saati {ny:%d.%m %H:%M} "
+        "(seans 09:30–16:00, resmi tatiller hesaba katılmaz) · Veri: Yahoo Finance, ücretsiz "
+        "veri ~15 dk gecikmeli olabilir, 15 dk önbellek · Tahmin ya da yatırım tavsiyesi değildir.")
+
+    kol = st.columns([5, 1])
     with kol[0]:
-        metin = st.text_input("Hisseler (virgülle ayırın, en fazla 15)", value=_VARSAYILAN_HISSELER,
-                              key="ta_hisseler", help="ABD borsasındaki kodlar: AMPX, MSTR, NVDA, TSLA...")
+        metin = st.text_input("Takip listesi (virgülle ayırın, en fazla 15)", value=_VARSAYILAN_HISSELER,
+                              key="abd_hisseler", help="ABD borsasındaki kodlar: AMPX, MSTR, NVDA, TSLA...")
     with kol[1]:
-        dilim_etiket = st.radio("Zaman dilimi", ["Saatlik (1h)", "Günlük (1d)"], horizontal=True,
-                                key="ta_hisse_dilim",
-                                help="Stratejiler saatlik veri için tasarlandı. Günlükte bölge tabanlı "
-                                     "üç strateji yıllar içinde çok az işlem açar.")
-    dilim = "1h" if "1h" in dilim_etiket else "1d"
-    hisseler = tuple(dict.fromkeys(
-        h for h in (re.sub(r"[^A-Z0-9.\-]", "", p.upper()) for p in re.split(r"[,;\s]+", metin)) if h))[:15]
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        if st.button("Verileri yenile", key="abd_yenile", width="stretch"):
+            _hisse_ozeti.clear()
+            c_hisse_mumlar.clear()
+            _hisse_sinyal_tablosu.clear()
+            st.rerun()
+    hisseler = _hisse_kodlari(metin)
     if not hisseler:
         st.info("En az bir hisse kodu girin (örnek: AMPX, ANNX, MSTR).")
         return
 
-    with st.spinner("Hisse verisi indiriliyor ve stratejiler hesaplanıyor (ilk seferde ~30 sn)..."):
+    # --- Piyasa geneli ------------------------------------------
+    with st.spinner("Piyasa verisi indiriliyor..."):
+        endeksler = [(ad, _hisse_ozeti(kod)) for kod, ad in _ABD_ENDEKSLER]
+        satirlar = [_hisse_ozeti(h) for h in hisseler]
+    st.markdown('<div class="bolum-basligi" style="margin-top:6px;">Piyasa geneli</div>',
+                unsafe_allow_html=True)
+    s = st.columns(len(endeksler))
+    for hedef, (ad, o) in zip(s, endeksler):
+        with hedef:
+            if o.get("hata"):
+                st.metric(ad, "—")
+            else:
+                st.metric(ad, f"{o['Fiyat $']:,.2f}", yuzde(o["1G %"]),
+                          delta_color="inverse" if "VIX" in ad else "normal",
+                          help="VIX yükselirse piyasada korku artıyor demektir." if "VIX" in ad else None)
+                if "VIX" in ad:
+                    seviye = "sakin" if o["Fiyat $"] < 20 else "gergin" if o["Fiyat $"] < 30 else "panik"
+                    st.caption(f"1 ay {yuzde(o['1A %'])} · {seviye} seviye (20 altı sakin, 30 üstü panik)")
+                else:
+                    st.caption(f"1 ay {yuzde(o['1A %'])} · {o['Trend']}")
+
+    # --- Takip listesi ------------------------------------------
+    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">Takip listesi</div>',
+                unsafe_allow_html=True)
+    for o in satirlar:
+        if o.get("hata"):
+            st.warning(f"{o['Hisse']}: {o['hata']}")
+    tablo = pd.DataFrame([o for o in satirlar if not o.get("hata")])
+    if tablo.empty:
+        return
+    tablo = tablo.drop(columns=["hata"])
+    yuzde_sutunlari = ["1G %", "5G %", "1A %", "3A %", "1Y %", "52H zirveden %"]
+    st.dataframe(
+        tablo.style.map(_yuzde_renklendir, subset=yuzde_sutunlari),
+        width="stretch", hide_index=True,
+        column_config={
+            "Fiyat $": st.column_config.NumberColumn(format="%.4g"),
+            **{c: st.column_config.NumberColumn(format="%+.1f%%") for c in yuzde_sutunlari},
+            "Hacim (x ort.)": st.column_config.NumberColumn(
+                format="%.1fx", help="Son kapanmış seansın hacmi / önceki 20 seansın ortalaması."),
+            "RSI": st.column_config.NumberColumn(format="%.0f", help="70 üstü aşırı alım, 30 altı aşırı satım."),
+            "Trend": st.column_config.TextColumn(
+                help="Yükseliş: fiyat > 50 gün ort. > 200 gün ort. Düşüş: tersi. Diğer her durum karışık."),
+            "Tarama": st.column_config.TextColumn(
+                help="Analiz Botu'nun coinlerdeki taramasının aynısı: oynaklık sıkışması (TTM Squeeze) "
+                     "ve yukarı yönlü hacim. 'Bakmaya değer' demektir, yön tahmini değildir."),
+        })
+    st.caption("Getiriler önceki seans kapanışına göre; 5G/1A/3A/1Y = 5/21/63/252 işlem günü. "
+               "Renkler yalnızca işaret gösterir (yeşil artı, kırmızı eksi).")
+
+    # --- Secili hisse ------------------------------------------
+    gecerli = tuple(tablo["Hisse"])
+    secili = st.selectbox("İncelenecek hisse", gecerli, key="abd_secili")
+    sekmeler = st.tabs(["📈 Grafik ve teknik durum", "🤖 Analiz Botu", "🎯 Strateji sinyalleri"])
+    with sekmeler[0]:
+        _hisse_grafik(secili)
+    with sekmeler[1]:
+        _hisse_analiz_botu(secili)
+    with sekmeler[2]:
+        _hisse_strateji_sinyalleri(gecerli)
+
+
+def _hisse_grafik(hisse):
+    a = st.columns([2, 2, 2])
+    with a[0]:
+        dilim_adi = st.selectbox("Zaman dilimi", list(_HISSE_GRAFIK_DILIMLERI), index=1, key="abd_dilim")
+    with a[1]:
+        adet = st.select_slider("Mum sayısı", [100, 200, 300, 500, 800, 1000], value=300, key="abd_adet")
+    with a[2]:
+        ortalama_tipi = st.radio("Ortalama tipi", ["SMA", "EMA"], horizontal=True, key="abd_orttip")
+    b = st.columns(2)
+    with b[0]:
+        ortalamalar = st.multiselect(f"{ortalama_tipi} periyotları", [9, 20, 50, 100, 200],
+                                     default=[20, 50, 200], key="abd_ort")
+    with b[1]:
+        secili = set(st.multiselect("Göstergeler", GOSTERGE_SECENEKLERI, default=["Hacim", "RSI"],
+                                    key="abd_gost"))
+    dilim = _HISSE_GRAFIK_DILIMLERI[dilim_adi]
+    mumlar = c_hisse_mumlar(hisse, dilim, adet)
+    if mumlar is None or len(mumlar) < 5:
+        st.warning(f"{hisse} için mum verisi alınamadı: {vk.son_mum_hatasi}")
+        return
+    figur = gr.mum_grafigi(
+        mumlar, baslik=f"{hisse} · {dilim_adi} · {len(mumlar)} mum",
+        ortalamalar=tuple(sorted(ortalamalar)), ortalama_tipi=ortalama_tipi,
+        rsi_periyot=14 if "RSI" in secili else None, bollinger="Bollinger Bantları" in secili,
+        hacim="Hacim" in secili, macd_panel="MACD" in secili, stokastik_panel="Stokastik" in secili,
+        vwap_cizgisi="VWAP" in secili, parabolik_sar="Parabolic SAR" in secili,
+        fibonacci="Fibonacci" in secili, para_birimi="USD")
+    if figur:
+        st.plotly_chart(figur, width="stretch", config=gr.MUM_PLOTLY_AYARLARI, key=f"abd_mum_{hisse}_{dilim}")
+    st.caption(f"{mumlar['zaman'].iloc[0]:%d.%m.%Y} – {mumlar['zaman'].iloc[-1]:%d.%m.%Y} · Yahoo Finance · "
+               "bölünme/temettü düzeltilmiş fiyatlar · saatlik grafikte geceler ve hafta sonları boşluktur "
+               "(hisseler sadece seans saatlerinde işlem görür).")
+
+    teknik = teknik_durum(c_hisse_mumlar(hisse, "1d", 400))
+    if teknik:
+        st.markdown('<div class="bolum-basligi">Teknik durum · günlük mumlardan hesaplandı</div>',
+                    unsafe_allow_html=True)
+        s = st.columns(6)
+        with s[0]:
+            deger, etiket = rsi_etiket(teknik["rsi"])
+            st.metric("RSI (14)", deger, help=f"Şu an: {etiket}")
+            st.caption(etiket)
+        for sutun, p in zip(s[1:5], (20, 50, 100, 200)):
+            with sutun:
+                o = teknik["ortalamalar"].get(p)
+                if o:
+                    st.metric(f"{p} gün ort.", fiyat_yaz(o["deger"]), f"{o['fark']:+.1f}%")
+                    st.caption("üzerinde ✓" if o["uzeri"] else "altında ✗")
+                else:
+                    st.metric(f"{p} gün ort.", "—")
+        with s[5]:
+            oyn = teknik["oynaklik"]
+            st.metric("Günlük oynaklık", f"{oyn:.2f}%" if oyn else "—",
+                      help="ATR: fiyat günde ortalama yüzde kaç oynuyor.")
+
+
+def _hisse_analiz_botu(hisse):
+    st.warning(
+        "**Bu bot tavsiye vermez.** Coinlerdeki Analiz Botu'nun aynı gözlemlerini (trend, momentum, "
+        "MACD, oynaklık, destek/direnç, hacim, likidite avı, fair value gap, order block) hisse için "
+        "listeler; göreli güç BTC yerine S&P 500'e göre ölçülür. Vadeli piyasa ve emir defteri "
+        "gözlemleri hisselerde yoktur. Bu standart göstergelerin hiçbiri geleceği güvenilir şekilde "
+        "tahmin edemedi; yaygın izlendikleri için buradalar.")
+    gunluk = c_hisse_mumlar(hisse, "1d", 400)
+    if gunluk is None or len(gunluk) < 25:
+        st.info(f"{hisse} için yeterli geçmiş veri yok, gözlem üretilemiyor.")
+        return
+    spy = c_hisse_mumlar("SPY", "1d", 400) if hisse != "SPY" else None
+    gozlemler = ab.tum_gozlemler(gunluk, df_btc=spy, sembol_kodu=hisse, kiyas_adi="S&P 500")
+    if not gozlemler:
+        st.info(f"{hisse} için şu an dikkat çekici bir gözlem yok.")
+        return
+    st.caption(f"{hisse} için {len(gozlemler)} gözlem · günlük mumlardan hesaplandı")
+    kategoriler = list(dict.fromkeys(g["kategori"] for g in gozlemler))
+    sol, sag = st.columns(2)
+    for i, kategori in enumerate(kategoriler):
+        with (sol if i % 2 == 0 else sag):
+            st.markdown(f'<div class="bolum-basligi" style="font-size:0.85rem; margin-top:10px;">'
+                        f'{esc(kategori)}</div>', unsafe_allow_html=True)
+            st.markdown("".join(_gozlem_karti(g) for g in gozlemler if g["kategori"] == kategori),
+                        unsafe_allow_html=True)
+
+
+def _hisse_strateji_sinyalleri(hisseler):
+    st.warning(
+        "**Önce bunu okuyun:** bu 4 strateji (Trade Ajanı) **KRİPTO** için tasarlanıp orada "
+        "doğrulandı, hisselerde doğrulanmadı. İlk testlerde çoğu hisse-strateji kombinasyonu ya hiç "
+        "işlem açmadı ya da al-tut'un gerisinde kaldı. Bu yüzden her sinyalin yanında o stratejinin "
+        "**o hissedeki** geçmiş karnesi var; **⚠️ Kanıtlanmamış** bir sinyal yazı-tura kadar "
+        "güvenilirdir. Sinyal, bir kuralın şu anki durumudur; fiyat tahmini değildir.")
+    dilim_etiket = st.radio("Zaman dilimi", ["Saatlik (1h)", "Günlük (1d)"], horizontal=True,
+                            key="ta_hisse_dilim",
+                            help="Stratejiler saatlik veri için tasarlandı. Günlükte bölge tabanlı "
+                                 "üç strateji yıllar içinde çok az işlem açar.")
+    dilim = "1h" if "1h" in dilim_etiket else "1d"
+    with st.spinner("Stratejiler hesaplanıyor (ilk seferde ~30 sn)..."):
         satirlar, hatalar = _hisse_sinyal_tablosu(hisseler, dilim)
     for hata in hatalar:
         st.warning(hata)
@@ -2076,8 +2308,6 @@ def _trade_ajani_hisse():
         return
     tablo = pd.DataFrame(satirlar)
 
-    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">Şu anki sinyaller</div>',
-                unsafe_allow_html=True)
     ozet_kol = st.columns(2)
     for hedef, durum, baslik in ((ozet_kol[0], "LONG", "🟢 Yükseliş sinyali verenler"),
                                   (ozet_kol[1], "SHORT", "🔴 Düşüş sinyali verenler")):
@@ -2089,8 +2319,6 @@ def _trade_ajani_hisse():
             for _, r in secili.iterrows():
                 st.markdown(f"- **{r['Hisse']}** — {r['Strateji']} · {r['Güvenilirlik']} · beri {r['Beri (UTC)']}")
 
-    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">Tüm sinyaller ve geçmiş karne</div>',
-                unsafe_allow_html=True)
     sira = {"LONG": 0, "SHORT": 1, "NAKIT": 2, "ISINIYOR": 3}
     tablo = tablo.assign(_s=tablo["durum"].map(sira)).sort_values(["_s", "Hisse"]).drop(columns=["_s", "durum"])
     st.dataframe(tablo, width="stretch", hide_index=True, column_config={
@@ -2104,8 +2332,7 @@ def _trade_ajani_hisse():
         "**Tüm dönem / Al-tut:** stratejinin o hissedeki tüm geçmiş verideki getirisi ve aynı "
         "dönemde hisseyi sadece alıp tutmanın getirisi (kaldıraçsız, %0.1 komisyon). "
         "**Eğitim / Test:** verinin ilk %70'i ve son %30'u ayrı ayrı. **✅ Geçmişte tutarlı:** "
-        "en az 10 işlem ve iki dönemde de kâr (bu bile geleceği garanti etmez). "
-        f"Zaman dilimi: {dilim}. Veriler Yahoo Finance'tan, 15 dk önbellekli.")
+        f"en az 10 işlem ve iki dönemde de kâr (bu bile geleceği garanti etmez). Zaman dilimi: {dilim}.")
 
     analiz_hisse = st.selectbox("Geçmişe dönük analiz için hisse", hisseler, key="ta_hisse_analiz")
     _gecmise_donuk_analiz(
@@ -2761,7 +2988,7 @@ with nav[0]:
                unsafe_allow_html=True)
 with nav[1]:
     SAYFALAR = ["Piyasa", "Coin analizi", "Analiz Botu", "Sanal Trader",
-               "Karşılaştırma", "Haberler", "Trade Ajanı"]
+               "Karşılaştırma", "Haberler", "Trade Ajanı", "ABD Hisseler"]
     st.session_state.sayfa = st.radio(
         "Sayfa", SAYFALAR, index=SAYFALAR.index(st.session_state.sayfa),
         label_visibility="collapsed", horizontal=True)
@@ -2858,6 +3085,8 @@ elif st.session_state.sayfa == "Karşılaştırma":
     sayfa_karsilastirma(depo, en_az_hacim)
 elif st.session_state.sayfa == "Trade Ajanı":
     sayfa_trade_ajani(st.session_state.secili_coin)
+elif st.session_state.sayfa == "ABD Hisseler":
+    sayfa_abd_hisseler()
 else:
     sayfa_haberler()
 
@@ -2878,9 +3107,11 @@ elif st.session_state.sayfa == "Sanal Trader":
                "değiştirdiğinizde tazelenir. Tamamen sanal para kullanır, "
                "gerçek emir göndermez.")
 elif st.session_state.sayfa == "Trade Ajanı":
-    st.caption("Kripto: Binance 1 saatlik mumlar, coin değiştirince yenilenir · "
-               "ABD hisse: Yahoo Finance, 15 dk önbellek · Sinyaller bir kuralın "
-               "şu anki durumudur, tahmin ya da yatırım tavsiyesi değildir.")
+    st.caption("Binance 1 saatlik mumlar, coin değiştirince yenilenir · Sinyaller bir "
+               "kuralın şu anki durumudur, tahmin ya da yatırım tavsiyesi değildir.")
+elif st.session_state.sayfa == "ABD Hisseler":
+    st.caption("Veriler Yahoo Finance'tan (ücretsiz, gecikmeli olabilir), 15 dk önbellekli; "
+               "\"Verileri yenile\" ile tazelenir. · Tahmin ya da yatırım tavsiyesi değildir.")
 elif st.session_state.anlik:
     st.caption(f"Fiyat ve özet sayılar {st.session_state.aralik} saniyede "
                "bir canlı veriden yenileniyor. Grafikler ve tablolar siz "

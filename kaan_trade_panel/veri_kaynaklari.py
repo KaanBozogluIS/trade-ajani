@@ -171,8 +171,10 @@ def hisse_mum_verisi(sembol="MSTR", zaman_dilimi="1d", adet=1000):
     saat) mum_verisi'ndeki AYNI sebeple atilir.
     """
     global son_mum_hatasi
+    if zaman_dilimi == "1w":
+        return _hisse_haftalik(sembol, adet)
     if zaman_dilimi not in _HISSE_ARALIK:
-        son_mum_hatasi = f"hisse icin desteklenmeyen zaman dilimi: {zaman_dilimi} (1d ya da 1h)"
+        son_mum_hatasi = f"hisse icin desteklenmeyen zaman dilimi: {zaman_dilimi} (1h, 1d ya da 1w)"
         return None
     try:
         import yfinance as yf
@@ -208,6 +210,24 @@ def hisse_mum_verisi(sembol="MSTR", zaman_dilimi="1d", adet=1000):
     except Exception as e:
         son_mum_hatasi = f"Yahoo: {type(e).__name__}: {str(e)[:160]}"
         return None
+
+
+def _hisse_haftalik(sembol, adet):
+    """Haftalik mumlar, KAPANMIS gunluk mumlardan (Pazartesi-Cuma) turetilir.
+    Henuz bitmemis hafta atilir; zaman = haftanin ilk gunu (Pazartesi)."""
+    gunluk = hisse_mum_verisi(sembol, "1d", 100_000)
+    if gunluk is None:
+        return None
+    h = (gunluk.set_index("zaman")
+         .resample("W-FRI", label="right", closed="right")
+         .agg({"acilis": "first", "yuksek": "max", "dusuk": "min", "kapanis": "last", "hacim": "sum"})
+         .dropna())
+    ny_simdi = pd.Timestamp.now(tz="America/New_York")
+    if len(h) and (h.index[-1].date() > ny_simdi.date()
+                   or (h.index[-1].date() == ny_simdi.date() and ny_simdi.hour < 16)):
+        h = h.iloc[:-1]
+    h.index = h.index - pd.Timedelta(days=4)
+    return h.rename_axis("zaman").reset_index().tail(adet).reset_index(drop=True)
 
 
 def emir_defteri_ozeti(sembol="BTC/USDT", derinlik=50):

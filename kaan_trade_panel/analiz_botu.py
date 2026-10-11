@@ -711,9 +711,10 @@ def gozlem_emir_defteri(defter):
 #  9) BTC'YE GORE GORECE GUC
 # ============================================================
 
-def gozlem_goreli_guc(df_coin, df_btc, sembol_kodu):
+def gozlem_goreli_guc(df_coin, df_btc, sembol_kodu, kiyas_adi="BTC"):
     """
-    Coin, ayni donemde BTC'ye gore daha mi iyi/kotu gidiyor?
+    Coin, ayni donemde BTC'ye gore daha mi iyi/kotu gidiyor? (Hisselerde
+    <kiyas_adi> = "S&P 500" ve df_btc = SPY verilir -- ayni fikir.)
 
     FIKIR: Butun piyasa dusuyorsa neredeyse her coin duser -- bu tek
     basina anlamli degildir. Ama bir coin, BTC ayni donemde %X
@@ -735,19 +736,19 @@ def gozlem_goreli_guc(df_coin, df_btc, sembol_kodu):
     if fark > 0:
         return [{
             "kategori": "Göreli Güç", "yon": "yukari",
-            "baslik": f"BTC'den daha güçlü ({fark:+.1f} puan)",
+            "baslik": f"{kiyas_adi} karşısında daha güçlü ({fark:+.1f} puan)",
             "aciklama": f"Son {n} mumda {sembol_kodu} %{coin_getiri:+.1f}, "
-                        f"BTC ise %{btc_getiri:+.1f} getiri sağladı. "
-                        f"{sembol_kodu}, BTC'ye göre {fark:.1f} puan daha "
-                        "iyi performans gösterdi -- bu coine özel bir talep "
+                        f"{kiyas_adi} ise %{btc_getiri:+.1f} getiri sağladı. "
+                        f"{sembol_kodu}, {kiyas_adi} karşısında {fark:.1f} puan daha "
+                        "iyi performans gösterdi -- bu varlığa özel bir talep "
                         "olabileceğini düşündürür (kesin kanıt değildir).",
         }]
     return [{
         "kategori": "Göreli Güç", "yon": "asagi",
-        "baslik": f"BTC'den daha zayıf ({fark:+.1f} puan)",
+        "baslik": f"{kiyas_adi} karşısında daha zayıf ({fark:+.1f} puan)",
         "aciklama": f"Son {n} mumda {sembol_kodu} %{coin_getiri:+.1f}, "
-                    f"BTC ise %{btc_getiri:+.1f} getiri sağladı. "
-                    f"{sembol_kodu}, BTC'ye göre {abs(fark):.1f} puan daha "
+                    f"{kiyas_adi} ise %{btc_getiri:+.1f} getiri sağladı. "
+                    f"{sembol_kodu}, {kiyas_adi} karşısında {abs(fark):.1f} puan daha "
                     "zayıf performans gösterdi.",
     }]
 
@@ -979,7 +980,7 @@ def gozlem_order_block(df, bakilan=150):
 # ============================================================
 
 def tum_gozlemler(df, fonlama=None, defter=None, df_btc=None, sembol_kodu="",
-                   oi_gecmisi=None):
+                   oi_gecmisi=None, kiyas_adi="BTC"):
     """
     Butun gozlem fonksiyonlarini calistirir ve TEK bir liste halinde
     dondurur. Sira/oncelik ONEMLI DEGIL -- hicbir agirliklandirma ya
@@ -999,7 +1000,7 @@ def tum_gozlemler(df, fonlama=None, defter=None, df_btc=None, sembol_kodu="",
     hepsi += gozlem_vadeli(fonlama)
     hepsi += gozlem_acik_pozisyon(oi_gecmisi)
     hepsi += gozlem_emir_defteri(defter)
-    hepsi += gozlem_goreli_guc(df, df_btc, sembol_kodu)
+    hepsi += gozlem_goreli_guc(df, df_btc, sembol_kodu, kiyas_adi)
     hepsi += gozlem_likidite_avi(df)
     hepsi += gozlem_fair_value_gap(df)
     hepsi += gozlem_order_block(df)
