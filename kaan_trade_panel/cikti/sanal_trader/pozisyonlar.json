@@ -26,15 +26,6 @@
     "yon": "LONG",
     "kaldirac": 5.0
   },
-  "SPCXB/USDT": {
-    "miktar": 8.080272527074149,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 161.05,
-    "giris_zamani": "2026-10-09T19:28:49.773813+00:00",
-    "maliyet": 178.91509842391162,
-    "yon": "LONG",
-    "kaldirac": 7.28071880171855
-  },
   "U/USDT": {
     "miktar": 818.5757810088094,
     "strateji": "Dusuk oynaklik",
