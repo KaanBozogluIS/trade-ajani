@@ -227,6 +227,39 @@ def _gun_to_mum(gun, zaman_dilimi):
 
 
 def _kaldirac_hesapla(df, a):
+    return _kaldirac_ve_stop(df, a)[0]
+
+
+def _kaldirac_ve_stop(df, a):
+    """
+    Donen: (kaldirac, stop_orani). Kaldirac "stop_atr_kati x ATR uzaklikta
+    bir stop vurursa marjinin ~risk_per_islem_yuzde'si kaybedilsin" diye
+    hesaplanir -- stop_orani O STOP'UN fiyata uzakligidir (0.012 = %1.2).
+
+    2026-10-12'ye kadar kaldirac bu varsayimla hesaplaniyor ama stop HIC
+    KONMUYORDU: pozisyon %12 zararla kapanacakken likidasyona kadar gidip
+    marjinin %100'unu kaybediyordu (4 likidasyon). Stop, her zaman
+    likidasyondan ONCE gelecek sekilde (en fazla 0.8/kaldirac) sinirlanir.
+    """
+    k = _kaldirac_ham(df, a)
+    stop = _stop_mesafesi(df, a)
+    if stop is None:
+        stop = 0.8 / k
+    return k, min(stop, 0.8 / k)
+
+
+def _stop_mesafesi(df, a):
+    kisa, uzun = atr(df, 14), atr(df, a.get("kaldirac_uzun_atr_mum", 168))
+    if kisa is None or len(kisa) == 0:
+        return None
+    a_deger = max(float(kisa.iloc[-1]), float(uzun.iloc[-1]) if len(uzun) else 0.0)
+    fiyat = float(df["kapanis"].iloc[-1])
+    if pd.isna(a_deger) or a_deger <= 0 or fiyat <= 0:
+        return None
+    return a["stop_atr_kati"] * a_deger / fiyat
+
+
+def _kaldirac_ham(df, a):
     """
     YENI acilan bir pozisyon icin kaldiraci ATR'a (oynakliga) gore
     DINAMIK hesaplar, HER ZAMAN [min_kaldirac, maks_kaldirac] icine
@@ -270,6 +303,73 @@ def _likidasyon_fiyati(pozisyon):
     if pozisyon.get("yon") == "SHORT":
         return giris * (1 + 1.0 / kaldirac)
     return giris * (1 - 1.0 / kaldirac)
+
+
+def _stop_fiyati(giris, yon, stop_orani):
+    return giris * (1 + stop_orani) if yon == "SHORT" else giris * (1 - stop_orani)
+
+
+def _risk_olayi(pozisyon, df):
+    """
+    Pozisyonun stop'u ya da likidasyon seviyesi, kontrol baslangicindan
+    (stop_baslangic, yoksa giris_zamani) SONRA baslayan mumlardan herhangi
+    birinde vurulmus mu? Ilk vurulan olay doner: ("STOP"|"LIKIDASYON",
+    dolum_fiyati) ya da None. Tum mumlara bakilir (sadece sonuncusuna
+    degil) -- GitHub zamanlayicisi kontrolleri saatlerce geciktirebiliyor.
+
+    Dolum: mum stop'un OTESINDE acildiysa (bosluk) stop'tan degil acilis
+    fiyatindan -- gercek bir stop emri de oyle dolar. O acilis likidasyon
+    seviyesinin de otesindeyse likidasyon sayilir.
+    """
+    liq = _likidasyon_fiyati(pozisyon)
+    stop = pozisyon.get("stop_fiyat")
+    if liq is None and stop is None:
+        return None
+    # Likidasyon GIRISTEN beri, stop ise KONDUGU andan beri kontrol edilir:
+    # sonradan stop eklenen eski bir pozisyonun aradaki saatlerde olmus (ama
+    # henuz fark edilmemis) likidasyonu da yakalanmali.
+    giris = pozisyon.get("giris_zamani")
+    stop_bas_metin = pozisyon.get("stop_baslangic") or giris
+    stop_bas = pd.Timestamp(stop_bas_metin) if stop_bas_metin else None
+    donem = df[df["zaman"] >= pd.Timestamp(giris)] if giris else df.tail(1)
+    long_mu = pozisyon.get("yon", "LONG") != "SHORT"
+    for zaman, acilis, yuksek, dusuk in zip(donem["zaman"], donem["acilis"], donem["yuksek"], donem["dusuk"]):
+        uc = dusuk if long_mu else yuksek
+        stop_aktif = stop is not None and (stop_bas is None or zaman >= stop_bas)
+        if stop_aktif and (uc <= stop if long_mu else uc >= stop):
+            dolum = min(stop, acilis) if long_mu else max(stop, acilis)
+            if liq is not None and (dolum <= liq if long_mu else dolum >= liq):
+                return ("LIKIDASYON", liq)
+            return ("STOP", dolum)
+        if liq is not None and (uc <= liq if long_mu else uc >= liq):
+            return ("LIKIDASYON", liq)
+    return None
+
+
+def _eksik_stopu_tamamla(pozisyon, df, a):
+    """
+    Stop-loss eklenmeden ONCE acilmis kaldiracli pozisyonlara stop verir.
+    Gecmise donuk "sanki o zaman da stop vardi" diye islem uydurmamak icin
+    kontrol SIMDIDEN baslar (stop_baslangic = simdi). Girise gore stop
+    henuz vurulmadiysa o kullanilir; vurulmussa (pozisyon zaten stop
+    seviyesinin otesinde zararda) guncel fiyattan yeni bir stop konur.
+    Donen: degisiklik yapildiysa True.
+    """
+    if pozisyon.get("stop_fiyat") is not None or (pozisyon.get("kaldirac") or 1.0) <= 1.0:
+        return False
+    k = pozisyon["kaldirac"]
+    oran = min(_stop_mesafesi(df, a) or 0.8 / k, 0.8 / k)
+    yon = pozisyon.get("yon", "LONG")
+    fiyat = float(df["kapanis"].iloc[-1])
+    stop = _stop_fiyati(pozisyon["giris_fiyat"], yon, oran)
+    if (fiyat <= stop) if yon != "SHORT" else (fiyat >= stop):
+        stop = _stop_fiyati(fiyat, yon, oran)
+        liq = _likidasyon_fiyati(pozisyon)
+        if liq is not None and ((stop <= liq) if yon != "SHORT" else (stop >= liq)):
+            stop = (fiyat + liq) / 2
+    pozisyon["stop_fiyat"] = stop
+    pozisyon["stop_baslangic"] = datetime.now(timezone.utc).isoformat()
+    return True
 
 
 KLASOR = Path(__file__).parent
@@ -378,7 +478,8 @@ class Portfoy:
             return "TETIKLENDI"
         return None
 
-    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG", kaldirac=1.0):
+    def ac(self, sembol, strateji, fiyat, tutar, ucret_yuzde, yon="LONG", kaldirac=1.0,
+           stop_orani=None):
         """
         <tutar> USDT'lik nakitle sembolde pozisyon acar (sanal).
 
@@ -406,6 +507,10 @@ class Portfoy:
             "yon": yon,
             "kaldirac": kaldirac,
         }
+        if stop_orani:
+            poz = self.pozisyonlar[sembol]
+            poz["stop_fiyat"] = _stop_fiyati(fiyat, yon, stop_orani)
+            poz["stop_baslangic"] = poz["giris_zamani"]
         self.islem_sayisi += 1
         return {"miktar": miktar, "tutar": tutar, "ucret": ucret}
 
@@ -622,7 +727,7 @@ def rotasyonu_degerlendir(evren, a):
             continue
         # Puanlama CANLI ISLEMLE AYNI kaldiracla (ve likidasyon riskiyle)
         # yapilir -- spot puanlama, 10x'te likide olacak stratejileri odullendirirdi.
-        kaldirac = _kaldirac_hesapla(tum_df, a)
+        kaldirac, stop_orani = _kaldirac_ve_stop(tum_df, a)
         for isim, fn, params, isinma in _STRATEJILER_TUMU:
             df = tum_df.tail(isinma + pencere_mum + 15).reset_index(drop=True)
             if len(df) < isinma + 30:
@@ -631,7 +736,7 @@ def rotasyonu_degerlendir(evren, a):
                 poz = fn(df, **params)
             except Exception:
                 continue
-            sonuc = simule_et(df, poz, a, baslangic=isinma, kaldirac=kaldirac)
+            sonuc = simule_et(df, poz, a, baslangic=isinma, kaldirac=kaldirac, stop_orani=stop_orani)
             if sonuc is None:
                 continue
             sonuclar.append({"isim": isim, "getiri": sonuc["getiri"],
@@ -835,6 +940,8 @@ def islem_kaydet(saat, islem, strateji, sembol, fiyat, sonuc, portfoy, fiyatlar,
         satir += f" · marjin {sonuc['tutar']:,.0f}$"
     elif "kar_zarar" in sonuc:
         satir += f" · K/Z {sonuc['kar_zarar']:+,.2f}$ ({sonuc['kar_zarar_yuzde']:+.1f}%)"
+    if sebep == "stop":
+        satir += " · 🛑 stop-loss"
     if sebep == "sure_doldu":
         satir += f" · {AYARLAR['maks_tutma_gun']} gun doldu"
     _olaylar.append(f"{satir} · [{strateji}]")
@@ -893,36 +1000,34 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
 
     saat = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    # LIKIDASYON KONTROLU (kaldiracli pozisyonlar icin): GIRISTEN BERI
-    # tum mumlarin ic fiyat araligina (yuksek/dusuk) bakilir -- sadece son
-    # muma degil. NEDEN: GitHub'in zamanlayicisi "saatte bir" isi olcumlere
-    # gore 8 saate kadar geciktirebiliyor; sadece son muma bakmak, aradaki
-    # saatlerde likidasyon seviyesine degip geri donen bir hareketi
-    # KACIRIRDI (gercek bir borsada pozisyon o an kapanmis olurdu). Spot
-    # (kaldiracsiz) pozisyonlarda _likidasyon_fiyati None doner, blok
-    # hicbir sey yapmaz.
+    # STOP-LOSS + LIKIDASYON KONTROLU (kaldiracli pozisyonlar): stop/likidasyon
+    # seviyesine kontrol baslangicindan BERI herhangi bir mumda degildi mi --
+    # sadece son muma degil (GitHub zamanlayicisi kontrolleri saatlerce
+    # geciktirebiliyor; aradaki saatlerde degip geri donen hareket gercek
+    # bir borsada pozisyonu o an kapatirdi). Bu, STRATEJININ sinyalinden
+    # BAGIMSIZDIR. Spot pozisyonlarda stop/likidasyon yok, blok bir sey yapmaz.
     if tutuluyor_mu:
         acik_poz = portfoy.pozisyonlar[sembol]
-        likit_fiyat = _likidasyon_fiyati(acik_poz)
-        if likit_fiyat is not None:
-            mum_suresi = pd.Timedelta(hours=_SAAT_PER_MUM.get(a["zaman_dilimi"], 1))
-            donem = df[df["zaman"] + mum_suresi > giris_zamani] if giris_zamani is not None else df.tail(1)
-            if donem.empty:
-                donem = df.tail(1)
-            son_yuksek = float(donem["yuksek"].max())
-            son_dusuk = float(donem["dusuk"].min())
-            likide_oldu = (acik_poz.get("yon", "LONG") == "LONG" and son_dusuk <= likit_fiyat) or \
-                          (acik_poz.get("yon") == "SHORT" and son_yuksek >= likit_fiyat)
-            if likide_oldu:
-                acik_kaldirac = acik_poz.get("kaldirac", 1.0)
-                fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, likit_fiyat)
-                sonuc = portfoy.kapat(sembol, likit_fiyat, a["islem_ucreti_yuzde"])
-                if sonuc:
-                    islem_kaydet(saat, "LIKIDASYON", strateji_isim, sembol, likit_fiyat, sonuc,
-                                portfoy, fiyatlar, "likidasyon", kaldirac=acik_kaldirac)
-                    print(f"   >> LIKIDASYON: {sembol} @ {likit_fiyat:.6g}  "
-                          f"(marjin kaybedildi, {acik_kaldirac:.1f}x)  [{strateji_isim}]")
-                    return "LIKIDASYON"
+        if _eksik_stopu_tamamla(acik_poz, df, a):
+            portfoy.kaydet()
+            print(f"   [i] {sembol}: stop-loss eklendi @ {acik_poz['stop_fiyat']:.6g}")
+        olay = _risk_olayi(acik_poz, df)
+        if olay:
+            tur, dolum = olay
+            yon = acik_poz.get("yon", "LONG")
+            acik_kaldirac = acik_poz.get("kaldirac", 1.0)
+            fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, dolum)
+            sonuc = portfoy.kapat(sembol, dolum, a["islem_ucreti_yuzde"])
+            if sonuc:
+                if tur == "LIKIDASYON":
+                    etiket, sebep = "LIKIDASYON", "likidasyon"
+                else:
+                    etiket, sebep = ("SAT" if yon == "LONG" else "KISA_KAPAT"), "stop"
+                islem_kaydet(saat, etiket, strateji_isim, sembol, dolum, sonuc,
+                            portfoy, fiyatlar, sebep, kaldirac=acik_kaldirac)
+                print(f"   >> {tur}: {sembol} @ {dolum:.6g}  ({acik_kaldirac:.1f}x, "
+                      f"K/Z {sonuc['kar_zarar']:+.2f})  [{strateji_isim}]")
+                return etiket
 
     fiyat = float(df["kapanis"].iloc[-1])
 
@@ -955,8 +1060,9 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         if bos_yer <= 0:
             return None
         tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
-        kaldirac = _kaldirac_hesapla(df, a)
-        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="LONG", kaldirac=kaldirac)
+        kaldirac, stop_orani = _kaldirac_ve_stop(df, a)
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="LONG",
+                           kaldirac=kaldirac, stop_orani=stop_orani)
         if sonuc:
             fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
             islem_kaydet(saat, "AL", strateji_isim, sembol, fiyat, sonuc, portfoy,
@@ -971,8 +1077,9 @@ def tek_coin_kontrolu(portfoy, sembol, atanan_strateji, depo, a):
         if bos_yer <= 0:
             return None
         tutar = (portfoy.nakit * a["islem_orani"]) / bos_yer
-        kaldirac = _kaldirac_hesapla(df, a)
-        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="SHORT", kaldirac=kaldirac)
+        kaldirac, stop_orani = _kaldirac_ve_stop(df, a)
+        sonuc = portfoy.ac(sembol, strateji_isim, fiyat, tutar, a["islem_ucreti_yuzde"], yon="SHORT",
+                           kaldirac=kaldirac, stop_orani=stop_orani)
         if sonuc:
             fiyatlar = _portfoy_fiyatlari(portfoy, depo, sembol, fiyat)
             islem_kaydet(saat, "KISA_AC", strateji_isim, sembol, fiyat, sonuc, portfoy,

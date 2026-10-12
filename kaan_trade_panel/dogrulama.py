@@ -80,7 +80,7 @@ def gunluge_cevir(df):
               .reset_index())
 
 
-def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
+def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don, stop_orani=None):
     """
     simule_et'in KALDIRACLI hali -- sanal_trader.py'nin Portfoy sinifiyla
     AYNI muhasebe: nakitten sadece MARJIN duser, kar/zarar marjin x kaldirac
@@ -104,13 +104,13 @@ def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
     acik = None  # {"yon", "giris", "marjin", "giris_ucreti", "zaman"}
     bekleyen = None
     turlar, seri, islem_kayitlari = [], [], []
-    odenen_ucret, piyasada, likidasyon = 0.0, 0, 0
+    odenen_ucret, piyasada, likidasyon, stop_sayisi = 0.0, 0, 0, 0
 
     def _deger(p, fiyat):
         oran = (fiyat / p["giris"] - 1) if p["yon"] == "LONG" else (p["giris"] - fiyat) / p["giris"]
         return max(0.0, p["marjin"] - p["giris_ucreti"] + p["marjin"] * k * oran)
 
-    def _kapat(i, fiyat, likide):
+    def _kapat(i, fiyat, likide, sebep="sinyal"):
         nonlocal nakit, acik, odenen_ucret
         if likide:
             net = 0.0
@@ -124,7 +124,8 @@ def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
         if detay_don:
             islem_kayitlari.append({"zaman": acik["zaman"], "fiyat": acik["giris"], "yon": acik["yon"],
                                     "cikis_zaman": zaman_sutunu[i] if zaman_sutunu else i,
-                                    "cikis_fiyat": fiyat, "getiri_yuzde": getiri, "likidasyon": likide})
+                                    "cikis_fiyat": fiyat, "getiri_yuzde": getiri, "likidasyon": likide,
+                                    "sebep": "likidasyon" if likide else sebep})
         acik = None
 
     for i in range(baslangic, n):
@@ -137,13 +138,29 @@ def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
                 acik = {"yon": "LONG" if bekleyen == "AL" else "SHORT", "giris": acilis[i],
                         "marjin": marjin, "giris_ucreti": giris_ucreti,
                         "zaman": zaman_sutunu[i] if zaman_sutunu else i}
+                if stop_orani:
+                    acik["stop"] = acilis[i] * (1 - stop_orani) if bekleyen == "AL" else acilis[i] * (1 + stop_orani)
         elif bekleyen == "SAT" and acik is not None:
             _kapat(i, acilis[i], likide=False)
         bekleyen = None
 
         if acik is not None:
-            likit = acik["giris"] * (1 - 1 / k) if acik["yon"] == "LONG" else acik["giris"] * (1 + 1 / k)
-            if (acik["yon"] == "LONG" and dusuk[i] <= likit) or (acik["yon"] == "SHORT" and yuksek[i] >= likit):
+            long_mu = acik["yon"] == "LONG"
+            likit = acik["giris"] * (1 - 1 / k) if long_mu else acik["giris"] * (1 + 1 / k)
+            uc = dusuk[i] if long_mu else yuksek[i]
+            stop = acik.get("stop")
+            if stop is not None and (uc <= stop if long_mu else uc >= stop):
+                # Canli botla AYNI kural (sanal_trader._risk_olayi): stop'un
+                # otesinde acilan mumda acilistan dolar; o da likidasyonun
+                # otesindeyse likidasyon.
+                dolum = min(stop, acilis[i]) if long_mu else max(stop, acilis[i])
+                if dolum <= likit if long_mu else dolum >= likit:
+                    likidasyon += 1
+                    _kapat(i, likit, likide=True)
+                else:
+                    stop_sayisi += 1
+                    _kapat(i, dolum, likide=False, sebep="stop")
+            elif uc <= likit if long_mu else uc >= likit:
                 likidasyon += 1
                 _kapat(i, likit, likide=True)
 
@@ -176,6 +193,7 @@ def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
         "piyasada": piyasada / (n - baslangic) * 100,
         "mum": n - baslangic,
         "likidasyon": likidasyon,
+        "stop": stop_sayisi,
         "kaldirac": k,
     }
     if detay_don:
@@ -185,7 +203,7 @@ def _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don):
     return sonuc
 
 
-def simule_et(df, pozisyon, a, baslangic=0, detay_don=False, kaldirac=1.0):
+def simule_et(df, pozisyon, a, baslangic=0, detay_don=False, kaldirac=1.0, stop_orani=None):
     """
     Pozisyon listesini gercek alim-satima cevirip sonucu olcer.
 
@@ -217,7 +235,7 @@ def simule_et(df, pozisyon, a, baslangic=0, detay_don=False, kaldirac=1.0):
     + likidasyon). Varsayilan 1.0'da asagidaki spot yolu AYNEN calisir.
     """
     if kaldirac and kaldirac > 1.0:
-        return _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don)
+        return _simule_et_kaldiracli(df, pozisyon, a, baslangic, kaldirac, detay_don, stop_orani)
     acilis = df["acilis"].tolist()
     kapanis = df["kapanis"].tolist()
     zaman_sutunu = df["zaman"].tolist() if "zaman" in df.columns else None

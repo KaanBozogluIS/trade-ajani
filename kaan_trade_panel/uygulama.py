@@ -2634,7 +2634,13 @@ def _sanal_trader_icerik(depo):
         "tamamı bir pozisyonda kaybedilebilir (o pozisyon için en fazla "
         "kaybedilen tutar, ona ayrılan marjinle sınırlıdır — negatif bakiye "
         "olmaz). Değişikliğin öncesinde açılmış pozisyonlar spot kalmaya "
-        "devam eder, doğal kapanışlarını bekler.")
+        "devam eder, doğal kapanışlarını bekler.  \n\n"
+        "**Stop-loss (2026-10-12):** her kaldıraçlı pozisyonun, kaldıracın "
+        "hesaplandığı 2×ATR mesafesinde bir stop'u var (tabloda **Stop** "
+        "sütunu); stop her zaman likidasyondan önce gelir. Böylece bir "
+        "işlemde kaybedilen, marjinin tamamı değil tipik olarak ~%12'si olur. "
+        "**Devre kesici:** portföy zirvesinden %25 düşerse 48 saat yeni "
+        "pozisyon açılmaz.")
 
     ust = st.columns([5, 2])
     with ust[0]:
@@ -2780,6 +2786,9 @@ def _sanal_trader_icerik(depo):
             satirlar.append({
                 "Coin": sembol.split("/")[0], "Yön": "🔴 SHORT" if yon == "SHORT" else "🟢 LONG",
                 "Kaldıraç": "Spot" if kaldirac <= 1.0 else f"{kaldirac:.1f}x",
+                "Stop": poz.get("stop_fiyat"),
+                "Stop'a uzaklık %": ((guncel / poz["stop_fiyat"] - 1) * 100 * (1 if yon != "SHORT" else -1))
+                if guncel and poz.get("stop_fiyat") else None,
                 "Strateji": poz["strateji"],
                 "Giriş fiyatı": poz["giris_fiyat"], "Güncel fiyat": guncel,
                 "Kâr/zarar %": kar, "Miktar": poz["miktar"],
@@ -2792,6 +2801,10 @@ def _sanal_trader_icerik(depo):
                         "Güncel fiyat": st.column_config.NumberColumn(format="%.6g"),
                         "Kâr/zarar %": st.column_config.NumberColumn(format="%+.2f%%"),
                         "Miktar": st.column_config.NumberColumn(format="%.6g"),
+                        "Stop": st.column_config.NumberColumn(
+                            format="%.6g", help="Fiyat bu seviyeye gelirse pozisyon kapanır (stop-loss). "
+                                                "Likidasyondan önce gelecek şekilde konur."),
+                        "Stop'a uzaklık %": st.column_config.NumberColumn(format="%.1f%%"),
                     })
     else:
         st.info("Şu an açık pozisyon yok — atanmış stratejilerin sinyal vermesi bekleniyor.")
