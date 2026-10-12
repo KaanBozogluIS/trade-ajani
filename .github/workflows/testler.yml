@@ -12,25 +12,25 @@ on:
 
 jobs:
   trade-ajani:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # sabit: ubuntu-latest 2026-10-19da Ubuntu 26ya geciyor
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - run: pip install -q -r requirements.txt pytest
       - run: python -m pytest tests -q
 
   kaan-trade-panel:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # sabit: ubuntu-latest 2026-10-19da Ubuntu 26ya geciyor
     timeout-minutes: 10
     defaults:
       run:
         working-directory: kaan_trade_panel
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - run: pip install -q -r requirements-sanal-trader.txt pytest

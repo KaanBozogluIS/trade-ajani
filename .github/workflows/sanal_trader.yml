@@ -31,14 +31,14 @@ concurrency:
 
 jobs:
   calistir:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # sabit: ubuntu-latest 2026-10-19da Ubuntu 26ya geciyor
     timeout-minutes: 20
     defaults:
       run:
         working-directory: kaan_trade_panel
     steps:
       - name: Depoyu al
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # 7/24 sunucu (scripts/sunucu_7x24.py) calisiyorsa bu turu atla --
       # sunucu durursa GitHub otomatik olarak yedek gorevine doner.
@@ -49,7 +49,7 @@ jobs:
 
       - name: Python kur
         if: steps.nabiz.outputs.atla != 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
