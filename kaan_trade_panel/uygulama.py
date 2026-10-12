@@ -2601,6 +2601,78 @@ def _sanal_trader_ilk_calisma_durumu():
         st.rerun()
 
 
+def _bot_gecmis_testi_bolumu():
+    """bot_gecmis_testi.py'nin (elle calistirilan) sonucunu gosterir."""
+    klasor = strd.KLASOR / "cikti" / "bot_gecmis_testi"
+    try:
+        ozet = json.loads((klasor / "ozet.json").read_text(encoding="utf-8"))
+        egri = pd.read_csv(klasor / "egri.csv", parse_dates=["zaman"]).set_index("zaman")
+    except Exception:
+        return
+    st.markdown('<div class="bolum-basligi" style="margin-top:14px;">'
+                'Botun geçmiş testi — aynı kurallar, son 1 yıl</div>', unsafe_allow_html=True)
+    bot, bot1 = ozet["bot"], ozet.get("bot_1x")
+    rast = sorted(r["getiri"] for r in ozet["rastgele"])
+    rast1 = sorted(r["getiri"] for r in ozet.get("rastgele_1x", []))
+    if bot.get("iflas_tarihi"):
+        st.error(
+            f"**Canlı botun kurallarıyla (5x-10x kaldıraç) portföy bu dönemde fiilen sıfırlandı** — "
+            f"{bot['iflas_tarihi']} tarihinde başlangıcın %5'inin altına indi. Rastgele strateji seçen "
+            "kontrollerin de hepsi sıfırlandı; yani kaybın ana kaynağı strateji seçimi değil, "
+            "kaldıraç + sık işlem + komisyon.")
+    if bot1 and rast1:
+        gecti1 = ozet.get("bot_1x_rastgeleyi_gecti", 0)
+        metin = (f"**Kaldıraçsız (1x) teşhis:** bot {bot1['getiri']:+.0f}%, rastgele strateji seçimi "
+                 f"{rast1[0]:+.0f}% … {rast1[-1]:+.0f}% (bot {len(rast1)} rastgelenin {gecti1} tanesini geçti), "
+                 f"BTC al-tut {ozet['btc_1x']['getiri']:+.0f}%, eşit ağırlık al-tut "
+                 f"{ozet['esit_agirlik_1x']['getiri']:+.0f}%.")
+        if bot1["getiri"] < ozet["esit_agirlik_1x"]["getiri"] and gecti1 < len(rast1):
+            metin += (" 'Son 30 günün en iyisini seç' yöntemi bu dönemde ne rastgele seçimi ne de "
+                      "sadece alıp tutmayı geçebildi.")
+        st.warning(metin)
+    satirlar = [
+        {"Sistem": "Bot (canlı kurallar, 5x-10x)", "Getiri %": bot["getiri"],
+         "En büyük düşüş %": bot["en_buyuk_dusus"], "İşlem": bot["islem"],
+         "Kazanma %": bot["kazanan"] / max(bot["islem"], 1) * 100, "Stop": bot["stop"],
+         "Likidasyon": bot["likidasyon"], "Devre kesici": bot["kesici"],
+         "Sıfırlandığı tarih": bot.get("iflas_tarihi")},
+        {"Sistem": f"Rastgele seçim 5x-10x (medyan, aralık {rast[0]:+.0f}% … {rast[-1]:+.0f}%)",
+         "Getiri %": rast[len(rast) // 2],
+         "En büyük düşüş %": sorted(r["en_buyuk_dusus"] for r in ozet["rastgele"])[len(rast) // 2]},
+    ]
+    if bot1 and rast1:
+        satirlar += [
+            {"Sistem": "Bot kaldıraçsız (1x)", "Getiri %": bot1["getiri"],
+             "En büyük düşüş %": bot1["en_buyuk_dusus"], "İşlem": bot1["islem"],
+             "Kazanma %": bot1["kazanan"] / max(bot1["islem"], 1) * 100, "Stop": bot1["stop"],
+             "Devre kesici": bot1["kesici"]},
+            {"Sistem": f"Rastgele seçim 1x (medyan, aralık {rast1[0]:+.0f}% … {rast1[-1]:+.0f}%)",
+             "Getiri %": rast1[len(rast1) // 2],
+             "En büyük düşüş %": sorted(r["en_buyuk_dusus"] for r in ozet["rastgele_1x"])[len(rast1) // 2]},
+        ]
+    satirlar += [
+        {"Sistem": "BTC al-tut 1x", "Getiri %": ozet["btc_1x"]["getiri"],
+         "En büyük düşüş %": ozet["btc_1x"]["en_buyuk_dusus"]},
+        {"Sistem": "BTC al-tut 5x", "Getiri %": ozet["btc_5x"]["getiri"],
+         "En büyük düşüş %": ozet["btc_5x"]["en_buyuk_dusus"]},
+        {"Sistem": f"{ozet['coin_sayisi']} coin eşit ağırlık 1x", "Getiri %": ozet["esit_agirlik_1x"]["getiri"],
+         "En büyük düşüş %": ozet["esit_agirlik_1x"]["en_buyuk_dusus"]},
+    ]
+    st.dataframe(pd.DataFrame(satirlar), width="stretch", hide_index=True, column_config={
+        "Getiri %": st.column_config.NumberColumn(format="%+.1f%%"),
+        "En büyük düşüş %": st.column_config.NumberColumn(format="%.1f%%"),
+        "Kazanma %": st.column_config.NumberColumn(format="%.0f%%"),
+    })
+    st.line_chart(egri)
+    st.caption(
+        f"Dönem {ozet['donem'][0][:10]} → {ozet['donem'][1][:10]}, {ozet['coin_sayisi']} coin, "
+        f"{ozet['strateji_sayisi']} strateji, canlı botla aynı kaldıraç/stop/likidasyon/süre/devre kesici "
+        "kuralları. **Sınırlamalar:** evren BUGÜNÜN en likit coinleri (geriye dönük hayatta kalan "
+        "yanlılığı — sonuçları biraz iyimser gösterir); rotasyon günlük (canlıda saatlik); sıralama "
+        "kaldıraçsız 30 günlük getiriyle. Yeniden çalıştırmak için: `bot_gecmis_testi.py` "
+        f"(son çalıştırma {ozet['olusturma'][:16].replace('T', ' ')} UTC).")
+
+
 def _sanal_trader_icerik(depo):
     """
     Statik routing'den cagirilir (bkz. dosyanin yukarisindaki uzun not --
@@ -2764,6 +2836,8 @@ def _sanal_trader_icerik(depo):
                 "çoğu 5-10x kaldıraçlı LONG — yükselen bir piyasada kaldıraçlı LONG tutan HER sistem "
                 "kâr eder. Botun gerçek katkısı, BTC'yi aynı kaldıraçla tutmaktan DAHA İYİ olup "
                 "olmadığıdır; tek ayın sonucu da şans eseri olabilir.")
+
+    _bot_gecmis_testi_bolumu()
 
     # --- Acik pozisyonlar tablosu ------------------------------
     if pozisyonlar:

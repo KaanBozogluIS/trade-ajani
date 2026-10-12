@@ -1,0 +1,176 @@
+{
+  "olusturma": "2026-10-12T19:20:58.947261+00:00",
+  "donem": [
+    "2025-10-12 19:00:00+00:00",
+    "2026-10-12 18:00:00+00:00"
+  ],
+  "coin_sayisi": 40,
+  "strateji_sayisi": 23,
+  "bot": {
+    "getiri": -99.19742507185326,
+    "en_buyuk_dusus": -99.55544487869507,
+    "iflas_tarihi": "2026-01-19",
+    "islem": 1157,
+    "kazanan": 373,
+    "stop": 368,
+    "likidasyon": 0,
+    "sure": 2,
+    "kesici": 26,
+    "short": 191
+  },
+  "bot_1x": {
+    "getiri": -65.93348349420182,
+    "en_buyuk_dusus": -84.16741585665595,
+    "iflas_tarihi": null,
+    "islem": 2944,
+    "kazanan": 943,
+    "stop": 1065,
+    "likidasyon": 0,
+    "sure": 24,
+    "kesici": 8,
+    "short": 338
+  },
+  "rastgele_1x": [
+    {
+      "tohum": 1,
+      "getiri": -63.19341494721431,
+      "en_buyuk_dusus": -76.84652334792914,
+      "islem": 2314,
+      "kazanan": 669,
+      "stop": 897,
+      "likidasyon": 0,
+      "sure": 36,
+      "kesici": 6,
+      "short": 127
+    },
+    {
+      "tohum": 2,
+      "getiri": -54.1361451331421,
+      "en_buyuk_dusus": -76.64578624239034,
+      "islem": 2308,
+      "kazanan": 679,
+      "stop": 894,
+      "likidasyon": 0,
+      "sure": 28,
+      "kesici": 6,
+      "short": 128
+    },
+    {
+      "tohum": 3,
+      "getiri": -52.22625538817238,
+      "en_buyuk_dusus": -70.11207743298533,
+      "islem": 2216,
+      "kazanan": 635,
+      "stop": 859,
+      "likidasyon": 0,
+      "sure": 39,
+      "kesici": 6,
+      "short": 141
+    },
+    {
+      "tohum": 4,
+      "getiri": -49.7370929559837,
+      "en_buyuk_dusus": -75.54601330896799,
+      "islem": 2244,
+      "kazanan": 647,
+      "stop": 903,
+      "likidasyon": 0,
+      "sure": 39,
+      "kesici": 6,
+      "short": 117
+    },
+    {
+      "tohum": 5,
+      "getiri": -51.306597871002644,
+      "en_buyuk_dusus": -77.01732588723233,
+      "islem": 2309,
+      "kazanan": 664,
+      "stop": 910,
+      "likidasyon": 0,
+      "sure": 34,
+      "kesici": 7,
+      "short": 139
+    }
+  ],
+  "bot_1x_rastgeleyi_gecti": 0,
+  "rastgele": [
+    {
+      "tohum": 1,
+      "getiri": -99.16373020310058,
+      "en_buyuk_dusus": -99.4099824669815,
+      "iflas_tarihi": "2026-01-29",
+      "islem": 1013,
+      "kazanan": 277,
+      "stop": 391,
+      "likidasyon": 0,
+      "sure": 13,
+      "kesici": 34,
+      "short": 59
+    },
+    {
+      "tohum": 2,
+      "getiri": -99.20583445826509,
+      "en_buyuk_dusus": -99.51276637516617,
+      "iflas_tarihi": "2026-01-31",
+      "islem": 966,
+      "kazanan": 250,
+      "stop": 366,
+      "likidasyon": 0,
+      "sure": 11,
+      "kesici": 34,
+      "short": 42
+    },
+    {
+      "tohum": 3,
+      "getiri": -99.21878884330584,
+      "en_buyuk_dusus": -99.34785103433744,
+      "iflas_tarihi": "2026-01-27",
+      "islem": 836,
+      "kazanan": 227,
+      "stop": 342,
+      "likidasyon": 0,
+      "sure": 8,
+      "kesici": 30,
+      "short": 35
+    },
+    {
+      "tohum": 4,
+      "getiri": -99.18317702814639,
+      "en_buyuk_dusus": -99.34644284523905,
+      "iflas_tarihi": "2025-12-25",
+      "islem": 806,
+      "kazanan": 222,
+      "stop": 308,
+      "likidasyon": 0,
+      "sure": 11,
+      "kesici": 28,
+      "short": 34
+    },
+    {
+      "tohum": 5,
+      "getiri": -99.19986181538096,
+      "en_buyuk_dusus": -99.3711383961869,
+      "iflas_tarihi": "2026-02-02",
+      "islem": 1308,
+      "kazanan": 379,
+      "stop": 488,
+      "likidasyon": 0,
+      "sure": 16,
+      "kesici": 44,
+      "short": 72
+    }
+  ],
+  "btc_1x": {
+    "getiri": -27.993689018620238,
+    "en_buyuk_dusus": -49.82210162481261
+  },
+  "btc_5x": {
+    "getiri": -100.0,
+    "en_buyuk_dusus": -100.0
+  },
+  "esit_agirlik_1x": {
+    "getiri": -11.369765659683019,
+    "en_buyuk_dusus": -59.017408081704936
+  },
+  "bot_rastgeleyi_gecti": 3
+}
