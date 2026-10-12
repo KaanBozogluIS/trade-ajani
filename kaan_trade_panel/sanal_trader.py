@@ -625,7 +625,19 @@ class Portfoy:
 # oynamaz -- "strateji" acisindan anlamsizdir, sadece bir pozisyon
 # yerini bosuna isgal eder. Evrenden bilerek cikariliyor.
 _STABILCOIN_KODLARI = {"USDC", "USD1", "RLUSD", "FDUSD", "TUSD", "DAI",
-                       "BUSD", "PYUSD", "USDP", "EUR", "EURI", "USDE"}
+                       "BUSD", "PYUSD", "USDP", "EUR", "EURI", "USDE", "U"}
+
+
+def _stabil_mi(df):
+    """
+    Listede olmayan YENI stablecoin'leri de yakalar: fiyat ~1$ ve son 30
+    gunluk aralik %3'ten dar. (2026-10'da "U/USDT" listede olmadigi icin
+    evrene girdi ve bot ona 10x pozisyon acti -- anlamsiz, sadece bir slot
+    israfi.)
+    """
+    son = df.tail(720)
+    fiyat = float(son["kapanis"].iloc[-1])
+    return abs(fiyat - 1.0) < 0.02 and float(son["yuksek"].max()) / float(son["dusuk"].min()) - 1 < 0.03
 
 
 def evreni_sec(depo, a):
@@ -724,6 +736,9 @@ def rotasyonu_degerlendir(evren, a):
         tum_df = vk.mum_verisi(coin, a["zaman_dilimi"], _MAKS_ISINMA + pencere_mum + 15)
         if tum_df is None:
             _saglik["verisiz_coin"].append(coin)
+            continue
+        if _stabil_mi(tum_df):
+            print(f"   [i] {coin} stablecoin gibi davraniyor (~1$, dar aralik) -- evrenden cikarildi")
             continue
         # Puanlama CANLI ISLEMLE AYNI kaldiracla (ve likidasyon riskiyle)
         # yapilir -- spot puanlama, 10x'te likide olacak stratejileri odullendirirdi.
@@ -959,6 +974,13 @@ def _portfoy_fiyatlari(portfoy, depo, guncel_sembol=None, guncel_fiyat=None):
     fiyatlar = {}
     for sembol in portfoy.pozisyonlar:
         f = al(depo.coin(sembol), "fiyat")
+        if not f and sembol != guncel_sembol:
+            # Canli akista yoksa REST'ten: GitHub Actions'ta akis coinlerin bir
+            # kismini hic doldurmuyor; eksik fiyatli pozisyon toplam degere
+            # eklenmez, portfoy oldugundan dusuk gorunur ve devre kesici hic
+            # calismazdi (2026-10-12'de portfoy zirveden %30 dustugu halde
+            # tetiklenmedi).
+            f = vk.son_fiyat(sembol)
         if f:
             fiyatlar[sembol] = f
     if guncel_sembol and guncel_fiyat:

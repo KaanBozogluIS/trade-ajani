@@ -82,3 +82,18 @@ def test_sakin_donem_tuzagi_uzun_oynaklik_kaldiraci_dusurur():
     sadece_kisa = dict(A, kaldirac_uzun_atr_mum=1)  # eski davranisin vekili
     assert st._kaldirac_hesapla(df, sadece_kisa) > st._kaldirac_hesapla(df, A)
     assert st._kaldirac_hesapla(df, A) >= A["min_kaldirac"]
+
+
+def test_canli_akista_olmayan_fiyat_RESTten_alinir_ve_kesici_calisir(izole_cikti, monkeypatch):
+    monkeypatch.setattr(st.vk, "son_fiyat", lambda sembol: 40.0)
+    p = _pozisyonlu_portfoy()
+    st._dongu_sonu(p, _Depo({}), A, 1)  # canli akis bos -> REST 40 -> 500 + 200 = 700, %30 dusus
+    assert p.devre_kesici_aktif_mi()
+
+
+def test_stablecoin_otomatik_taninir():
+    stabil = sentetik_mumlar(1.0 + 0.0005 * np.sin(np.arange(800)), oynaklik=0.0002)
+    oynak = sentetik_mumlar(100 * np.exp(np.cumsum(np.random.default_rng(3).normal(0, 0.01, 800))))
+    dolar_civari_oynak = sentetik_mumlar(1.0 + 0.1 * np.sin(np.arange(800) / 20))
+    assert st._stabil_mi(stabil)
+    assert not st._stabil_mi(oynak) and not st._stabil_mi(dolar_civari_oynak)

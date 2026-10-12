@@ -151,6 +151,25 @@ def mum_verisi(sembol="BTC/USDT", zaman_dilimi="1d", adet=400):
     return None
 
 
+def son_fiyat(sembol="BTC/USDT"):
+    """
+    Bir coinin SON islem fiyati, REST ile (mum_verisi ile ayni cografi
+    engelsiz adres sirasi). Canli WebSocket akisinda olmayan coinler icin
+    yedek: GitHub Actions'ta akis coinlerin bir kismini hic doldurmayabiliyor.
+    Basarisizsa None.
+    """
+    global son_mum_hatasi
+    for taban in _MUM_ADRESLERI:
+        try:
+            y = _oturum.get(f"{taban}/api/v3/ticker/price",
+                            params={"symbol": sembol.replace("/", "")}, timeout=ZAMAN_ASIMI)
+            y.raise_for_status()
+            return float(y.json()["price"])
+        except Exception as e:
+            son_mum_hatasi = f"{taban}: {type(e).__name__}: {str(e)[:160]}"
+    return None
+
+
 _HISSE_ARALIK = {"1d": ("1d", "max"), "1h": ("60m", "730d")}
 
 

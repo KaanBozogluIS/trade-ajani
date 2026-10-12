@@ -21,6 +21,7 @@ def izole_cikti(tmp_path, monkeypatch):
                       ("ROTASYON_DOSYASI", "rotasyon_gunlugu.csv"), ("DURUM_DOSYASI", "durum.json"),
                       ("CALISMA_DOSYASI", "calisma_durumu.json"), ("SAGLIK_DOSYASI", "saglik.json")):
         monkeypatch.setattr(st, ad, tmp_path / dosya if dosya else tmp_path)
+    monkeypatch.setattr(st.vk, "son_fiyat", lambda sembol: None)  # testlerde AG YOK
     monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
     monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
     st._olaylar.clear()
