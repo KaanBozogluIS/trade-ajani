@@ -1,26 +1,4 @@
 {
-  "BNB/USDT": {
-    "miktar": 2.0091062725167186,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 787.15,
-    "giris_zamani": "2026-10-04T15:17:18.184514+00:00",
-    "maliyet": 158.3051053465,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 736.7636963096476,
-    "stop_baslangic": "2026-10-12T19:06:17.781340+00:00"
-  },
-  "ADA/USDT": {
-    "miktar": 7949.189946810492,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.2701,
-    "giris_zamani": "2026-10-06T07:32:22.279957+00:00",
-    "maliyet": 429.84508601271557,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.23512430947089705,
-    "stop_baslangic": "2026-10-12T19:06:20.412818+00:00"
-  },
   "U/USDT": {
     "miktar": 818.5757810088094,
     "strateji": "Dusuk oynaklik",
@@ -31,39 +9,6 @@
     "kaldirac": 10.0,
     "stop_fiyat": 1.000092819794399,
     "stop_baslangic": "2026-10-12T19:06:20.260522+00:00"
-  },
-  "ERA/USDT": {
-    "miktar": 7777.166542026883,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.0827,
-    "giris_zamani": "2026-10-10T15:17:14.046606+00:00",
-    "maliyet": 128.76309770282745,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.06748,
-    "stop_baslangic": "2026-10-12T19:06:22.897256+00:00"
-  },
-  "FET/USDT": {
-    "miktar": 410.43590683128565,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.2243,
-    "giris_zamani": "2026-10-10T23:29:13.496625+00:00",
-    "maliyet": 18.43058536581729,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.21519124168743875,
-    "stop_baslangic": "2026-10-12T19:06:21.308860+00:00"
-  },
-  "BTC/USDT": {
-    "miktar": 0.022861936395059814,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 83824.0,
-    "giris_zamani": "2026-10-11T18:01:24.095190+00:00",
-    "maliyet": 191.8297253633127,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 81714.32664666897,
-    "stop_baslangic": "2026-10-12T19:06:16.889344+00:00"
   },
   "XRP/USDT": {
     "miktar": 51.17041431343677,
