@@ -1,13 +1,1 @@
-{
-  "U/USDT": {
-    "miktar": 818.5757810088094,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 1.0004,
-    "giris_zamani": "2026-10-10T01:42:46.712828+00:00",
-    "maliyet": 81.97229342554684,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 1.000092819794399,
-    "stop_baslangic": "2026-10-12T19:06:20.260522+00:00"
-  }
-}
+{}
