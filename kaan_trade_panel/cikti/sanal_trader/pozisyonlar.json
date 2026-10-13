@@ -9,16 +9,5 @@
     "kaldirac": 10.0,
     "stop_fiyat": 1.000092819794399,
     "stop_baslangic": "2026-10-12T19:06:20.260522+00:00"
-  },
-  "XRP/USDT": {
-    "miktar": 51.17041431343677,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 1.3624,
-    "giris_zamani": "2026-10-12T18:59:20.833969+00:00",
-    "maliyet": 9.591486268165642,
-    "yon": "SHORT",
-    "kaldirac": 7.275656229531345,
-    "stop_fiyat": 1.384804045105753,
-    "stop_baslangic": "2026-10-12T19:06:17.624264+00:00"
   }
 }
