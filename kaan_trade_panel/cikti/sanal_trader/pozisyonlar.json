@@ -1,1 +1,35 @@
-{}
+{
+  "FIL/USDT": {
+    "miktar": 260.6449195144752,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 1.093,
+    "giris_zamani": "2026-10-14T22:15:21.534046+00:00",
+    "maliyet": 57.03401341928356,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 1.0533543628649564,
+    "stop_baslangic": "2026-10-14T22:15:21.534046+00:00"
+  },
+  "ARB/USDT": {
+    "miktar": 1576.482357972304,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.182,
+    "giris_zamani": "2026-10-14T22:15:22.002318+00:00",
+    "maliyet": 57.44139922942129,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.17587999688962103,
+    "stop_baslangic": "2026-10-14T22:15:22.002318+00:00"
+  },
+  "ZRO/USDT": {
+    "miktar": 150.9185119425582,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 1.917,
+    "giris_zamani": "2026-10-14T22:15:22.128685+00:00",
+    "maliyet": 57.92007755633315,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 1.819005973001068,
+    "stop_baslangic": "2026-10-14T22:15:22.128685+00:00"
+  }
+}
