@@ -1,26 +1,4 @@
 {
-  "KORUB/USDT": {
-    "miktar": 26.85139573110539,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 10.65,
-    "giris_zamani": "2026-10-15T07:21:04.343270+00:00",
-    "maliyet": 57.250723630885375,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 11.678208660260749,
-    "stop_baslangic": "2026-10-15T07:21:04.343270+00:00"
-  },
-  "ZK/USDT": {
-    "miktar": 15551.614657873528,
-    "strateji": "Momentum 180",
-    "giris_fiyat": 0.01754,
-    "giris_zamani": "2026-10-15T07:21:04.917137+00:00",
-    "maliyet": 54.60967389371405,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.01614663391792078,
-    "stop_baslangic": "2026-10-15T07:21:04.917137+00:00"
-  },
   "FET/USDT": {
     "miktar": 1274.9046026812555,
     "strateji": "MACD",
@@ -43,17 +21,6 @@
     "stop_fiyat": 0.9831953418718481,
     "stop_baslangic": "2026-10-15T13:21:28.277133+00:00"
   },
-  "MUB/USDT": {
-    "miktar": 0.28803885634237686,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 872.67,
-    "giris_zamani": "2026-10-15T13:21:28.423383+00:00",
-    "maliyet": 50.32289664950991,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 893.6959241824014,
-    "stop_baslangic": "2026-10-15T13:21:28.423383+00:00"
-  },
   "ZRO/USDT": {
     "miktar": 140.105400170161,
     "strateji": "Dusuk oynaklik",
@@ -64,5 +31,49 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
+  },
+  "ZEC/USDT": {
+    "miktar": 0.21280968433557815,
+    "strateji": "MACD",
+    "giris_fiyat": 1230.87,
+    "giris_zamani": "2026-10-15T18:14:16.433970+00:00",
+    "maliyet": 52.44065188351012,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 1151.7552930425609,
+    "stop_baslangic": "2026-10-15T18:14:16.433970+00:00"
+  },
+  "NEAR/USDT": {
+    "miktar": 52.16959578263272,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 5.272,
+    "giris_zamani": "2026-10-15T18:14:16.564267+00:00",
+    "maliyet": 55.06268447768563,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 4.995751642924492,
+    "stop_baslangic": "2026-10-15T18:14:16.564267+00:00"
+  },
+  "TAO/USDT": {
+    "miktar": 0.6050326121844406,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 276.8,
+    "giris_zamani": "2026-10-15T18:14:19.448323+00:00",
+    "maliyet": 33.528133544074706,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 267.52411345335383,
+    "stop_baslangic": "2026-10-15T18:14:19.448323+00:00"
+  },
+  "AAVE/USDT": {
+    "miktar": 0.93708665764698,
+    "strateji": "MACD",
+    "giris_fiyat": 155.86,
+    "giris_zamani": "2026-10-15T18:14:20.289728+00:00",
+    "maliyet": 29.240105397569234,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 147.5840943067606,
+    "stop_baslangic": "2026-10-15T18:14:20.289728+00:00"
   }
 }
