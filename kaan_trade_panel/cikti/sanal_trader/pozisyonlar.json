@@ -31,5 +31,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.819005973001068,
     "stop_baslangic": "2026-10-14T22:15:22.128685+00:00"
+  },
+  "AVAX/USDT": {
+    "miktar": 29.68407554759329,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 9.964,
+    "giris_zamani": "2026-10-15T01:25:31.724850+00:00",
+    "maliyet": 58.499278331896484,
+    "yon": "LONG",
+    "kaldirac": 5.06105725396176,
+    "stop_fiyat": 9.727748967853698,
+    "stop_baslangic": "2026-10-15T01:25:31.724850+00:00"
+  },
+  "OP/USDT": {
+    "miktar": 2090.8582611920197,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.1415,
+    "giris_zamani": "2026-10-15T01:25:33.926163+00:00",
+    "maliyet": 59.230519311045185,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.13531188126104737,
+    "stop_baslangic": "2026-10-15T01:25:33.926163+00:00"
   }
 }
