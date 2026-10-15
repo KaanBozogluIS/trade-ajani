@@ -1,57 +1,24 @@
 {
-  "FIL/USDT": {
-    "miktar": 260.6449195144752,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 1.093,
-    "giris_zamani": "2026-10-14T22:15:21.534046+00:00",
-    "maliyet": 57.03401341928356,
+  "KORUB/USDT": {
+    "miktar": 26.85139573110539,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 10.65,
+    "giris_zamani": "2026-10-15T07:21:04.343270+00:00",
+    "maliyet": 57.250723630885375,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 11.678208660260749,
+    "stop_baslangic": "2026-10-15T07:21:04.343270+00:00"
+  },
+  "ZK/USDT": {
+    "miktar": 15551.614657873528,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 0.01754,
+    "giris_zamani": "2026-10-15T07:21:04.917137+00:00",
+    "maliyet": 54.60967389371405,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 1.0533543628649564,
-    "stop_baslangic": "2026-10-14T22:15:21.534046+00:00"
-  },
-  "ARB/USDT": {
-    "miktar": 1576.482357972304,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.182,
-    "giris_zamani": "2026-10-14T22:15:22.002318+00:00",
-    "maliyet": 57.44139922942129,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.17587999688962103,
-    "stop_baslangic": "2026-10-14T22:15:22.002318+00:00"
-  },
-  "ZRO/USDT": {
-    "miktar": 150.9185119425582,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 1.917,
-    "giris_zamani": "2026-10-14T22:15:22.128685+00:00",
-    "maliyet": 57.92007755633315,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 1.819005973001068,
-    "stop_baslangic": "2026-10-14T22:15:22.128685+00:00"
-  },
-  "AVAX/USDT": {
-    "miktar": 29.68407554759329,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 9.964,
-    "giris_zamani": "2026-10-15T01:25:31.724850+00:00",
-    "maliyet": 58.499278331896484,
-    "yon": "LONG",
-    "kaldirac": 5.06105725396176,
-    "stop_fiyat": 9.727748967853698,
-    "stop_baslangic": "2026-10-15T01:25:31.724850+00:00"
-  },
-  "OP/USDT": {
-    "miktar": 2090.8582611920197,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.1415,
-    "giris_zamani": "2026-10-15T01:25:33.926163+00:00",
-    "maliyet": 59.230519311045185,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.13531188126104737,
-    "stop_baslangic": "2026-10-15T01:25:33.926163+00:00"
+    "stop_fiyat": 0.01614663391792078,
+    "stop_baslangic": "2026-10-15T07:21:04.917137+00:00"
   }
 }
