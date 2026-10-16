@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "ZEC/USDT": {
-    "miktar": 0.21280968433557815,
-    "strateji": "MACD",
-    "giris_fiyat": 1230.87,
-    "giris_zamani": "2026-10-15T18:14:16.433970+00:00",
-    "maliyet": 52.44065188351012,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 1151.7552930425609,
-    "stop_baslangic": "2026-10-15T18:14:16.433970+00:00"
-  },
   "NEAR/USDT": {
     "miktar": 52.16959578263272,
     "strateji": "Dusuk oynaklik",
@@ -86,5 +75,16 @@
     "kaldirac": 8.400792949284956,
     "stop_fiyat": 215.38872321597546,
     "stop_baslangic": "2026-10-16T07:04:41.039646+00:00"
+  },
+  "SOL/USDT": {
+    "miktar": 2.9794017627808165,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 106.61,
+    "giris_zamani": "2026-10-16T12:21:30.810257+00:00",
+    "maliyet": 53.548630171304254,
+    "yon": "LONG",
+    "kaldirac": 5.937630391045027,
+    "stop_fiyat": 104.4554031057079,
+    "stop_baslangic": "2026-10-16T12:21:30.810257+00:00"
   }
 }
