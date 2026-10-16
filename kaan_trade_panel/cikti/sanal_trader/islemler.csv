@@ -125,3 +125,5 @@ tarih,islem,strateji,sembol,fiyat,miktar,tutar,ucret,kar_zarar,kar_zarar_yuzde,n
 2026-10-16 20:59:25,SAT,Dusuk oynaklik,NEAR/USDT,4.995752,52.16959578,40.1,0.2606,-14.96,-27.17,79.62,384.12,stop,5.0
 2026-10-16 20:59:27,AL,Destek/Direnc kirilmasi,AVAX/USDT,10.002,18.88682804,37.82,0.1891,,,41.8,384.26,sinyal,5.0
 2026-10-16 20:59:28,KISA_AC,Kirilim-GeriCekilme-Toparlanma,XAUT/USDT,4164.36,0.09526139,39.71,0.3971,,,2.09,383.41,sinyal,10.0
+2026-10-16 23:30:54,KISA_KAPAT,Kirilim-GeriCekilme-Toparlanma,XAUT/USDT,4162.69,0.09526139,39.08,0.3965,-0.63,-1.6,41.17,396.35,sinyal,10.0
+2026-10-16 23:30:56,AL,Dusuk oynaklik,ARB/USDT,0.1912,1021.65785159,39.11,0.1955,,,2.06,396.32,sinyal,5.0
