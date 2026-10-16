@@ -1,15 +1,4 @@
 {
-  "FET/USDT": {
-    "miktar": 1274.9046026812555,
-    "strateji": "MACD",
-    "giris_fiyat": 0.1928,
-    "giris_zamani": "2026-10-15T13:21:27.709924+00:00",
-    "maliyet": 49.20953101039961,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.1846826346440629,
-    "stop_baslangic": "2026-10-15T13:21:27.709924+00:00"
-  },
   "ZRO/USDT": {
     "miktar": 140.105400170161,
     "strateji": "Dusuk oynaklik",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.0133696717427234,
     "stop_baslangic": "2026-10-16T01:13:59.512987+00:00"
+  },
+  "NVDAB/USDT": {
+    "miktar": 2.5302195053724277,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 218.51,
+    "giris_zamani": "2026-10-16T07:04:41.039646+00:00",
+    "maliyet": 65.87850684521989,
+    "yon": "LONG",
+    "kaldirac": 8.400792949284956,
+    "stop_fiyat": 215.38872321597546,
+    "stop_baslangic": "2026-10-16T07:04:41.039646+00:00"
   }
 }
