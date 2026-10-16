@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "NEAR/USDT": {
-    "miktar": 52.16959578263272,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 5.272,
-    "giris_zamani": "2026-10-15T18:14:16.564267+00:00",
-    "maliyet": 55.06268447768563,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.995751642924492,
-    "stop_baslangic": "2026-10-15T18:14:16.564267+00:00"
-  },
   "TAO/USDT": {
     "miktar": 0.6050326121844406,
     "strateji": "Destek/Direnc kirilmasi",
@@ -31,17 +20,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 267.52411345335383,
     "stop_baslangic": "2026-10-15T18:14:19.448323+00:00"
-  },
-  "BTC/USDT": {
-    "miktar": 0.004278134505237541,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 82425.1,
-    "giris_zamani": "2026-10-15T22:10:58.514401+00:00",
-    "maliyet": 43.02594690799039,
-    "yon": "LONG",
-    "kaldirac": 8.203855310971752,
-    "stop_fiyat": 81219.44587458267,
-    "stop_baslangic": "2026-10-15T22:10:58.514401+00:00"
   },
   "WLD/USDT": {
     "miktar": 460.44403479883806,
@@ -86,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.120201843765426,
     "stop_baslangic": "2026-10-16T17:21:34.703902+00:00"
+  },
+  "AVAX/USDT": {
+    "miktar": 18.886828043828885,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 10.002,
+    "giris_zamani": "2026-10-16T20:59:27.754331+00:00",
+    "maliyet": 37.81902984872403,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 9.689737876141361,
+    "stop_baslangic": "2026-10-16T20:59:27.754331+00:00"
+  },
+  "XAUT/USDT": {
+    "miktar": 0.09526138796794484,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 4164.36,
+    "giris_zamani": "2026-10-16T20:59:28.686818+00:00",
+    "maliyet": 39.70998134116023,
+    "yon": "SHORT",
+    "kaldirac": 10.0,
+    "stop_fiyat": 4190.896768284102,
+    "stop_baslangic": "2026-10-16T20:59:28.686818+00:00"
   }
 }
