@@ -75,5 +75,16 @@
     "kaldirac": 8.203855310971752,
     "stop_fiyat": 81219.44587458267,
     "stop_baslangic": "2026-10-15T22:10:58.514401+00:00"
+  },
+  "SUI/USDT": {
+    "miktar": 414.95830336942845,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 1.0439,
+    "giris_zamani": "2026-10-16T01:13:59.512987+00:00",
+    "maliyet": 86.72171629376304,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 1.0133696717427234,
+    "stop_baslangic": "2026-10-16T01:13:59.512987+00:00"
   }
 }
