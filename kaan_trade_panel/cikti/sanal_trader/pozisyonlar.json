@@ -32,17 +32,6 @@
     "stop_fiyat": 267.52411345335383,
     "stop_baslangic": "2026-10-15T18:14:19.448323+00:00"
   },
-  "AAVE/USDT": {
-    "miktar": 0.93708665764698,
-    "strateji": "MACD",
-    "giris_fiyat": 155.86,
-    "giris_zamani": "2026-10-15T18:14:20.289728+00:00",
-    "maliyet": 29.240105397569234,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 147.5840943067606,
-    "stop_baslangic": "2026-10-15T18:14:20.289728+00:00"
-  },
   "BTC/USDT": {
     "miktar": 0.004278134505237541,
     "strateji": "Dusuk oynaklik",
@@ -54,37 +43,48 @@
     "stop_fiyat": 81219.44587458267,
     "stop_baslangic": "2026-10-15T22:10:58.514401+00:00"
   },
-  "SUI/USDT": {
-    "miktar": 414.95830336942845,
+  "WLD/USDT": {
+    "miktar": 460.44403479883806,
     "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 1.0439,
-    "giris_zamani": "2026-10-16T01:13:59.512987+00:00",
-    "maliyet": 86.72171629376304,
+    "giris_fiyat": 0.5082,
+    "giris_zamani": "2026-10-16T17:21:30.895736+00:00",
+    "maliyet": 46.84637807502893,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 1.0133696717427234,
-    "stop_baslangic": "2026-10-16T01:13:59.512987+00:00"
+    "stop_fiyat": 0.4813477828625999,
+    "stop_baslangic": "2026-10-16T17:21:30.895736+00:00"
   },
-  "NVDAB/USDT": {
-    "miktar": 2.5302195053724277,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 218.51,
-    "giris_zamani": "2026-10-16T07:04:41.039646+00:00",
-    "maliyet": 65.87850684521989,
-    "yon": "LONG",
-    "kaldirac": 8.400792949284956,
-    "stop_fiyat": 215.38872321597546,
-    "stop_baslangic": "2026-10-16T07:04:41.039646+00:00"
-  },
-  "SOL/USDT": {
-    "miktar": 2.9794017627808165,
+  "TIA/USDT": {
+    "miktar": 523.8381094714706,
     "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 106.61,
-    "giris_zamani": "2026-10-16T12:21:30.810257+00:00",
-    "maliyet": 53.548630171304254,
+    "giris_fiyat": 0.6853,
+    "giris_zamani": "2026-10-16T17:21:31.577247+00:00",
+    "maliyet": 71.86912040456431,
     "yon": "LONG",
-    "kaldirac": 5.937630391045027,
-    "stop_fiyat": 104.4554031057079,
-    "stop_baslangic": "2026-10-16T12:21:30.810257+00:00"
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.6371283785002027,
+    "stop_baslangic": "2026-10-16T17:21:31.577247+00:00"
+  },
+  "APT/USDT": {
+    "miktar": 251.42273896319432,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.847,
+    "giris_zamani": "2026-10-16T17:21:34.569487+00:00",
+    "maliyet": 42.63364562599111,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.8158613215013885,
+    "stop_baslangic": "2026-10-16T17:21:34.569487+00:00"
+  },
+  "DOT/USDT": {
+    "miktar": 191.44076446653844,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 1.168,
+    "giris_zamani": "2026-10-16T17:21:34.703902+00:00",
+    "maliyet": 44.76532790729066,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 1.120201843765426,
+    "stop_baslangic": "2026-10-16T17:21:34.703902+00:00"
   }
 }
