@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "WLD/USDT": {
-    "miktar": 460.44403479883806,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 0.5082,
-    "giris_zamani": "2026-10-16T17:21:30.895736+00:00",
-    "maliyet": 46.84637807502893,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.4813477828625999,
-    "stop_baslangic": "2026-10-16T17:21:30.895736+00:00"
-  },
   "TIA/USDT": {
     "miktar": 523.8381094714706,
     "strateji": "Dusuk oynaklik",
@@ -31,17 +20,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.6371283785002027,
     "stop_baslangic": "2026-10-16T17:21:31.577247+00:00"
-  },
-  "ARB/USDT": {
-    "miktar": 1021.657851585549,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.1912,
-    "giris_zamani": "2026-10-16T23:30:56.233328+00:00",
-    "maliyet": 39.10730354817957,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.1840856221619363,
-    "stop_baslangic": "2026-10-16T23:30:56.233328+00:00"
   },
   "PAXG/USDT": {
     "miktar": 0.07874538277009259,
