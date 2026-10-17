@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "TIA/USDT": {
-    "miktar": 523.8381094714706,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.6853,
-    "giris_zamani": "2026-10-16T17:21:31.577247+00:00",
-    "maliyet": 71.86912040456431,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.6371283785002027,
-    "stop_baslangic": "2026-10-16T17:21:31.577247+00:00"
-  },
   "PAXG/USDT": {
     "miktar": 0.07874538277009259,
     "strateji": "Kirilim-GeriCekilme-Toparlanma",
