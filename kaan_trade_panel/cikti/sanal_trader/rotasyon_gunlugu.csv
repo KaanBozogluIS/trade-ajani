@@ -2758,3 +2758,43 @@
 2026-10-17 22:13:41,ERA/USDT,Fair Value Gap,125.36,[5.0x] Fair Value Gap:+125.4% | Tepe/Dip (rejim uyarlanabilir):+119.8% | Hacim-Fiyat Uyumsuzlugu:+80.6% | Dusuk oynaklik:+19.9% | SMA trend 50:+19.4%
 2026-10-17 22:13:41,SPCXB/USDT,Hacim-Fiyat Uyumsuzlugu,47.37,[9.0x] Hacim-Fiyat Uyumsuzlugu:+47.4% | Kirilim-GeriCekilme-Toparlanma:+6.0% | Momentum 180:+1.1% | SMA trend 200:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0%
 2026-10-17 22:13:41,DOT/USDT,Destek/Direnc kirilmasi,83.39,[5.0x] Destek/Direnc kirilmasi:+83.4% | SFP (likidite avi):+71.6% | RSI 30/60:+49.1% | Dusuk oynaklik:+42.2% | RSI 20/50:+20.2%
+2026-10-18 00:55:23,BTC/USDT,Dusuk oynaklik,61.45,[10.0x] Dusuk oynaklik:+61.5% | Hacim-Fiyat Uyumsuzlugu:+55.9% | Momentum 180:+16.5% | Tepe/Dip (rejim uyarlanabilir):+12.8% | Kirilim-GeriCekilme-Toparlanma:+8.3%
+2026-10-18 00:55:23,ETH/USDT,Major Trend Surucusu,22.13,[8.6x] Major Trend Surucusu:+22.1% | Tepe/Dip (rejim uyarlanabilir):+13.9% | Momentum 180:+4.5% | Order Block:+0.0% | Kirilim-GeriCekilme-Toparlanma:-6.4%
+2026-10-18 00:55:23,ZEC/USDT,RSI 20/50,42.17,[5.0x] RSI 20/50:+42.2% | MA kesisme 50/200:+17.4% | Order Block:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-18 00:55:23,SOL/USDT,Momentum 180,54.33,[6.6x] Momentum 180:+54.3% | RSI 20/50:+47.7% | ATR kirilma:+23.8% | MA kesisme 50/200:+23.0% | Dusuk oynaklik:+19.7%
+2026-10-18 00:55:23,NEAR/USDT,Destek/Direnc kirilmasi,398.41,[5.0x] Destek/Direnc kirilmasi:+398.4% | Dusuk oynaklik:+347.7% | SMA trend 200:+138.9% | SMA trend 100:+137.9% | Fair Value Gap:+107.7%
+2026-10-18 00:55:23,XRP/USDT,Major Trend Surucusu,25.57,[6.8x] Major Trend Surucusu:+25.6% | Hacim-Fiyat Uyumsuzlugu:+15.5% | RSI 20/50:+10.7% | ATR kirilma:+9.7% | MA kesisme 50/200:+3.9%
+2026-10-18 00:55:23,BNB/USDT,RSI 20/50,28.54,[10.0x] RSI 20/50:+28.5% | MA kesisme 50/200:+25.7% | Order Block:+23.5% | Destek/Direnc kirilmasi:+10.4% | Hacim-Fiyat Uyumsuzlugu:+9.6%
+2026-10-18 00:55:23,DOGE/USDT,SFP (likidite avi),21.06,[6.1x] SFP (likidite avi):+21.1% | Major Trend Surucusu:+21.0% | SMA trend 200:+3.7% | SMA trend 50:+1.7% | Kirilim-GeriCekilme-Toparlanma:-0.4%
+2026-10-18 00:55:23,WLD/USDT,Destek/Direnc kirilmasi,382.77,[5.0x] Destek/Direnc kirilmasi:+382.8% | SMA trend 50:+324.9% | Dusuk oynaklik:+151.4% | RSI 20/50:+118.6% | ATR kirilma:+96.5%
+2026-10-18 00:55:23,SUI/USDT,Destek/Direnc kirilmasi,222.7,[5.0x] Destek/Direnc kirilmasi:+222.7% | Momentum 180:+188.8% | SMA trend 200:+163.3% | SMA trend 50:+159.9% | MA kesisme 50/200:+126.4%
+2026-10-18 00:55:23,HYPE/USDT,Kirilim-GeriCekilme-Toparlanma,16.13,[5.8x] Kirilim-GeriCekilme-Toparlanma:+16.1% | RSI 20/50:+7.6% | Tepe/Dip (rejim uyarlanabilir):+0.0% | SMA trend 200:-4.0% | Order Block:-4.8%
+2026-10-18 00:55:23,TIA/USDT,Dusuk oynaklik,556.99,[5.0x] Dusuk oynaklik:+557.0% | Momentum 180:+233.7% | MA kesisme 50/200:+205.7% | MA kesisme 20/100:+164.7% | Major Trend Surucusu:+144.5%
+2026-10-18 00:55:23,SNDKB/USDT,Tepe/Dip (rejim uyarlanabilir),28.46,[5.4x] Tepe/Dip (rejim uyarlanabilir):+28.5% | SMA trend 200:+20.6% | Kirilim-GeriCekilme-Toparlanma:-5.8% | RSI 20/50:-8.1% | Hacim-Fiyat Uyumsuzlugu:-9.6%
+2026-10-18 00:55:23,TRX/USDT,Tepe/Dip (rejim uyarlanabilir),26.94,[10.0x] Tepe/Dip (rejim uyarlanabilir):+26.9% | Order Block:+4.8% | Bollinger 20/2:+4.2% | RSI 20/50:+0.3% | RSI 30/60:-0.2%
+2026-10-18 00:55:23,STRK/USDT,MA kesisme 20/100,1823.73,[5.0x] MA kesisme 20/100:+1823.7% | Destek/Direnc kirilmasi:+1173.8% | Donchian 20/10:+1091.1% | MA kesisme 50/200:+942.2% | Momentum 90:+679.8%
+2026-10-18 00:55:23,UNI/USDT,Major Trend Surucusu,178.55,[5.0x] Major Trend Surucusu:+178.6% | Fair Value Gap:+61.4% | Momentum 180:+59.5% | MA kesisme 50/200:+53.1% | SFP (likidite avi):+44.6%
+2026-10-18 00:55:23,SAND/USDT,Donchian 20/10,1270.64,[5.0x] Donchian 20/10:+1270.6% | Momentum 180:+638.7% | Destek/Direnc kirilmasi:+581.8% | MA kesisme 50/200:+499.4% | SMA trend 50:+478.8%
+2026-10-18 00:55:23,FIL/USDT,RSI 30/60,262.5,[5.0x] RSI 30/60:+262.5% | Dusuk oynaklik:+149.8% | Destek/Direnc kirilmasi:+47.9% | Hacim-Fiyat Uyumsuzlugu:+38.7% | ATR kirilma:+29.1%
+2026-10-18 00:55:23,ENA/USDT,MA kesisme 50/200,290.61,[5.0x] MA kesisme 50/200:+290.6% | Momentum 180:+186.7% | SMA trend 200:+145.0% | SMA trend 50:+120.7% | ATR kirilma:+59.5%
+2026-10-18 00:55:23,SOXLB/USDT,MA kesisme 20/100,157.41,[5.0x] MA kesisme 20/100:+157.4% | SMA trend 50:+148.0% | Donchian 55/20:+136.2% | SMA trend 100:+135.0% | Destek/Direnc kirilmasi:+105.6%
+2026-10-18 00:55:23,AVAX/USDT,Destek/Direnc kirilmasi,184.75,[5.0x] Destek/Direnc kirilmasi:+184.8% | Donchian 20/10:+125.4% | RSI 30/60:+89.7% | Momentum 180:+83.9% | MACD:+72.2%
+2026-10-18 00:55:23,LINK/USDT,SMA trend 200,109.25,[5.4x] SMA trend 200:+109.3% | Donchian 20/10:+86.7% | MA kesisme 50/200:+61.0% | Momentum 180:+49.7% | MA kesisme 20/100:+49.0%
+2026-10-18 00:55:23,TAO/USDT,RSI 30/60,95.39,[5.0x] RSI 30/60:+95.4% | RSI 20/50:+78.1% | MA kesisme 50/200:+65.6% | Momentum 180:+61.7% | Hacim-Fiyat Uyumsuzlugu:+54.9%
+2026-10-18 00:55:23,INJ/USDT,RSI 30/60,295.03,[5.0x] RSI 30/60:+295.0% | Dusuk oynaklik:+205.4% | Fair Value Gap:+162.0% | MA kesisme 50/200:+90.7% | Donchian 20/10:+76.6%
+2026-10-18 00:55:23,MUB/USDT,MA kesisme 50/200,10.26,[5.8x] MA kesisme 50/200:+10.3% | MA kesisme 20/100:+5.7% | Order Block:+0.0% | Kirilim-GeriCekilme-Toparlanma:+0.0% | Donchian 55/20:-1.3%
+2026-10-18 00:55:23,LTC/USDT,SMA trend 100,145.54,[6.2x] SMA trend 100:+145.5% | Momentum 90:+86.6% | SMA trend 50:+76.1% | MA kesisme 20/100:+54.4% | SMA trend 200:+51.7%
+2026-10-18 00:55:23,PUMP/USDT,SMA trend 200,178.76,[5.0x] SMA trend 200:+178.8% | Fair Value Gap:+150.1% | MA kesisme 50/200:+77.3% | Kirilim-GeriCekilme-Toparlanma:+29.3% | Tepe/Dip (rejim uyarlanabilir):+23.1%
+2026-10-18 00:55:23,ADA/USDT,Donchian 20/10,148.09,[5.0x] Donchian 20/10:+148.1% | Destek/Direnc kirilmasi:+87.0% | Dusuk oynaklik:+50.0% | RSI 20/50:+38.5% | Major Trend Surucusu:+17.0%
+2026-10-18 00:55:23,FET/USDT,Dusuk oynaklik,101.76,[5.0x] Dusuk oynaklik:+101.8% | SMA trend 100:+70.5% | Momentum 180:+63.2% | Destek/Direnc kirilmasi:+46.6% | MACD:+35.8%
+2026-10-18 00:55:23,PEPE/USDT,SMA trend 50,120.12,[5.0x] SMA trend 50:+120.1% | MACD:+58.5% | RSI 30/60:+54.5% | Fair Value Gap:+52.9% | Kirilim-GeriCekilme-Toparlanma:+18.7%
+2026-10-18 00:55:23,APT/USDT,Dusuk oynaklik,183.66,[5.0x] Dusuk oynaklik:+183.7% | Donchian 55/20:+75.3% | RSI 30/60:+50.3% | SMA trend 200:+33.7% | Destek/Direnc kirilmasi:+24.8%
+2026-10-18 00:55:23,SPCXB/USDT,Hacim-Fiyat Uyumsuzlugu,46.94,[8.9x] Hacim-Fiyat Uyumsuzlugu:+46.9% | Kirilim-GeriCekilme-Toparlanma:+5.9% | Momentum 180:+0.9% | Tepe/Dip (rejim uyarlanabilir):+0.0% | SMA trend 200:-0.1%
+2026-10-18 00:55:23,AVA/USDT,MA kesisme 50/200,97.7,[5.0x] MA kesisme 50/200:+97.7% | Dusuk oynaklik:+39.8% | Bollinger 20/2:+36.6% | MA kesisme 20/100:+16.4% | RSI 20/50:+13.7%
+2026-10-18 00:55:23,EPIC/USDT,Major Trend Surucusu,381.94,[5.0x] Major Trend Surucusu:+381.9% | Donchian 20/10:+217.9% | Donchian 55/20:+102.3% | Order Block:+92.2% | SMA trend 50:+66.7%
+2026-10-18 00:55:23,GTC/USDT,Momentum 180,1280.96,[5.0x] Momentum 180:+1281.0% | RSI 30/60:+683.6% | Bollinger 20/2:+490.4% | Order Block:+449.8% | MA kesisme 50/200:+205.0%
+2026-10-18 00:55:23,ALT/USDT,Dusuk oynaklik,201.48,[5.0x] Dusuk oynaklik:+201.5% | RSI 30/60:+100.3% | Destek/Direnc kirilmasi:+76.9% | Donchian 20/10:+64.4% | Kirilim-GeriCekilme-Toparlanma:+59.2%
+2026-10-18 00:55:23,ERA/USDT,Fair Value Gap,140.19,[5.0x] Fair Value Gap:+140.2% | Tepe/Dip (rejim uyarlanabilir):+119.8% | Hacim-Fiyat Uyumsuzlugu:+80.6% | Dusuk oynaklik:+42.9% | SMA trend 50:+35.9%
+2026-10-18 00:55:23,ZRO/USDT,Dusuk oynaklik,578.34,[5.0x] Dusuk oynaklik:+578.3% | ATR kirilma:+304.4% | Momentum 180:+222.7% | SMA trend 50:+134.1% | Bollinger 20/2:+115.0%
+2026-10-18 00:55:23,AAVE/USDT,MACD,228.55,[5.0x] MACD:+228.6% | Momentum 90:+207.6% | Donchian 20/10:+143.6% | SMA trend 100:+133.7% | ATR kirilma:+126.9%
+2026-10-18 00:55:23,HBAR/USDT,Donchian 55/20,240.26,[5.0x] Donchian 55/20:+240.3% | Momentum 180:+160.8% | Donchian 20/10:+145.5% | Destek/Direnc kirilmasi:+136.7% | MA kesisme 50/200:+132.7%
