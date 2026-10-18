@@ -20,27 +20,5 @@
     "kaldirac": 10.0,
     "stop_fiyat": 4183.527491198856,
     "stop_baslangic": "2026-10-17T13:40:11.559897+00:00"
-  },
-  "SAND/USDT": {
-    "miktar": 2778.801500514703,
-    "strateji": "Donchian 20/10",
-    "giris_fiyat": 0.05997,
-    "giris_zamani": "2026-10-17T13:40:11.704855+00:00",
-    "maliyet": 33.36230750467803,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.05674049208809051,
-    "stop_baslangic": "2026-10-17T13:40:11.704855+00:00"
-  },
-  "PROM/USDT": {
-    "miktar": 33.99897375308787,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 5.024,
-    "giris_zamani": "2026-10-17T13:40:11.850760+00:00",
-    "maliyet": 34.19636519229498,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.655788885610872,
-    "stop_baslangic": "2026-10-17T13:40:11.850760+00:00"
   }
 }
