@@ -9,16 +9,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
-  },
-  "PAXG/USDT": {
-    "miktar": 0.07874538277009259,
-    "strateji": "Kirilim-GeriCekilme-Toparlanma",
-    "giris_fiyat": 4163.11,
-    "giris_zamani": "2026-10-17T13:40:11.559897+00:00",
-    "maliyet": 32.815384430830846,
-    "yon": "SHORT",
-    "kaldirac": 10.0,
-    "stop_fiyat": 4183.527491198856,
-    "stop_baslangic": "2026-10-17T13:40:11.559897+00:00"
   }
 }
