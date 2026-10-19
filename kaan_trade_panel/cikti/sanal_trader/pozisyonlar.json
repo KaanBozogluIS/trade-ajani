@@ -54,17 +54,6 @@
     "stop_fiyat": 4.002178213591877e-06,
     "stop_baslangic": "2026-10-19T15:32:28.124593+00:00"
   },
-  "INTCB/USDT": {
-    "miktar": 2.325028193680027,
-    "strateji": "Donchian 20/10",
-    "giris_fiyat": 93.88,
-    "giris_zamani": "2026-10-19T15:32:28.976463+00:00",
-    "maliyet": 35.66494495257767,
-    "yon": "LONG",
-    "kaldirac": 6.126243549574052,
-    "stop_fiyat": 92.0410917181405,
-    "stop_baslangic": "2026-10-19T15:32:28.976463+00:00"
-  },
   "KORUB/USDT": {
     "miktar": 15.041191107008125,
     "strateji": "Major Trend Surucusu",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.27573321424558234,
     "stop_baslangic": "2026-10-19T15:32:31.027625+00:00"
+  },
+  "FIL/USDT": {
+    "miktar": 155.59329665855827,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 1.0056,
+    "giris_zamani": "2026-10-19T21:00:45.692875+00:00",
+    "maliyet": 31.324248072041286,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.9701359047879171,
+    "stop_baslangic": "2026-10-19T21:00:45.692875+00:00"
   }
 }
