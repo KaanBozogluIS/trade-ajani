@@ -21,17 +21,6 @@
     "stop_fiyat": 4.717358011453242,
     "stop_baslangic": "2026-10-19T15:32:25.900766+00:00"
   },
-  "SOXLB/USDT": {
-    "miktar": 1.6838560513605232,
-    "strateji": "SMA trend 50",
-    "giris_fiyat": 101.76,
-    "giris_zamani": "2026-10-19T15:32:26.927987+00:00",
-    "maliyet": 34.30414249978916,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 97.75828793130724,
-    "stop_baslangic": "2026-10-19T15:32:26.927987+00:00"
-  },
   "WLD/USDT": {
     "miktar": 340.13892237482565,
     "strateji": "SMA trend 50",
@@ -54,17 +43,6 @@
     "stop_fiyat": 4.002178213591877e-06,
     "stop_baslangic": "2026-10-19T15:32:28.124593+00:00"
   },
-  "KORUB/USDT": {
-    "miktar": 15.041191107008125,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 12.14,
-    "giris_zamani": "2026-10-19T15:32:30.517107+00:00",
-    "maliyet": 36.55656857639212,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 11.554467661848966,
-    "stop_baslangic": "2026-10-19T15:32:30.517107+00:00"
-  },
   "GTC/USDT": {
     "miktar": 614.3028516902136,
     "strateji": "Momentum 180",
@@ -86,5 +64,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.9701359047879171,
     "stop_baslangic": "2026-10-19T21:00:45.692875+00:00"
+  },
+  "PHA/USDT": {
+    "miktar": 2167.76860836716,
+    "strateji": "SMA trend 50",
+    "giris_fiyat": 0.0632,
+    "giris_zamani": "2026-10-20T05:56:55.095931+00:00",
+    "maliyet": 27.428023232993898,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.057049650796880645,
+    "stop_baslangic": "2026-10-20T05:56:55.095931+00:00"
   }
 }
