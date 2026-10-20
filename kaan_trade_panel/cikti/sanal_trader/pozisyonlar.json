@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "NEAR/USDT": {
-    "miktar": 34.4691851447096,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 4.93,
-    "giris_zamani": "2026-10-19T15:32:25.900766+00:00",
-    "maliyet": 34.02063718987354,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.717358011453242,
-    "stop_baslangic": "2026-10-19T15:32:25.900766+00:00"
-  },
   "WLD/USDT": {
     "miktar": 340.13892237482565,
     "strateji": "SMA trend 50",
@@ -75,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.057049650796880645,
     "stop_baslangic": "2026-10-20T05:56:55.095931+00:00"
+  },
+  "AVAX/USDT": {
+    "miktar": 15.472223105459637,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 9.431,
+    "giris_zamani": "2026-10-20T11:26:06.513091+00:00",
+    "maliyet": 26.209859102315217,
+    "yon": "LONG",
+    "kaldirac": 5.572887673226586,
+    "stop_fiyat": 9.227923952830228,
+    "stop_baslangic": "2026-10-20T11:26:06.513091+00:00"
+  },
+  "TIA/USDT": {
+    "miktar": 213.91870296742567,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.6426,
+    "giris_zamani": "2026-10-20T11:26:07.792015+00:00",
+    "maliyet": 27.520352057430976,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.6114552261490571,
+    "stop_baslangic": "2026-10-20T11:26:07.792015+00:00"
   }
 }
