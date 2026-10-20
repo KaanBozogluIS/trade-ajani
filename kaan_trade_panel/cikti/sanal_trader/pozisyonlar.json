@@ -75,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 4.6470968027012125,
     "stop_baslangic": "2026-10-20T20:30:09.672528+00:00"
+  },
+  "BTC/USDT": {
+    "miktar": 0.0017951373891510333,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 83101.33,
+    "giris_zamani": "2026-10-20T23:48:50.133811+00:00",
+    "maliyet": 14.932763220338183,
+    "yon": "LONG",
+    "kaldirac": 10.0,
+    "stop_fiyat": 82275.11372130859,
+    "stop_baslangic": "2026-10-20T23:48:50.133811+00:00"
   }
 }
