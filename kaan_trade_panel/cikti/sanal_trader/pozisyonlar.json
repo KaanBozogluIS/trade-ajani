@@ -43,17 +43,6 @@
     "stop_fiyat": 0.27573321424558234,
     "stop_baslangic": "2026-10-19T15:32:31.027625+00:00"
   },
-  "TIA/USDT": {
-    "miktar": 213.91870296742567,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.6426,
-    "giris_zamani": "2026-10-20T11:26:07.792015+00:00",
-    "maliyet": 27.520352057430976,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.6114552261490571,
-    "stop_baslangic": "2026-10-20T11:26:07.792015+00:00"
-  },
   "LTC/USDT": {
     "miktar": 2.530522823007605,
     "strateji": "Momentum 90",
@@ -86,5 +75,16 @@
     "kaldirac": 10.0,
     "stop_fiyat": 82275.11372130859,
     "stop_baslangic": "2026-10-20T23:48:50.133811+00:00"
+  },
+  "TSLAB/USDT": {
+    "miktar": 0.5074746783112969,
+    "strateji": "SMA trend 100",
+    "giris_fiyat": 379.97,
+    "giris_zamani": "2026-10-21T04:33:44.641119+00:00",
+    "maliyet": 20.30032651195309,
+    "yon": "LONG",
+    "kaldirac": 9.508131387738102,
+    "stop_fiyat": 375.1744836003421,
+    "stop_baslangic": "2026-10-21T04:33:44.641119+00:00"
   }
 }
