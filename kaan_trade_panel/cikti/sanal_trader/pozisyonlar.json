@@ -32,17 +32,6 @@
     "stop_fiyat": 4.002178213591877e-06,
     "stop_baslangic": "2026-10-19T15:32:28.124593+00:00"
   },
-  "GTC/USDT": {
-    "miktar": 614.3028516902136,
-    "strateji": "Momentum 180",
-    "giris_fiyat": 0.31211,
-    "giris_zamani": "2026-10-19T15:32:31.027625+00:00",
-    "maliyet": 38.384397005211724,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.27573321424558234,
-    "stop_baslangic": "2026-10-19T15:32:31.027625+00:00"
-  },
   "LTC/USDT": {
     "miktar": 2.530522823007605,
     "strateji": "Momentum 90",
