@@ -65,15 +65,15 @@
     "stop_fiyat": 82275.11372130859,
     "stop_baslangic": "2026-10-20T23:48:50.133811+00:00"
   },
-  "TSLAB/USDT": {
-    "miktar": 0.5074746783112969,
-    "strateji": "SMA trend 100",
-    "giris_fiyat": 379.97,
-    "giris_zamani": "2026-10-21T04:33:44.641119+00:00",
-    "maliyet": 20.30032651195309,
+  "UNI/USDT": {
+    "miktar": 10.574874109687228,
+    "strateji": "SFP (likidite avi)",
+    "giris_fiyat": 7.504,
+    "giris_zamani": "2026-10-21T23:15:58.421611+00:00",
+    "maliyet": 15.886657721540132,
     "yon": "LONG",
-    "kaldirac": 9.508131387738102,
-    "stop_fiyat": 375.1744836003421,
-    "stop_baslangic": "2026-10-21T04:33:44.641119+00:00"
+    "kaldirac": 5.0,
+    "stop_fiyat": 7.270151882957486,
+    "stop_baslangic": "2026-10-21T23:15:58.421611+00:00"
   }
 }
