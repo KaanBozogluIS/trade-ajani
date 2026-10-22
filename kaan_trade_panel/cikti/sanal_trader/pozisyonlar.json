@@ -10,17 +10,6 @@
     "stop_fiyat": 1.7177552070313118,
     "stop_baslangic": "2026-10-15T13:21:28.571641+00:00"
   },
-  "LTC/USDT": {
-    "miktar": 2.530522823007605,
-    "strateji": "Momentum 90",
-    "giris_fiyat": 59.76,
-    "giris_zamani": "2026-10-20T16:53:02.247854+00:00",
-    "maliyet": 28.908327849471295,
-    "yon": "LONG",
-    "kaldirac": 5.236394858619443,
-    "stop_fiyat": 58.39050816570951,
-    "stop_baslangic": "2026-10-20T16:53:02.247854+00:00"
-  },
   "NEAR/USDT": {
     "miktar": 37.02085741259367,
     "strateji": "Dusuk oynaklik",
@@ -32,17 +21,6 @@
     "stop_fiyat": 4.6470968027012125,
     "stop_baslangic": "2026-10-20T20:30:09.672528+00:00"
   },
-  "AVAX/USDT": {
-    "miktar": 7.991939416409121,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 9.373,
-    "giris_zamani": "2026-10-22T04:32:43.833312+00:00",
-    "maliyet": 14.996686316316854,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 9.144776074890316,
-    "stop_baslangic": "2026-10-22T04:32:43.833312+00:00"
-  },
   "INJ/USDT": {
     "miktar": 9.640136114413878,
     "strateji": "RSI 30/60",
@@ -53,28 +31,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 7.827974726290408,
     "stop_baslangic": "2026-10-22T04:32:45.006935+00:00"
-  },
-  "TAO/USDT": {
-    "miktar": 0.6825904841234515,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 259.4,
-    "giris_zamani": "2026-10-22T10:04:02.305977+00:00",
-    "maliyet": 35.44824255888354,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 253.106972560466,
-    "stop_baslangic": "2026-10-22T10:04:02.305977+00:00"
-  },
-  "TRX/USDT": {
-    "miktar": 1097.61458041224,
-    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
-    "giris_fiyat": 0.3307,
-    "giris_zamani": "2026-10-22T10:04:02.642818+00:00",
-    "maliyet": 36.33444862285563,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 0.32953985793567847,
-    "stop_baslangic": "2026-10-22T10:04:02.642818+00:00"
   },
   "ARB/USDT": {
     "miktar": 1060.462434138687,
