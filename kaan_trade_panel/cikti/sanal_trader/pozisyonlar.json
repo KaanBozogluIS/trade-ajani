@@ -65,15 +65,26 @@
     "stop_fiyat": 82275.11372130859,
     "stop_baslangic": "2026-10-20T23:48:50.133811+00:00"
   },
-  "UNI/USDT": {
-    "miktar": 10.574874109687228,
-    "strateji": "SFP (likidite avi)",
-    "giris_fiyat": 7.504,
-    "giris_zamani": "2026-10-21T23:15:58.421611+00:00",
-    "maliyet": 15.886657721540132,
+  "AVAX/USDT": {
+    "miktar": 7.991939416409121,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 9.373,
+    "giris_zamani": "2026-10-22T04:32:43.833312+00:00",
+    "maliyet": 14.996686316316854,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 7.270151882957486,
-    "stop_baslangic": "2026-10-21T23:15:58.421611+00:00"
+    "stop_fiyat": 9.144776074890316,
+    "stop_baslangic": "2026-10-22T04:32:43.833312+00:00"
+  },
+  "INJ/USDT": {
+    "miktar": 9.640136114413878,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 8.159,
+    "giris_zamani": "2026-10-22T04:32:45.006935+00:00",
+    "maliyet": 15.746520632132698,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 7.827974726290408,
+    "stop_baslangic": "2026-10-22T04:32:45.006935+00:00"
   }
 }
