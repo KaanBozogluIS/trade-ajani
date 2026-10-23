@@ -3992,3 +3992,43 @@
 2026-10-23 19:07:16,ARB/USDT,RSI 30/60,71.37,[5.0x] RSI 30/60:+71.4% | RSI 20/50:+39.6% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Bollinger 20/2:-8.0% | SFP (likidite avi):-9.2%
 2026-10-23 19:07:16,AVAX/USDT,RSI 30/60,62.79,[5.0x] RSI 30/60:+62.8% | RSI 20/50:+26.1% | Kirilim-GeriCekilme-Toparlanma:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
 2026-10-23 19:07:16,BCH/USDT,RSI 30/60,53.02,[6.1x] RSI 30/60:+53.0% | RSI 20/50:+19.6% | Kirilim-GeriCekilme-Toparlanma:+2.2% | Order Block:+0.0% | Bollinger 20/2:-9.9%
+2026-10-23 23:05:16,BTC/USDT,Hacim-Fiyat Uyumsuzlugu,29.4,[10.0x] Hacim-Fiyat Uyumsuzlugu:+29.4% | Tepe/Dip (rejim uyarlanabilir):+12.8% | Kirilim-GeriCekilme-Toparlanma:+8.3% | RSI 20/50:+0.0% | Order Block:-5.6%
+2026-10-23 23:05:16,ETH/USDT,Tepe/Dip (rejim uyarlanabilir),13.27,[8.2x] Tepe/Dip (rejim uyarlanabilir):+13.3% | Order Block:+0.0% | Kirilim-GeriCekilme-Toparlanma:-6.1% | RSI 20/50:-20.3% | Hacim-Fiyat Uyumsuzlugu:-34.1%
+2026-10-23 23:05:16,ZEC/USDT,RSI 20/50,42.17,[5.0x] RSI 20/50:+42.2% | RSI 30/60:+13.3% | Order Block:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-23 23:05:16,SOL/USDT,RSI 20/50,51.69,[7.0x] RSI 20/50:+51.7% | Hacim-Fiyat Uyumsuzlugu:+17.3% | Kirilim-GeriCekilme-Toparlanma:-12.3% | Tepe/Dip (rejim uyarlanabilir):-19.4% | Order Block:-20.8%
+2026-10-23 23:05:16,PEPE/USDT,Tepe/Dip (rejim uyarlanabilir),98.75,[5.0x] Tepe/Dip (rejim uyarlanabilir):+98.8% | RSI 30/60:+70.2% | ATR kirilma:+29.7% | Hacim-Fiyat Uyumsuzlugu:+25.9% | Kirilim-GeriCekilme-Toparlanma:+18.7%
+2026-10-23 23:05:16,NEAR/USDT,RSI 30/60,25.04,[5.0x] RSI 30/60:+25.0% | Destek/Direnc kirilmasi:+12.4% | RSI 20/50:+0.0% | Kirilim-GeriCekilme-Toparlanma:+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-23 23:05:16,BNB/USDT,RSI 20/50,29.91,[10.0x] RSI 20/50:+29.9% | Hacim-Fiyat Uyumsuzlugu:+9.6% | SFP (likidite avi):-11.0% | Order Block:-12.5% | Kirilim-GeriCekilme-Toparlanma:-23.9%
+2026-10-23 23:05:16,XRP/USDT,Hacim-Fiyat Uyumsuzlugu,16.4,[7.2x] Hacim-Fiyat Uyumsuzlugu:+16.4% | RSI 20/50:+13.3% | SFP (likidite avi):+2.3% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Order Block:-9.9%
+2026-10-23 23:05:16,XAUT/USDT,Kirilim-GeriCekilme-Toparlanma,7.62,[10.0x] Kirilim-GeriCekilme-Toparlanma:+7.6% | Order Block:-5.5% | MA kesisme 50/200:-18.4% | Hacim-Fiyat Uyumsuzlugu:-22.3% | RSI 30/60:-27.8%
+2026-10-23 23:05:16,WLD/USDT,SMA trend 50,299.38,[5.0x] SMA trend 50:+299.4% | Destek/Direnc kirilmasi:+258.5% | MACD:+164.6% | ATR kirilma:+163.5% | RSI 20/50:+118.6%
+2026-10-23 23:05:16,SNDKB/USDT,Tepe/Dip (rejim uyarlanabilir),26.12,[5.0x] Tepe/Dip (rejim uyarlanabilir):+26.1% | Hacim-Fiyat Uyumsuzlugu:+0.0% | Kirilim-GeriCekilme-Toparlanma:-5.3% | RSI 20/50:-7.2% | Order Block:-11.5%
+2026-10-23 23:05:16,ENA/USDT,ATR kirilma,59.34,[5.0x] ATR kirilma:+59.3% | RSI 20/50:+40.6% | Destek/Direnc kirilmasi:+32.9% | Order Block:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0%
+2026-10-23 23:05:16,DOGE/USDT,SFP (likidite avi),7.67,[6.7x] SFP (likidite avi):+7.7% | Kirilim-GeriCekilme-Toparlanma:+5.6% | Hacim-Fiyat Uyumsuzlugu:+5.3% | RSI 20/50:-3.5% | RSI 30/60:-6.5%
+2026-10-23 23:05:16,SOXLB/USDT,SFP (likidite avi),5.59,[5.0x] SFP (likidite avi):+5.6% | Major Trend Surucusu:+4.1% | Hacim-Fiyat Uyumsuzlugu:+0.0% | RSI 20/50:-5.7% | Tepe/Dip (rejim uyarlanabilir):-9.8%
+2026-10-23 23:05:16,SUI/USDT,RSI 20/50,49.71,[5.0x] RSI 20/50:+49.7% | Destek/Direnc kirilmasi:+24.1% | Momentum 180:+22.2% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-23 23:05:16,UNI/USDT,Tepe/Dip (rejim uyarlanabilir),27.87,[5.0x] Tepe/Dip (rejim uyarlanabilir):+27.9% | Hacim-Fiyat Uyumsuzlugu:+10.7% | SFP (likidite avi):+7.0% | Order Block:-18.5% | Kirilim-GeriCekilme-Toparlanma:-20.3%
+2026-10-23 23:05:16,TRX/USDT,Tepe/Dip (rejim uyarlanabilir),17.56,[10.0x] Tepe/Dip (rejim uyarlanabilir):+17.6% | RSI 20/50:+0.6% | Kirilim-GeriCekilme-Toparlanma:-0.3% | Order Block:-3.8% | RSI 30/60:-10.8%
+2026-10-23 23:05:16,PAXG/USDT,Kirilim-GeriCekilme-Toparlanma,9.83,[10.0x] Kirilim-GeriCekilme-Toparlanma:+9.8% | Order Block:-2.3% | RSI 30/60:-12.5% | Tepe/Dip (rejim uyarlanabilir):-13.6% | RSI 20/50:-15.5%
+2026-10-23 23:05:16,CRCLB/USDT,RSI 20/50,4.15,[5.1x] RSI 20/50:+4.1% | Order Block:-1.7% | Kirilim-GeriCekilme-Toparlanma:-2.5% | MACD:-9.5% | Tepe/Dip (rejim uyarlanabilir):-11.9%
+2026-10-23 23:05:16,SPCXB/USDT,Major Trend Surucusu,49.52,[5.8x] Major Trend Surucusu:+49.5% | Order Block:+23.9% | SFP (likidite avi):+22.2% | Kirilim-GeriCekilme-Toparlanma:+10.2% | Tepe/Dip (rejim uyarlanabilir):+5.4%
+2026-10-23 23:05:16,HYPE/USDT,RSI 20/50,7.58,[5.8x] RSI 20/50:+7.6% | Order Block:+3.0% | Kirilim-GeriCekilme-Toparlanma:+0.1% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:-7.0%
+2026-10-23 23:05:16,MUB/USDT,Order Block,0.0,[5.9x] Order Block:+0.0% | Kirilim-GeriCekilme-Toparlanma:+0.0% | RSI 30/60:-0.1% | RSI 20/50:-5.0% | Tepe/Dip (rejim uyarlanabilir):-21.4%
+2026-10-23 23:05:16,PUMP/USDT,RSI 20/50,82.89,[5.0x] RSI 20/50:+82.9% | Kirilim-GeriCekilme-Toparlanma:+43.7% | Fair Value Gap:+31.4% | Tepe/Dip (rejim uyarlanabilir):+23.1% | MACD:+8.5%
+2026-10-23 23:05:16,LINK/USDT,SFP (likidite avi),30.3,[5.8x] SFP (likidite avi):+30.3% | RSI 20/50:+19.6% | Kirilim-GeriCekilme-Toparlanma:+5.4% | Order Block:+0.0% | Momentum 180:-3.6%
+2026-10-23 23:05:16,DOT/USDT,SFP (likidite avi),127.12,[5.0x] SFP (likidite avi):+127.1% | RSI 30/60:+85.1% | Hacim-Fiyat Uyumsuzlugu:+19.9% | RSI 20/50:+17.3% | Destek/Direnc kirilmasi:-5.4%
+2026-10-23 23:05:16,ADA/USDT,RSI 20/50,40.21,[5.0x] RSI 20/50:+40.2% | Kirilim-GeriCekilme-Toparlanma:+21.7% | Hacim-Fiyat Uyumsuzlugu:+11.2% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Order Block:-12.3%
+2026-10-23 23:05:16,TAO/USDT,RSI 20/50,78.1,[5.0x] RSI 20/50:+78.1% | RSI 30/60:+69.6% | Hacim-Fiyat Uyumsuzlugu:+54.9% | Tepe/Dip (rejim uyarlanabilir):+46.3% | SFP (likidite avi):+30.0%
+2026-10-23 23:05:16,TQQQB/USDT,Tepe/Dip (rejim uyarlanabilir),12.14,[6.4x] Tepe/Dip (rejim uyarlanabilir):+12.1% | Major Trend Surucusu:+5.4% | Kirilim-GeriCekilme-Toparlanma:-3.4% | SFP (likidite avi):-10.9% | Fair Value Gap:-19.9%
+2026-10-23 23:05:16,DASH/USDT,RSI 20/50,1.52,[5.0x] RSI 20/50:+1.5% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0% | MA kesisme 50/200:-10.1% | Order Block:-20.3%
+2026-10-23 23:05:16,LTC/USDT,Hacim-Fiyat Uyumsuzlugu,19.92,[5.8x] Hacim-Fiyat Uyumsuzlugu:+19.9% | RSI 20/50:+7.0% | Kirilim-GeriCekilme-Toparlanma:+5.5% | Fair Value Gap:+4.7% | Order Block:-0.2%
+2026-10-23 23:05:16,BMT/USDT,SFP (likidite avi),95.9,[5.0x] SFP (likidite avi):+95.9% | RSI 20/50:+0.0% | Order Block:+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0% | Tepe/Dip (rejim uyarlanabilir):-11.5%
+2026-10-23 23:05:16,GRAM/USDT,Major Trend Surucusu,134.16,[5.0x] Major Trend Surucusu:+134.2% | Momentum 180:+8.5% | RSI 30/60:+5.0% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-23 23:05:16,ARB/USDT,RSI 30/60,39.79,[5.0x] RSI 30/60:+39.8% | RSI 20/50:+39.6% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Kirilim-GeriCekilme-Toparlanma:-0.1% | Order Block:-17.9%
+2026-10-23 23:05:16,AAVE/USDT,MACD,54.13,[5.0x] MACD:+54.1% | MA kesisme 50/200:+32.3% | RSI 20/50:+20.6% | Momentum 90:+10.0% | Kirilim-GeriCekilme-Toparlanma:+7.3%
+2026-10-23 23:05:16,AVAX/USDT,RSI 30/60,64.09,[5.0x] RSI 30/60:+64.1% | RSI 20/50:+25.9% | Kirilim-GeriCekilme-Toparlanma:+0.0% | Tepe/Dip (rejim uyarlanabilir):+0.0% | Hacim-Fiyat Uyumsuzlugu:+0.0%
+2026-10-23 23:05:16,INJ/USDT,RSI 30/60,247.29,[5.0x] RSI 30/60:+247.3% | Order Block:+23.1% | SFP (likidite avi):+2.0% | RSI 20/50:+0.0% | Fair Value Gap:-0.5%
+2026-10-23 23:05:16,HBAR/USDT,Order Block,121.27,[5.0x] Order Block:+121.3% | SFP (likidite avi):+18.0% | Kirilim-GeriCekilme-Toparlanma:+11.8% | Hacim-Fiyat Uyumsuzlugu:+9.5% | Momentum 180:+6.8%
+2026-10-23 23:05:16,QNT/USDT,MA kesisme 50/200,944.16,[5.0x] MA kesisme 50/200:+944.2% | Momentum 180:+658.8% | SMA trend 200:+465.8% | Donchian 55/20:+371.5% | Destek/Direnc kirilmasi:+204.0%
+2026-10-23 23:05:16,MSTRB/USDT,Order Block,0.06,[5.0x] Order Block:+0.1% | RSI 20/50:-10.9% | Kirilim-GeriCekilme-Toparlanma:-17.1% | Destek/Direnc kirilmasi:-29.3% | Major Trend Surucusu:-32.0%
+2026-10-23 23:05:16,BCH/USDT,RSI 30/60,44.15,[5.2x] RSI 30/60:+44.2% | RSI 20/50:+13.4% | Kirilim-GeriCekilme-Toparlanma:+1.9% | Order Block:+0.0% | Hacim-Fiyat Uyumsuzlugu:-10.7%
