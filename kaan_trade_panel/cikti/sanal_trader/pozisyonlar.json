@@ -21,17 +21,6 @@
     "stop_fiyat": 4.6470968027012125,
     "stop_baslangic": "2026-10-20T20:30:09.672528+00:00"
   },
-  "INJ/USDT": {
-    "miktar": 9.640136114413878,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 8.159,
-    "giris_zamani": "2026-10-22T04:32:45.006935+00:00",
-    "maliyet": 15.746520632132698,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 7.827974726290408,
-    "stop_baslangic": "2026-10-22T04:32:45.006935+00:00"
-  },
   "ARB/USDT": {
     "miktar": 1060.462434138687,
     "strateji": "RSI 30/60",
