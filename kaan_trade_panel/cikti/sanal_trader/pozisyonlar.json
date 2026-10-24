@@ -21,28 +21,6 @@
     "stop_fiyat": 0.030895199999999998,
     "stop_baslangic": "2026-10-24T16:33:32.576254+00:00"
   },
-  "UNI/USDT": {
-    "miktar": 19.36629554441456,
-    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
-    "giris_fiyat": 6.606,
-    "giris_zamani": "2026-10-24T16:33:33.238016+00:00",
-    "maliyet": 25.61236203531583,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 6.825569378623971,
-    "stop_baslangic": "2026-10-24T16:33:33.238016+00:00"
-  },
-  "LTC/USDT": {
-    "miktar": 2.7557527394946026,
-    "strateji": "Hacim-Fiyat Uyumsuzlugu",
-    "giris_fiyat": 55.75,
-    "giris_zamani": "2026-10-24T16:33:35.364566+00:00",
-    "maliyet": 25.868485655668984,
-    "yon": "SHORT",
-    "kaldirac": 5.944955737884536,
-    "stop_fiyat": 56.87532376942146,
-    "stop_baslangic": "2026-10-24T16:33:35.364566+00:00"
-  },
   "AVAX/USDT": {
     "miktar": 16.60286350668453,
     "strateji": "RSI 30/60",
@@ -75,5 +53,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.35121342203716305,
     "stop_baslangic": "2026-10-24T16:33:37.161274+00:00"
+  },
+  "ANIME/USDT": {
+    "miktar": 28096.64478868452,
+    "strateji": "Donchian 55/20",
+    "giris_fiyat": 0.00415,
+    "giris_zamani": "2026-10-24T22:25:52.096986+00:00",
+    "maliyet": 23.343558733341492,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0036664817136048415,
+    "stop_baslangic": "2026-10-24T22:25:52.096986+00:00"
+  },
+  "FIL/USDT": {
+    "miktar": 128.3739020084498,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 0.931,
+    "giris_zamani": "2026-10-24T22:25:52.952009+00:00",
+    "maliyet": 23.927147701675025,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.9037183946193971,
+    "stop_baslangic": "2026-10-24T22:25:52.952009+00:00"
   }
 }
