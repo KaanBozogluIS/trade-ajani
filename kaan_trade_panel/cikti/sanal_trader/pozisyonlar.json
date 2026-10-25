@@ -54,17 +54,6 @@
     "stop_fiyat": 0.35121342203716305,
     "stop_baslangic": "2026-10-24T16:33:37.161274+00:00"
   },
-  "ANIME/USDT": {
-    "miktar": 28096.64478868452,
-    "strateji": "Donchian 55/20",
-    "giris_fiyat": 0.00415,
-    "giris_zamani": "2026-10-24T22:25:52.096986+00:00",
-    "maliyet": 23.343558733341492,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.0036664817136048415,
-    "stop_baslangic": "2026-10-24T22:25:52.096986+00:00"
-  },
   "FIL/USDT": {
     "miktar": 128.3739020084498,
     "strateji": "RSI 30/60",
@@ -75,5 +64,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.9037183946193971,
     "stop_baslangic": "2026-10-24T22:25:52.952009+00:00"
+  },
+  "AI/USDT": {
+    "miktar": 6435.4824568389795,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 0.0195,
+    "giris_zamani": "2026-10-25T01:03:26.094013+00:00",
+    "maliyet": 25.12350508675878,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.01872138867444552,
+    "stop_baslangic": "2026-10-25T01:03:26.094013+00:00"
   }
 }
