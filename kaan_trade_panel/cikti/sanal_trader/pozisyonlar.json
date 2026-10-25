@@ -10,17 +10,6 @@
     "stop_fiyat": 4.121675229765623e-06,
     "stop_baslangic": "2026-10-24T16:33:32.411179+00:00"
   },
-  "AVAX/USDT": {
-    "miktar": 16.60286350668453,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 8.796,
-    "giris_zamani": "2026-10-24T16:33:35.527819+00:00",
-    "maliyet": 26.19184172636485,
-    "yon": "LONG",
-    "kaldirac": 5.581317033922959,
-    "stop_fiyat": 8.6068833464244,
-    "stop_baslangic": "2026-10-24T16:33:35.527819+00:00"
-  },
   "TIA/USDT": {
     "miktar": 252.67614028668746,
     "strateji": "Major Trend Surucusu",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 50.679079897672786,
     "stop_baslangic": "2026-10-25T16:04:36.193761+00:00"
+  },
+  "BABY/USDT": {
+    "miktar": 10088.414682163499,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 0.0135,
+    "giris_zamani": "2026-10-25T18:59:37.038056+00:00",
+    "maliyet": 27.265985627468915,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.012485077575298084,
+    "stop_baslangic": "2026-10-25T18:59:37.038056+00:00"
   }
 }
