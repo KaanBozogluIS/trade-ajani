@@ -10,17 +10,6 @@
     "stop_fiyat": 4.121675229765623e-06,
     "stop_baslangic": "2026-10-24T16:33:32.411179+00:00"
   },
-  "BMT/USDT": {
-    "miktar": 3449.6042594044347,
-    "strateji": "Momentum 180",
-    "giris_fiyat": 0.03678,
-    "giris_zamani": "2026-10-24T16:33:32.576254+00:00",
-    "maliyet": 25.400689621800826,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.030895199999999998,
-    "stop_baslangic": "2026-10-24T16:33:32.576254+00:00"
-  },
   "AVAX/USDT": {
     "miktar": 16.60286350668453,
     "strateji": "RSI 30/60",
@@ -75,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.01872138867444552,
     "stop_baslangic": "2026-10-25T01:03:26.094013+00:00"
+  },
+  "ERA/USDT": {
+    "miktar": 329.8427381639012,
+    "strateji": "Fair Value Gap",
+    "giris_fiyat": 0.0752,
+    "giris_zamani": "2026-10-25T06:01:37.055074+00:00",
+    "maliyet": 4.965800582567642,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.06566931691830254,
+    "stop_baslangic": "2026-10-25T06:01:37.055074+00:00"
+  },
+  "LTC/USDT": {
+    "miktar": 0.5774524235119082,
+    "strateji": "Hacim-Fiyat Uyumsuzlugu",
+    "giris_fiyat": 56.38,
+    "giris_zamani": "2026-10-25T06:01:37.783056+00:00",
+    "maliyet": 5.214090611696024,
+    "yon": "SHORT",
+    "kaldirac": 6.250247535302308,
+    "stop_fiyat": 57.462453128742006,
+    "stop_baslangic": "2026-10-25T06:01:37.783056+00:00"
   }
 }
