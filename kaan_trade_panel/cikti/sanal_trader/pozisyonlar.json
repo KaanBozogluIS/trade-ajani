@@ -65,17 +65,6 @@
     "stop_fiyat": 0.01872138867444552,
     "stop_baslangic": "2026-10-25T01:03:26.094013+00:00"
   },
-  "ERA/USDT": {
-    "miktar": 329.8427381639012,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 0.0752,
-    "giris_zamani": "2026-10-25T06:01:37.055074+00:00",
-    "maliyet": 4.965800582567642,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.06566931691830254,
-    "stop_baslangic": "2026-10-25T06:01:37.055074+00:00"
-  },
   "LTC/USDT": {
     "miktar": 0.5774524235119082,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
@@ -86,5 +75,16 @@
     "kaldirac": 6.250247535302308,
     "stop_fiyat": 57.462453128742006,
     "stop_baslangic": "2026-10-25T06:01:37.783056+00:00"
+  },
+  "DASH/USDT": {
+    "miktar": 0.47267698883265624,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 52.44,
+    "giris_zamani": "2026-10-25T16:04:36.193761+00:00",
+    "maliyet": 4.9623986575344325,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 50.679079897672786,
+    "stop_baslangic": "2026-10-25T16:04:36.193761+00:00"
   }
 }
