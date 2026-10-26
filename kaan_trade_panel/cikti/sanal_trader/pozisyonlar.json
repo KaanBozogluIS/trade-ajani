@@ -10,39 +10,6 @@
     "stop_fiyat": 4.121675229765623e-06,
     "stop_baslangic": "2026-10-24T16:33:32.411179+00:00"
   },
-  "TIA/USDT": {
-    "miktar": 252.67614028668746,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 0.5264,
-    "giris_zamani": "2026-10-24T16:33:36.831279+00:00",
-    "maliyet": 26.62837242180426,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.5527636402781171,
-    "stop_baslangic": "2026-10-24T16:33:36.831279+00:00"
-  },
-  "AVA/USDT": {
-    "miktar": 343.8434760481339,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.3965,
-    "giris_zamani": "2026-10-24T16:33:37.161274+00:00",
-    "maliyet": 27.29408173234937,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.35121342203716305,
-    "stop_baslangic": "2026-10-24T16:33:37.161274+00:00"
-  },
-  "AI/USDT": {
-    "miktar": 6435.4824568389795,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 0.0195,
-    "giris_zamani": "2026-10-25T01:03:26.094013+00:00",
-    "maliyet": 25.12350508675878,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.01872138867444552,
-    "stop_baslangic": "2026-10-25T01:03:26.094013+00:00"
-  },
   "LTC/USDT": {
     "miktar": 0.5774524235119082,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
