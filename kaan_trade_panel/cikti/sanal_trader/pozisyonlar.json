@@ -1,15 +1,4 @@
 {
-  "PEPE/USDT": {
-    "miktar": 29365177.55711835,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 4.29e-06,
-    "giris_zamani": "2026-10-24T16:33:32.411179+00:00",
-    "maliyet": 25.220542886894435,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.121675229765623e-06,
-    "stop_baslangic": "2026-10-24T16:33:32.411179+00:00"
-  },
   "LTC/USDT": {
     "miktar": 0.5774524235119082,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
