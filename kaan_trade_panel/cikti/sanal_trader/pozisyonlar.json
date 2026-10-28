@@ -1,15 +1,4 @@
 {
-  "LTC/USDT": {
-    "miktar": 0.5774524235119082,
-    "strateji": "Hacim-Fiyat Uyumsuzlugu",
-    "giris_fiyat": 56.38,
-    "giris_zamani": "2026-10-25T06:01:37.783056+00:00",
-    "maliyet": 5.214090611696024,
-    "yon": "SHORT",
-    "kaldirac": 6.250247535302308,
-    "stop_fiyat": 57.462453128742006,
-    "stop_baslangic": "2026-10-25T06:01:37.783056+00:00"
-  },
   "BABY/USDT": {
     "miktar": 10088.414682163499,
     "strateji": "Momentum 180",
@@ -54,15 +43,26 @@
     "stop_fiyat": 148.42952305793634,
     "stop_baslangic": "2026-10-28T01:13:44.840327+00:00"
   },
-  "BANK/USDT": {
-    "miktar": 2932.460460601196,
-    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
-    "giris_fiyat": 0.0315,
-    "giris_zamani": "2026-10-28T01:13:46.616948+00:00",
-    "maliyet": 18.492993895683217,
+  "PEPE/USDT": {
+    "miktar": 19481855.374827396,
+    "strateji": "ATR kirilma",
+    "giris_fiyat": 4.86e-06,
+    "giris_zamani": "2026-10-28T08:20:32.896530+00:00",
+    "maliyet": 18.955318743075303,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 0.028706482285489634,
-    "stop_baslangic": "2026-10-28T01:13:46.616948+00:00"
+    "stop_fiyat": 4.645373197915664e-06,
+    "stop_baslangic": "2026-10-28T08:20:32.896530+00:00"
+  },
+  "KORUB/USDT": {
+    "miktar": 7.542936872362989,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 13.18,
+    "giris_zamani": "2026-10-28T08:20:36.215328+00:00",
+    "maliyet": 19.903084680229068,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 12.66332225848607,
+    "stop_baslangic": "2026-10-28T08:20:36.215328+00:00"
   }
 }
