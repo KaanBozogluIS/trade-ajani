@@ -20,5 +20,49 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.012485077575298084,
     "stop_baslangic": "2026-10-25T18:59:37.038056+00:00"
+  },
+  "SOXLB/USDT": {
+    "miktar": 0.8771647232797596,
+    "strateji": "Donchian 55/20",
+    "giris_fiyat": 101.29,
+    "giris_zamani": "2026-10-28T01:13:41.893781+00:00",
+    "maliyet": 17.787390354555928,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 96.2042851369932,
+    "stop_baslangic": "2026-10-28T01:13:41.893781+00:00"
+  },
+  "QNT/USDT": {
+    "miktar": 0.4503035676897679,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 199.28,
+    "giris_zamani": "2026-10-28T01:13:44.345885+00:00",
+    "maliyet": 17.96526425810149,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 191.98773138406642,
+    "stop_baslangic": "2026-10-28T01:13:44.345885+00:00"
+  },
+  "SKHYB/USDT": {
+    "miktar": 0.600636462522869,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 152.06,
+    "giris_zamani": "2026-10-28T01:13:44.840327+00:00",
+    "maliyet": 18.189830061327754,
+    "yon": "LONG",
+    "kaldirac": 5.026116483094286,
+    "stop_fiyat": 148.42952305793634,
+    "stop_baslangic": "2026-10-28T01:13:44.840327+00:00"
+  },
+  "BANK/USDT": {
+    "miktar": 2932.460460601196,
+    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
+    "giris_fiyat": 0.0315,
+    "giris_zamani": "2026-10-28T01:13:46.616948+00:00",
+    "maliyet": 18.492993895683217,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.028706482285489634,
+    "stop_baslangic": "2026-10-28T01:13:46.616948+00:00"
   }
 }
