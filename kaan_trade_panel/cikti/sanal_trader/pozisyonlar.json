@@ -64,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 12.66332225848607,
     "stop_baslangic": "2026-10-28T08:20:36.215328+00:00"
+  },
+  "BMT/USDT": {
+    "miktar": 1186.0423699860553,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 0.03138,
+    "giris_zamani": "2026-10-28T15:57:29.427053+00:00",
+    "maliyet": 7.451052966999483,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.028783780963570038,
+    "stop_baslangic": "2026-10-28T15:57:29.427053+00:00"
+  },
+  "CELO/USDT": {
+    "miktar": 488.97535095934103,
+    "strateji": "SFP (likidite avi)",
+    "giris_fiyat": 0.07992,
+    "giris_zamani": "2026-10-28T15:57:29.595690+00:00",
+    "maliyet": 7.823605615349457,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.07793717561508044,
+    "stop_baslangic": "2026-10-28T15:57:29.595690+00:00"
   }
 }
