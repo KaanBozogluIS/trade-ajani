@@ -54,17 +54,6 @@
     "stop_fiyat": 4.645373197915664e-06,
     "stop_baslangic": "2026-10-28T08:20:32.896530+00:00"
   },
-  "KORUB/USDT": {
-    "miktar": 7.542936872362989,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 13.18,
-    "giris_zamani": "2026-10-28T08:20:36.215328+00:00",
-    "maliyet": 19.903084680229068,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 12.66332225848607,
-    "stop_baslangic": "2026-10-28T08:20:36.215328+00:00"
-  },
   "CELO/USDT": {
     "miktar": 488.97535095934103,
     "strateji": "SFP (likidite avi)",
@@ -75,16 +64,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.07793717561508044,
     "stop_baslangic": "2026-10-28T15:57:29.595690+00:00"
-  },
-  "NVDAB/USDT": {
-    "miktar": 0.20738700264255644,
-    "strateji": "SMA trend 100",
-    "giris_fiyat": 215.5,
-    "giris_zamani": "2026-10-28T20:59:54.663895+00:00",
-    "maliyet": 4.473663570517609,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 213.3249274738857,
-    "stop_baslangic": "2026-10-28T20:59:54.663895+00:00"
   }
 }
