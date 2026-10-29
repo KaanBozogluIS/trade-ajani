@@ -21,28 +21,6 @@
     "stop_fiyat": 148.42952305793634,
     "stop_baslangic": "2026-10-28T01:13:44.840327+00:00"
   },
-  "PEPE/USDT": {
-    "miktar": 19481855.374827396,
-    "strateji": "ATR kirilma",
-    "giris_fiyat": 4.86e-06,
-    "giris_zamani": "2026-10-28T08:20:32.896530+00:00",
-    "maliyet": 18.955318743075303,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.645373197915664e-06,
-    "stop_baslangic": "2026-10-28T08:20:32.896530+00:00"
-  },
-  "NEAR/USDT": {
-    "miktar": 11.982905579010394,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 4.489,
-    "giris_zamani": "2026-10-29T06:59:14.389819+00:00",
-    "maliyet": 10.769021650486017,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.332881131491753,
-    "stop_baslangic": "2026-10-29T06:59:14.389819+00:00"
-  },
   "GOOGLB/USDT": {
     "miktar": 0.19243237471086688,
     "strateji": "Major Trend Surucusu",
@@ -75,5 +53,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 273.6669784510559,
     "stop_baslangic": "2026-10-29T06:59:20.894482+00:00"
+  },
+  "HYPE/USDT": {
+    "miktar": 0.6236092328435006,
+    "strateji": "Fair Value Gap",
+    "giris_fiyat": 91.23,
+    "giris_zamani": "2026-10-29T14:09:57.662926+00:00",
+    "maliyet": 11.389763826288801,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 88.33267601015233,
+    "stop_baslangic": "2026-10-29T14:09:57.662926+00:00"
+  },
+  "AI/USDT": {
+    "miktar": 3069.166687901073,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 0.019,
+    "giris_zamani": "2026-10-29T14:09:58.528516+00:00",
+    "maliyet": 11.674507921946024,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.01831024895875069,
+    "stop_baslangic": "2026-10-29T14:09:58.528516+00:00"
+  },
+  "CRCLB/USDT": {
+    "miktar": 1.0849968591739947,
+    "strateji": "MACD",
+    "giris_fiyat": 79.86,
+    "giris_zamani": "2026-10-29T14:10:00.262917+00:00",
+    "maliyet": 12.258233318043326,
+    "yon": "LONG",
+    "kaldirac": 7.0756186072690355,
+    "stop_fiyat": 78.50560252157248,
+    "stop_baslangic": "2026-10-29T14:10:00.262917+00:00"
   }
 }
