@@ -10,17 +10,6 @@
     "stop_fiyat": 300.8200848902432,
     "stop_baslangic": "2026-10-29T06:59:15.400066+00:00"
   },
-  "LTC/USDT": {
-    "miktar": 1.129696759979426,
-    "strateji": "Hacim-Fiyat Uyumsuzlugu",
-    "giris_fiyat": 57.73,
-    "giris_zamani": "2026-10-29T06:59:17.235360+00:00",
-    "maliyet": 13.056535326048502,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 59.14816523004106,
-    "stop_baslangic": "2026-10-29T06:59:17.235360+00:00"
-  },
   "PARTI/USDT": {
     "miktar": 1076.8221474680536,
     "strateji": "MA kesisme 50/200",
