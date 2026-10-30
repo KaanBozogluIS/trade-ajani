@@ -9,16 +9,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 300.8200848902432,
     "stop_baslangic": "2026-10-29T06:59:15.400066+00:00"
-  },
-  "PARTI/USDT": {
-    "miktar": 1076.8221474680536,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.0602,
-    "giris_zamani": "2026-10-29T20:13:56.867467+00:00",
-    "maliyet": 12.977916572087452,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.05187382602303303,
-    "stop_baslangic": "2026-10-29T20:13:56.867467+00:00"
   }
 }
