@@ -1,13 +1,1 @@
-{
-  "GOOGLB/USDT": {
-    "miktar": 0.19243237471086688,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 293.51,
-    "giris_zamani": "2026-10-29T06:59:15.400066+00:00",
-    "maliyet": 11.307472733010318,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 300.8200848902432,
-    "stop_baslangic": "2026-10-29T06:59:15.400066+00:00"
-  }
-}
+{}
