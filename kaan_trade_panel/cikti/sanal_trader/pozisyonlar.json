@@ -10,17 +10,6 @@
     "stop_fiyat": 0.201096,
     "stop_baslangic": "2026-11-01T01:01:30.963592+00:00"
   },
-  "HYPE/USDT": {
-    "miktar": 0.7301933515649222,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 88.33,
-    "giris_zamani": "2026-11-01T01:01:31.194232+00:00",
-    "maliyet": 12.110487897118142,
-    "yon": "LONG",
-    "kaldirac": 5.331126362000505,
-    "stop_fiyat": 86.34175224891452,
-    "stop_baslangic": "2026-11-01T01:01:31.194232+00:00"
-  },
   "ONDO/USDT": {
     "miktar": 148.3726249205124,
     "strateji": "Kirilim-GeriCekilme-Toparlanma",
@@ -42,5 +31,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 5.278300540597456,
     "stop_baslangic": "2026-11-01T01:01:32.935278+00:00"
+  },
+  "XPL/USDT": {
+    "miktar": 846.9249190827466,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 0.07365,
+    "giris_zamani": "2026-11-01T07:27:00.298047+00:00",
+    "maliyet": 12.487691749838694,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.06881546973277124,
+    "stop_baslangic": "2026-11-01T07:27:00.298047+00:00"
+  },
+  "BEAMX/USDT": {
+    "miktar": 10550.772673616733,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 0.005837,
+    "giris_zamani": "2026-11-01T07:27:00.948828+00:00",
+    "maliyet": 12.329301320500674,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0052425913707588485,
+    "stop_baslangic": "2026-11-01T07:27:00.948828+00:00"
   }
 }
