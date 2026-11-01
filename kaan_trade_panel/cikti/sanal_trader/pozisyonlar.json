@@ -42,5 +42,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 4.595645040340105e-06,
     "stop_baslangic": "2026-11-01T14:59:51.660724+00:00"
+  },
+  "INIT/USDT": {
+    "miktar": 299.34450210923717,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 0.18926,
+    "giris_zamani": "2026-11-01T19:34:04.198403+00:00",
+    "maliyet": 11.342130224062908,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.17296205145534677,
+    "stop_baslangic": "2026-11-01T19:34:04.198403+00:00"
+  },
+  "QNT/USDT": {
+    "miktar": 0.2913855051871678,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 197.67,
+    "giris_zamani": "2026-11-01T19:34:04.328692+00:00",
+    "maliyet": 11.531165727797289,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 191.0380110701681,
+    "stop_baslangic": "2026-11-01T19:34:04.328692+00:00"
   }
 }
