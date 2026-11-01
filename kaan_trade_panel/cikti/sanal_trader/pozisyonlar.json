@@ -1,1 +1,46 @@
-{}
+{
+  "LSK/USDT": {
+    "miktar": 250.88916696157406,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 0.2394,
+    "giris_zamani": "2026-11-01T01:01:30.963592+00:00",
+    "maliyet": 12.024597912032199,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.201096,
+    "stop_baslangic": "2026-11-01T01:01:30.963592+00:00"
+  },
+  "HYPE/USDT": {
+    "miktar": 0.7301933515649222,
+    "strateji": "Fair Value Gap",
+    "giris_fiyat": 88.33,
+    "giris_zamani": "2026-11-01T01:01:31.194232+00:00",
+    "maliyet": 12.110487897118142,
+    "yon": "LONG",
+    "kaldirac": 5.331126362000505,
+    "stop_fiyat": 86.34175224891452,
+    "stop_baslangic": "2026-11-01T01:01:31.194232+00:00"
+  },
+  "ONDO/USDT": {
+    "miktar": 148.3726249205124,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 0.4111,
+    "giris_zamani": "2026-11-01T01:01:32.474194+00:00",
+    "maliyet": 12.211408629594125,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.42300989250506116,
+    "stop_baslangic": "2026-11-01T01:01:32.474194+00:00"
+  },
+  "PROM/USDT": {
+    "miktar": 11.1423306141926,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 5.529,
+    "giris_zamani": "2026-11-01T01:01:32.935278+00:00",
+    "maliyet": 12.333522715890068,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 5.278300540597456,
+    "stop_baslangic": "2026-11-01T01:01:32.935278+00:00"
+  }
+}
