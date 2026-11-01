@@ -21,17 +21,6 @@
     "stop_fiyat": 0.42300989250506116,
     "stop_baslangic": "2026-11-01T01:01:32.474194+00:00"
   },
-  "PROM/USDT": {
-    "miktar": 11.1423306141926,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 5.529,
-    "giris_zamani": "2026-11-01T01:01:32.935278+00:00",
-    "maliyet": 12.333522715890068,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 5.278300540597456,
-    "stop_baslangic": "2026-11-01T01:01:32.935278+00:00"
-  },
   "XPL/USDT": {
     "miktar": 846.9249190827466,
     "strateji": "Kirilim-GeriCekilme-Toparlanma",
@@ -43,15 +32,15 @@
     "stop_fiyat": 0.06881546973277124,
     "stop_baslangic": "2026-11-01T07:27:00.298047+00:00"
   },
-  "BEAMX/USDT": {
-    "miktar": 10550.772673616733,
-    "strateji": "Momentum 180",
-    "giris_fiyat": 0.005837,
-    "giris_zamani": "2026-11-01T07:27:00.948828+00:00",
-    "maliyet": 12.329301320500674,
+  "PEPE/USDT": {
+    "miktar": 12700055.665483275,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 4.93e-06,
+    "giris_zamani": "2026-11-01T14:59:51.660724+00:00",
+    "maliyet": 12.534789675842353,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 0.0052425913707588485,
-    "stop_baslangic": "2026-11-01T07:27:00.948828+00:00"
+    "stop_fiyat": 4.595645040340105e-06,
+    "stop_baslangic": "2026-11-01T14:59:51.660724+00:00"
   }
 }
