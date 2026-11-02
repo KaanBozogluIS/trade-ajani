@@ -1,26 +1,4 @@
 {
-  "LSK/USDT": {
-    "miktar": 250.88916696157406,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.2394,
-    "giris_zamani": "2026-11-01T01:01:30.963592+00:00",
-    "maliyet": 12.024597912032199,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.201096,
-    "stop_baslangic": "2026-11-01T01:01:30.963592+00:00"
-  },
-  "PEPE/USDT": {
-    "miktar": 12700055.665483275,
-    "strateji": "Bollinger 20/2",
-    "giris_fiyat": 4.93e-06,
-    "giris_zamani": "2026-11-01T14:59:51.660724+00:00",
-    "maliyet": 12.534789675842353,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.595645040340105e-06,
-    "stop_baslangic": "2026-11-01T14:59:51.660724+00:00"
-  },
   "INIT/USDT": {
     "miktar": 299.34450210923717,
     "strateji": "Dusuk oynaklik",
@@ -42,5 +20,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.005038819848890392,
     "stop_baslangic": "2026-11-01T23:31:34.481097+00:00"
+  },
+  "DOGE/USDT": {
+    "miktar": 1193.1548746208193,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 0.07593,
+    "giris_zamani": "2026-11-02T05:52:23.804542+00:00",
+    "maliyet": 11.831647725430571,
+    "yon": "LONG",
+    "kaldirac": 7.664776595030436,
+    "stop_fiyat": 0.0747412373678435,
+    "stop_baslangic": "2026-11-02T05:52:23.804542+00:00"
+  },
+  "SNDKB/USDT": {
+    "miktar": 0.054529391260784474,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 1190.46,
+    "giris_zamani": "2026-11-02T05:52:24.521735+00:00",
+    "maliyet": 11.979543321998454,
+    "yon": "LONG",
+    "kaldirac": 5.424250108111203,
+    "stop_fiyat": 1164.123603788037,
+    "stop_baslangic": "2026-11-02T05:52:24.521735+00:00"
+  },
+  "CRCLB/USDT": {
+    "miktar": 0.6582667570187853,
+    "strateji": "Donchian 20/10",
+    "giris_fiyat": 74.21,
+    "giris_zamani": "2026-11-02T05:52:25.702271+00:00",
+    "maliyet": 9.679308431943976,
+    "yon": "LONG",
+    "kaldirac": 5.051897587218074,
+    "stop_fiyat": 72.44725642765773,
+    "stop_baslangic": "2026-11-02T05:52:25.702271+00:00"
   }
 }
