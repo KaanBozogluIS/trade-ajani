@@ -10,17 +10,6 @@
     "stop_fiyat": 0.027158220958549324,
     "stop_baslangic": "2026-11-04T09:01:20.558291+00:00"
   },
-  "HYPE/USDT": {
-    "miktar": 0.5023328911171263,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 85.46,
-    "giris_zamani": "2026-11-04T17:08:12.410508+00:00",
-    "maliyet": 8.59446824321714,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 82.47726086561163,
-    "stop_baslangic": "2026-11-04T17:08:12.410508+00:00"
-  },
   "SPCXB/USDT": {
     "miktar": 0.3178100805076636,
     "strateji": "SFP (likidite avi)",
@@ -32,17 +21,6 @@
     "stop_fiyat": 131.81070658533235,
     "stop_baslangic": "2026-11-04T17:08:12.576882+00:00"
   },
-  "LINK/USDT": {
-    "miktar": 3.8446184096786165,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 11.636,
-    "giris_zamani": "2026-11-04T17:08:12.907356+00:00",
-    "maliyet": 8.956152115119195,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 11.330117004157568,
-    "stop_baslangic": "2026-11-04T17:08:12.907356+00:00"
-  },
   "GOOGLB/USDT": {
     "miktar": 0.18622333839575586,
     "strateji": "Major Trend Surucusu",
@@ -53,5 +31,16 @@
     "kaldirac": 5.798668352809603,
     "stop_fiyat": 286.4762652691645,
     "stop_baslangic": "2026-11-04T17:08:13.413287+00:00"
+  },
+  "BTC/USDT": {
+    "miktar": 0.000817061656919935,
+    "strateji": "Hacim-Fiyat Uyumsuzlugu",
+    "giris_fiyat": 80724.81,
+    "giris_zamani": "2026-11-04T23:35:47.464114+00:00",
+    "maliyet": 7.467829675870526,
+    "yon": "SHORT",
+    "kaldirac": 8.841011786417576,
+    "stop_fiyat": 81820.49649313216,
+    "stop_baslangic": "2026-11-04T23:35:47.464114+00:00"
   }
 }
