@@ -42,5 +42,49 @@
     "kaldirac": 5.0,
     "stop_fiyat": 58.31645133548517,
     "stop_baslangic": "2026-11-05T06:32:49.502860+00:00"
+  },
+  "SNDKB/USDT": {
+    "miktar": 0.03740604926337212,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 898.0,
+    "giris_zamani": "2026-11-05T15:24:12.692032+00:00",
+    "maliyet": 6.724851299000633,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 946.3414875264652,
+    "stop_baslangic": "2026-11-05T15:24:12.692032+00:00"
+  },
+  "XAUT/USDT": {
+    "miktar": 0.01667287978320675,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 4096.53,
+    "giris_zamani": "2026-11-05T15:24:13.005509+00:00",
+    "maliyet": 6.836932153983978,
+    "yon": "LONG",
+    "kaldirac": 10.0,
+    "stop_fiyat": 4061.000693111069,
+    "stop_baslangic": "2026-11-05T15:24:13.005509+00:00"
+  },
+  "MUB/USDT": {
+    "miktar": 0.04917499685582052,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 711.83,
+    "giris_zamani": "2026-11-05T15:24:14.693547+00:00",
+    "maliyet": 7.007855457833577,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 682.6921635409178,
+    "stop_baslangic": "2026-11-05T15:24:14.693547+00:00"
+  },
+  "SKHYB/USDT": {
+    "miktar": 0.28300954733558675,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 129.87,
+    "giris_zamani": "2026-11-05T15:24:16.524830+00:00",
+    "maliyet": 7.358248230725256,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 134.36867802955044,
+    "stop_baslangic": "2026-11-05T15:24:16.524830+00:00"
   }
 }
