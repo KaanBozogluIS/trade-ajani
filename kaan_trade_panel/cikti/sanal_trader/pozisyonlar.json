@@ -1,37 +1,4 @@
 {
-  "BMT/USDT": {
-    "miktar": 1432.5411449940823,
-    "strateji": "SMA trend 100",
-    "giris_fiyat": 0.03054,
-    "giris_zamani": "2026-11-04T09:01:20.558291+00:00",
-    "maliyet": 8.758720033657513,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.027158220958549324,
-    "stop_baslangic": "2026-11-04T09:01:20.558291+00:00"
-  },
-  "SPCXB/USDT": {
-    "miktar": 0.3178100805076636,
-    "strateji": "SFP (likidite avi)",
-    "giris_fiyat": 137.33,
-    "giris_zamani": "2026-11-04T17:08:12.576882+00:00",
-    "maliyet": 8.737709380604093,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 131.81070658533235,
-    "stop_baslangic": "2026-11-04T17:08:12.576882+00:00"
-  },
-  "GOOGLB/USDT": {
-    "miktar": 0.18622333839575586,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 292.53,
-    "giris_zamani": "2026-11-04T17:08:13.413287+00:00",
-    "maliyet": 9.403959720875156,
-    "yon": "LONG",
-    "kaldirac": 5.798668352809603,
-    "stop_fiyat": 286.4762652691645,
-    "stop_baslangic": "2026-11-04T17:08:13.413287+00:00"
-  },
   "BTC/USDT": {
     "miktar": 0.000817061656919935,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
@@ -42,5 +9,38 @@
     "kaldirac": 8.841011786417576,
     "stop_fiyat": 81820.49649313216,
     "stop_baslangic": "2026-11-04T23:35:47.464114+00:00"
+  },
+  "SOXLB/USDT": {
+    "miktar": 0.6247277724964941,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 60.16,
+    "giris_zamani": "2026-11-05T06:32:46.911884+00:00",
+    "maliyet": 7.524248807485302,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 65.61396865930135,
+    "stop_baslangic": "2026-11-05T06:32:46.911884+00:00"
+  },
+  "PAXG/USDT": {
+    "miktar": 0.018324102163255654,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 4107.09,
+    "giris_zamani": "2026-11-05T06:32:48.854943+00:00",
+    "maliyet": 7.533407082451018,
+    "yon": "LONG",
+    "kaldirac": 10.0,
+    "stop_fiyat": 4071.4535211717716,
+    "stop_baslangic": "2026-11-05T06:32:48.854943+00:00"
+  },
+  "INTCB/USDT": {
+    "miktar": 0.6761266278891458,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 56.35,
+    "giris_zamani": "2026-11-05T06:32:49.502860+00:00",
+    "maliyet": 7.627574670981654,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 58.31645133548517,
+    "stop_baslangic": "2026-11-05T06:32:49.502860+00:00"
   }
 }
