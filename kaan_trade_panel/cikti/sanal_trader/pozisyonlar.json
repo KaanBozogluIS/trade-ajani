@@ -21,17 +21,6 @@
     "stop_fiyat": 65.61396865930135,
     "stop_baslangic": "2026-11-05T06:32:46.911884+00:00"
   },
-  "PAXG/USDT": {
-    "miktar": 0.018324102163255654,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 4107.09,
-    "giris_zamani": "2026-11-05T06:32:48.854943+00:00",
-    "maliyet": 7.533407082451018,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 4071.4535211717716,
-    "stop_baslangic": "2026-11-05T06:32:48.854943+00:00"
-  },
   "INTCB/USDT": {
     "miktar": 0.6761266278891458,
     "strateji": "Major Trend Surucusu",
@@ -54,28 +43,6 @@
     "stop_fiyat": 946.3414875264652,
     "stop_baslangic": "2026-11-05T15:24:12.692032+00:00"
   },
-  "XAUT/USDT": {
-    "miktar": 0.01667287978320675,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 4096.53,
-    "giris_zamani": "2026-11-05T15:24:13.005509+00:00",
-    "maliyet": 6.836932153983978,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 4061.000693111069,
-    "stop_baslangic": "2026-11-05T15:24:13.005509+00:00"
-  },
-  "MUB/USDT": {
-    "miktar": 0.04917499685582052,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 711.83,
-    "giris_zamani": "2026-11-05T15:24:14.693547+00:00",
-    "maliyet": 7.007855457833577,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 682.6921635409178,
-    "stop_baslangic": "2026-11-05T15:24:14.693547+00:00"
-  },
   "SKHYB/USDT": {
     "miktar": 0.28300954733558675,
     "strateji": "Major Trend Surucusu",
@@ -86,5 +53,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 134.36867802955044,
     "stop_baslangic": "2026-11-05T15:24:16.524830+00:00"
+  },
+  "CRCLB/USDT": {
+    "miktar": 0.4729437754377743,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 69.58,
+    "giris_zamani": "2026-11-05T21:56:36.902459+00:00",
+    "maliyet": 6.588073652644713,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 66.13112988640664,
+    "stop_baslangic": "2026-11-05T21:56:36.902459+00:00"
+  },
+  "KORUB/USDT": {
+    "miktar": 3.8812033533275003,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 6.52,
+    "giris_zamani": "2026-11-05T21:56:38.293854+00:00",
+    "maliyet": 5.066155328067127,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 7.4497837811994945,
+    "stop_baslangic": "2026-11-05T21:56:38.293854+00:00"
+  },
+  "AVAX/USDT": {
+    "miktar": 3.9741309116326886,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 8.354,
+    "giris_zamani": "2026-11-05T21:56:39.687342+00:00",
+    "maliyet": 6.646624551707603,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 8.10023697629023,
+    "stop_baslangic": "2026-11-05T21:56:39.687342+00:00"
   }
 }
