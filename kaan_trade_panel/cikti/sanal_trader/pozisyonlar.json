@@ -10,50 +10,6 @@
     "stop_fiyat": 81820.49649313216,
     "stop_baslangic": "2026-11-04T23:35:47.464114+00:00"
   },
-  "SOXLB/USDT": {
-    "miktar": 0.6247277724964941,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 60.16,
-    "giris_zamani": "2026-11-05T06:32:46.911884+00:00",
-    "maliyet": 7.524248807485302,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 65.61396865930135,
-    "stop_baslangic": "2026-11-05T06:32:46.911884+00:00"
-  },
-  "INTCB/USDT": {
-    "miktar": 0.6761266278891458,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 56.35,
-    "giris_zamani": "2026-11-05T06:32:49.502860+00:00",
-    "maliyet": 7.627574670981654,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 58.31645133548517,
-    "stop_baslangic": "2026-11-05T06:32:49.502860+00:00"
-  },
-  "SNDKB/USDT": {
-    "miktar": 0.03740604926337212,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 898.0,
-    "giris_zamani": "2026-11-05T15:24:12.692032+00:00",
-    "maliyet": 6.724851299000633,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 946.3414875264652,
-    "stop_baslangic": "2026-11-05T15:24:12.692032+00:00"
-  },
-  "SKHYB/USDT": {
-    "miktar": 0.28300954733558675,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 129.87,
-    "giris_zamani": "2026-11-05T15:24:16.524830+00:00",
-    "maliyet": 7.358248230725256,
-    "yon": "SHORT",
-    "kaldirac": 5.0,
-    "stop_fiyat": 134.36867802955044,
-    "stop_baslangic": "2026-11-05T15:24:16.524830+00:00"
-  },
   "CRCLB/USDT": {
     "miktar": 0.4729437754377743,
     "strateji": "RSI 20/50",
@@ -76,15 +32,37 @@
     "stop_fiyat": 7.4497837811994945,
     "stop_baslangic": "2026-11-05T21:56:38.293854+00:00"
   },
-  "ARB/USDT": {
-    "miktar": 171.02324037937385,
+  "NEAR/USDT": {
+    "miktar": 14.820410243896234,
     "strateji": "RSI 30/60",
-    "giris_fiyat": 0.1643,
-    "giris_zamani": "2026-11-06T02:17:48.391455+00:00",
-    "maliyet": 5.625449127994219,
+    "giris_fiyat": 3.724,
+    "giris_zamani": "2026-11-06T10:43:51.123778+00:00",
+    "maliyet": 11.049290840494411,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 0.15752527042763104,
-    "stop_baslangic": "2026-11-06T02:17:48.391455+00:00"
+    "stop_fiyat": 3.594625292307539,
+    "stop_baslangic": "2026-11-06T10:43:51.123778+00:00"
+  },
+  "UNI/USDT": {
+    "miktar": 8.249219663442428,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 7.025,
+    "giris_zamani": "2026-11-06T10:43:51.292340+00:00",
+    "maliyet": 11.601755382519132,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 6.771565516126665,
+    "stop_baslangic": "2026-11-06T10:43:51.292340+00:00"
+  },
+  "AVAX/USDT": {
+    "miktar": 3.9656930672756463,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 8.336,
+    "giris_zamani": "2026-11-06T10:43:55.979835+00:00",
+    "maliyet": 6.618221703465423,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 8.06902968360458,
+    "stop_baslangic": "2026-11-06T10:43:55.979835+00:00"
   }
 }
