@@ -43,17 +43,6 @@
     "stop_fiyat": 8.06902968360458,
     "stop_baslangic": "2026-11-06T10:43:55.979835+00:00"
   },
-  "ETH/USDT": {
-    "miktar": 0.022254470936840777,
-    "strateji": "Kirilim-GeriCekilme-Toparlanma",
-    "giris_fiyat": 2236.02,
-    "giris_zamani": "2026-11-06T17:54:54.356606+00:00",
-    "maliyet": 7.781264544998897,
-    "yon": "LONG",
-    "kaldirac": 6.401434248828682,
-    "stop_fiyat": 2194.1040184292924,
-    "stop_baslangic": "2026-11-06T17:54:54.356606+00:00"
-  },
   "TRX/USDT": {
     "miktar": 200.56482361666625,
     "strateji": "Dusuk oynaklik",
@@ -65,17 +54,6 @@
     "stop_fiyat": 0.31650540005886046,
     "stop_baslangic": "2026-11-06T17:54:56.745185+00:00"
   },
-  "SNXXB/USDT": {
-    "miktar": 7.026303071728974,
-    "strateji": "SFP (likidite avi)",
-    "giris_fiyat": 3.35,
-    "giris_zamani": "2026-11-06T17:54:58.293310+00:00",
-    "maliyet": 4.712335393451864,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 2.8457135219061414,
-    "stop_baslangic": "2026-11-06T17:54:58.293310+00:00"
-  },
   "ONE/USDT": {
     "miktar": 15593.073220698216,
     "strateji": "SMA trend 200",
@@ -86,5 +64,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.0014275900564216272,
     "stop_baslangic": "2026-11-06T17:54:58.540103+00:00"
+  },
+  "CRCLB/USDT": {
+    "miktar": 0.5602994288892856,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 67.57,
+    "giris_zamani": "2026-11-06T23:02:01.255921+00:00",
+    "maliyet": 7.579465947957763,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 65.3668876858313,
+    "stop_baslangic": "2026-11-06T23:02:01.255921+00:00"
   }
 }
