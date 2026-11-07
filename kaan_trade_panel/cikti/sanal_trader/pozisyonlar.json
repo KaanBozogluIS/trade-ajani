@@ -75,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 65.3668876858313,
     "stop_baslangic": "2026-11-06T23:02:01.255921+00:00"
+  },
+  "HYPE/USDT": {
+    "miktar": 0.2835501579278139,
+    "strateji": "Fair Value Gap",
+    "giris_fiyat": 78.87,
+    "giris_zamani": "2026-11-07T09:57:16.484901+00:00",
+    "maliyet": 4.477197388541879,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 75.66764930887088,
+    "stop_baslangic": "2026-11-07T09:57:16.484901+00:00"
   }
 }
