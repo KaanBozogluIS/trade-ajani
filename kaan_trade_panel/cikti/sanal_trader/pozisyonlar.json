@@ -21,17 +21,6 @@
     "stop_fiyat": 3.594625292307539,
     "stop_baslangic": "2026-11-06T10:43:51.123778+00:00"
   },
-  "UNI/USDT": {
-    "miktar": 8.249219663442428,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 7.025,
-    "giris_zamani": "2026-11-06T10:43:51.292340+00:00",
-    "maliyet": 11.601755382519132,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 6.771565516126665,
-    "stop_baslangic": "2026-11-06T10:43:51.292340+00:00"
-  },
   "AVAX/USDT": {
     "miktar": 3.9656930672756463,
     "strateji": "RSI 30/60",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.15940460721796093,
     "stop_baslangic": "2026-11-07T16:21:06.669284+00:00"
+  },
+  "PUMP/USDT": {
+    "miktar": 16271.05272448105,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 0.003691,
+    "giris_zamani": "2026-11-07T20:50:23.499021+00:00",
+    "maliyet": 12.023314435647558,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0035612543440380266,
+    "stop_baslangic": "2026-11-07T20:50:23.499021+00:00"
   }
 }
