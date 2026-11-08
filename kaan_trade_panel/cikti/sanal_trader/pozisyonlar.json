@@ -1,15 +1,4 @@
 {
-  "NEAR/USDT": {
-    "miktar": 14.820410243896234,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 3.724,
-    "giris_zamani": "2026-11-06T10:43:51.123778+00:00",
-    "maliyet": 11.049290840494411,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 3.594625292307539,
-    "stop_baslangic": "2026-11-06T10:43:51.123778+00:00"
-  },
   "AVAX/USDT": {
     "miktar": 3.9656930672756463,
     "strateji": "RSI 30/60",
@@ -64,5 +53,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.023478759887382013,
     "stop_baslangic": "2026-11-08T15:02:44.904989+00:00"
+  },
+  "HOT/USDT": {
+    "miktar": 78474.4896671951,
+    "strateji": "SMA trend 50",
+    "giris_fiyat": 0.00044,
+    "giris_zamani": "2026-11-08T19:37:10.963613+00:00",
+    "maliyet": 6.912667758471641,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.00038853919762757644,
+    "stop_baslangic": "2026-11-08T19:37:10.963613+00:00"
+  },
+  "BCH/USDT": {
+    "miktar": 0.1571287899568285,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 246.3,
+    "giris_zamani": "2026-11-08T19:37:12.293621+00:00",
+    "maliyet": 7.085484452433431,
+    "yon": "LONG",
+    "kaldirac": 5.467454030414121,
+    "stop_fiyat": 240.89419323224539,
+    "stop_baslangic": "2026-11-08T19:37:12.293621+00:00"
+  },
+  "RSR/USDT": {
+    "miktar": 21795.6566462758,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 0.001705,
+    "giris_zamani": "2026-11-08T19:37:12.629762+00:00",
+    "maliyet": 7.439758675055102,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0016180620822592953,
+    "stop_baslangic": "2026-11-08T19:37:12.629762+00:00"
   }
 }
