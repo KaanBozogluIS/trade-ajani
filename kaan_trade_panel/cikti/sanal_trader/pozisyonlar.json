@@ -1,15 +1,4 @@
 {
-  "BTC/USDT": {
-    "miktar": 0.000817061656919935,
-    "strateji": "Hacim-Fiyat Uyumsuzlugu",
-    "giris_fiyat": 80724.81,
-    "giris_zamani": "2026-11-04T23:35:47.464114+00:00",
-    "maliyet": 7.467829675870526,
-    "yon": "SHORT",
-    "kaldirac": 8.841011786417576,
-    "stop_fiyat": 81820.49649313216,
-    "stop_baslangic": "2026-11-04T23:35:47.464114+00:00"
-  },
   "NEAR/USDT": {
     "miktar": 14.820410243896234,
     "strateji": "RSI 30/60",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.0035612543440380266,
     "stop_baslangic": "2026-11-07T20:50:23.499021+00:00"
+  },
+  "ETH/USDT": {
+    "miktar": 0.04748867432053484,
+    "strateji": "Kirilim-GeriCekilme-Toparlanma",
+    "giris_fiyat": 2240.24,
+    "giris_zamani": "2026-11-08T00:27:31.034654+00:00",
+    "maliyet": 11.347982628296267,
+    "yon": "LONG",
+    "kaldirac": 9.38426888446016,
+    "stop_fiyat": 2211.593250497205,
+    "stop_baslangic": "2026-11-08T00:27:31.034654+00:00"
   }
 }
