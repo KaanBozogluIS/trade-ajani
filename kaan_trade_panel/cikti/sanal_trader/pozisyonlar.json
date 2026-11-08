@@ -43,48 +43,26 @@
     "stop_fiyat": 0.0014275900564216272,
     "stop_baslangic": "2026-11-06T17:54:58.540103+00:00"
   },
-  "CRCLB/USDT": {
-    "miktar": 0.5602994288892856,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 67.57,
-    "giris_zamani": "2026-11-06T23:02:01.255921+00:00",
-    "maliyet": 7.579465947957763,
+  "PEPE/USDT": {
+    "miktar": 10962072.990141109,
+    "strateji": "Dusuk oynaklik",
+    "giris_fiyat": 5.09e-06,
+    "giris_zamani": "2026-11-08T15:02:44.041963+00:00",
+    "maliyet": 11.170560864828477,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 65.3668876858313,
-    "stop_baslangic": "2026-11-06T23:02:01.255921+00:00"
+    "stop_fiyat": 4.909802696364151e-06,
+    "stop_baslangic": "2026-11-08T15:02:44.041963+00:00"
   },
-  "GTC/USDT": {
-    "miktar": 118.54886139406165,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 0.17085,
-    "giris_zamani": "2026-11-07T16:21:06.669284+00:00",
-    "maliyet": 4.054869463298385,
+  "BMT/USDT": {
+    "miktar": 2479.2779278673197,
+    "strateji": "SMA trend 50",
+    "giris_fiyat": 0.02534,
+    "giris_zamani": "2026-11-08T15:02:44.904989+00:00",
+    "maliyet": 12.577558096528104,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 0.15940460721796093,
-    "stop_baslangic": "2026-11-07T16:21:06.669284+00:00"
-  },
-  "PUMP/USDT": {
-    "miktar": 16271.05272448105,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.003691,
-    "giris_zamani": "2026-11-07T20:50:23.499021+00:00",
-    "maliyet": 12.023314435647558,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.0035612543440380266,
-    "stop_baslangic": "2026-11-07T20:50:23.499021+00:00"
-  },
-  "ETH/USDT": {
-    "miktar": 0.04748867432053484,
-    "strateji": "Kirilim-GeriCekilme-Toparlanma",
-    "giris_fiyat": 2240.24,
-    "giris_zamani": "2026-11-08T00:27:31.034654+00:00",
-    "maliyet": 11.347982628296267,
-    "yon": "LONG",
-    "kaldirac": 9.38426888446016,
-    "stop_fiyat": 2211.593250497205,
-    "stop_baslangic": "2026-11-08T00:27:31.034654+00:00"
+    "stop_fiyat": 0.023478759887382013,
+    "stop_baslangic": "2026-11-08T15:02:44.904989+00:00"
   }
 }
