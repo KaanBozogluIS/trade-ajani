@@ -54,17 +54,6 @@
     "stop_fiyat": 0.06727086784465353,
     "stop_baslangic": "2026-11-08T23:39:42.103318+00:00"
   },
-  "ARB/USDT": {
-    "miktar": 240.18323384787757,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 0.1642,
-    "giris_zamani": "2026-11-08T23:39:44.105532+00:00",
-    "maliyet": 7.895512912476776,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.16000566682302075,
-    "stop_baslangic": "2026-11-08T23:39:44.105532+00:00"
-  },
   "XPL/USDT": {
     "miktar": 545.9349604623335,
     "strateji": "RSI 20/50",
