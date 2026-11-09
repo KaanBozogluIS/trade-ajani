@@ -1,15 +1,4 @@
 {
-  "TRX/USDT": {
-    "miktar": 200.56482361666625,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.3192,
-    "giris_zamani": "2026-11-06T17:54:56.745185+00:00",
-    "maliyet": 6.408437607451438,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 0.31650540005886046,
-    "stop_baslangic": "2026-11-06T17:54:56.745185+00:00"
-  },
   "ONE/USDT": {
     "miktar": 15593.073220698216,
     "strateji": "SMA trend 200",
@@ -42,27 +31,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.0016180620822592953,
     "stop_baslangic": "2026-11-08T19:37:12.629762+00:00"
-  },
-  "DOGE/USDT": {
-    "miktar": 651.055678475111,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.06906,
-    "giris_zamani": "2026-11-08T23:39:42.103318+00:00",
-    "maliyet": 9.001382413511744,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.06727086784465353,
-    "stop_baslangic": "2026-11-08T23:39:42.103318+00:00"
-  },
-  "XPL/USDT": {
-    "miktar": 545.9349604623335,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.05136,
-    "giris_zamani": "2026-11-08T23:39:46.230650+00:00",
-    "maliyet": 5.61345737124033,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.04939624740419123,
-    "stop_baslangic": "2026-11-08T23:39:46.230650+00:00"
   }
 }
