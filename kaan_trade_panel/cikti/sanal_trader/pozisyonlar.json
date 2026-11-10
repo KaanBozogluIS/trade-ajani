@@ -1,13 +1,1 @@
-{
-  "HOT/USDT": {
-    "miktar": 78474.4896671951,
-    "strateji": "SMA trend 50",
-    "giris_fiyat": 0.00044,
-    "giris_zamani": "2026-11-08T19:37:10.963613+00:00",
-    "maliyet": 6.912667758471641,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.00038853919762757644,
-    "stop_baslangic": "2026-11-08T19:37:10.963613+00:00"
-  }
-}
+{}
