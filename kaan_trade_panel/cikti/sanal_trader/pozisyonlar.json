@@ -1,15 +1,4 @@
 {
-  "ONE/USDT": {
-    "miktar": 15593.073220698216,
-    "strateji": "SMA trend 200",
-    "giris_fiyat": 0.001585,
-    "giris_zamani": "2026-11-06T17:54:58.540103+00:00",
-    "maliyet": 4.947952163124459,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.0014275900564216272,
-    "stop_baslangic": "2026-11-06T17:54:58.540103+00:00"
-  },
   "HOT/USDT": {
     "miktar": 78474.4896671951,
     "strateji": "SMA trend 50",
@@ -20,16 +9,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.00038853919762757644,
     "stop_baslangic": "2026-11-08T19:37:10.963613+00:00"
-  },
-  "RSR/USDT": {
-    "miktar": 21795.6566462758,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 0.001705,
-    "giris_zamani": "2026-11-08T19:37:12.629762+00:00",
-    "maliyet": 7.439758675055102,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.0016180620822592953,
-    "stop_baslangic": "2026-11-08T19:37:12.629762+00:00"
   }
 }
