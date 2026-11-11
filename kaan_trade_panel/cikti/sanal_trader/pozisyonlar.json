@@ -1,15 +1,4 @@
 {
-  "PEPE/USDT": {
-    "miktar": 6034166.599772091,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 5.33e-06,
-    "giris_zamani": "2026-11-11T05:59:24.558451+00:00",
-    "maliyet": 6.438860455812862,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 5.082767076086465e-06,
-    "stop_baslangic": "2026-11-11T05:59:24.558451+00:00"
-  },
   "SNDKB/USDT": {
     "miktar": 0.035957370142840644,
     "strateji": "SMA trend 100",
@@ -20,17 +9,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 866.2939110295988,
     "stop_baslangic": "2026-11-11T05:59:25.081226+00:00"
-  },
-  "INIT/USDT": {
-    "miktar": 95.51342056713906,
-    "strateji": "MA kesisme 20/100",
-    "giris_fiyat": 0.34196,
-    "giris_zamani": "2026-11-11T05:59:25.341939+00:00",
-    "maliyet": 6.5388927521799545,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.28724639999999996,
-    "stop_baslangic": "2026-11-11T05:59:25.341939+00:00"
   },
   "SOXLB/USDT": {
     "miktar": 0.5369203611671592,
@@ -86,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 1.0974497032773005,
     "stop_baslangic": "2026-11-11T05:59:27.319018+00:00"
+  },
+  "UNI/USDT": {
+    "miktar": 3.844473409978049,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 6.502,
+    "giris_zamani": "2026-11-11T14:05:05.635076+00:00",
+    "maliyet": 5.00435757991537,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 6.276590890287073,
+    "stop_baslangic": "2026-11-11T14:05:05.635076+00:00"
+  },
+  "MUB/USDT": {
+    "miktar": 0.009242621527807797,
+    "strateji": "Momentum 90",
+    "giris_fiyat": 775.78,
+    "giris_zamani": "2026-11-11T14:05:06.934243+00:00",
+    "maliyet": 1.4354836694379844,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 755.4434741076702,
+    "stop_baslangic": "2026-11-11T14:05:06.934243+00:00"
   }
 }
