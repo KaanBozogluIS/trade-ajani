@@ -64,5 +64,27 @@
     "kaldirac": 9.564156176238505,
     "stop_fiyat": 290.9036990040136,
     "stop_baslangic": "2026-11-12T02:53:11.691635+00:00"
+  },
+  "PEPE/USDT": {
+    "miktar": 4307438.377204298,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 4.43e-06,
+    "giris_zamani": "2026-11-12T10:55:52.958174+00:00",
+    "maliyet": 3.820210612815824,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 4.244757378945731e-06,
+    "stop_baslangic": "2026-11-12T10:55:52.958174+00:00"
+  },
+  "UNI/USDT": {
+    "miktar": 3.236318787201711,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 6.191,
+    "giris_zamani": "2026-11-12T10:55:53.466653+00:00",
+    "maliyet": 4.011221143456615,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 5.999115670564404,
+    "stop_baslangic": "2026-11-12T10:55:53.466653+00:00"
   }
 }
