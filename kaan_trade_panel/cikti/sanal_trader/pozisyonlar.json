@@ -10,17 +10,6 @@
     "stop_fiyat": 866.2939110295988,
     "stop_baslangic": "2026-11-11T05:59:25.081226+00:00"
   },
-  "GRAM/USDT": {
-    "miktar": 32.00234167982753,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 1.142,
-    "giris_zamani": "2026-11-11T05:59:27.319018+00:00",
-    "maliyet": 7.316651491163771,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 1.0974497032773005,
-    "stop_baslangic": "2026-11-11T05:59:27.319018+00:00"
-  },
   "MUB/USDT": {
     "miktar": 0.009242621527807797,
     "strateji": "Momentum 90",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.14201731290088943,
     "stop_baslangic": "2026-11-12T18:50:43.406865+00:00"
+  },
+  "GOOGLB/USDT": {
+    "miktar": 0.19685518655500261,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 301.18,
+    "giris_zamani": "2026-11-13T00:11:50.502560+00:00",
+    "maliyet": 7.034509235852266,
+    "yon": "LONG",
+    "kaldirac": 8.436721211117336,
+    "stop_fiyat": 296.8961557084078,
+    "stop_baslangic": "2026-11-13T00:11:50.502560+00:00"
   }
 }
