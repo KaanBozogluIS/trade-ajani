@@ -1,15 +1,4 @@
 {
-  "PEPE/USDT": {
-    "miktar": 4307438.377204298,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 4.43e-06,
-    "giris_zamani": "2026-11-12T10:55:52.958174+00:00",
-    "maliyet": 3.820210612815824,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.244757378945731e-06,
-    "stop_baslangic": "2026-11-12T10:55:52.958174+00:00"
-  },
   "TRX/USDT": {
     "miktar": 102.48373386854547,
     "strateji": "Dusuk oynaklik",
