@@ -1,13 +1,1 @@
-{
-  "TRX/USDT": {
-    "miktar": 102.48373386854547,
-    "strateji": "Dusuk oynaklik",
-    "giris_fiyat": 0.3111,
-    "giris_zamani": "2026-11-13T07:50:47.338713+00:00",
-    "maliyet": 3.191460421071521,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 0.30918518001527606,
-    "stop_baslangic": "2026-11-13T07:50:47.338713+00:00"
-  }
-}
+{}
