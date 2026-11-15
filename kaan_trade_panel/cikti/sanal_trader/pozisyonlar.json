@@ -54,17 +54,6 @@
     "stop_fiyat": 96.20997707874457,
     "stop_baslangic": "2026-11-15T17:00:35.474442+00:00"
   },
-  "CRCLB/USDT": {
-    "miktar": 0.3439599294264157,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 57.94,
-    "giris_zamani": "2026-11-15T17:00:35.592630+00:00",
-    "maliyet": 3.9897974596529573,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 56.43750969622038,
-    "stop_baslangic": "2026-11-15T17:00:35.592630+00:00"
-  },
   "INIT/USDT": {
     "miktar": 169.59123510785128,
     "strateji": "Destek/Direnc kirilmasi",
@@ -86,5 +75,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.0027370695363266103,
     "stop_baslangic": "2026-11-15T17:00:36.301078+00:00"
+  },
+  "RARE/USDT": {
+    "miktar": 1428.520177054548,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 0.01434,
+    "giris_zamani": "2026-11-15T21:42:25.793354+00:00",
+    "maliyet": 4.101096964757201,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.012641000536529733,
+    "stop_baslangic": "2026-11-15T21:42:25.793354+00:00"
   }
 }
