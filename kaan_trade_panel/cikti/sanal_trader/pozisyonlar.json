@@ -10,17 +10,6 @@
     "stop_fiyat": 2.986309481294702,
     "stop_baslangic": "2026-11-15T09:14:08.129901+00:00"
   },
-  "HYPE/USDT": {
-    "miktar": 0.29091966937779207,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 65.96,
-    "giris_zamani": "2026-11-15T09:14:08.286058+00:00",
-    "maliyet": 3.841653932364197,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 63.03776580128545,
-    "stop_baslangic": "2026-11-15T09:14:08.286058+00:00"
-  },
   "DOGE/USDT": {
     "miktar": 331.48826858135726,
     "strateji": "RSI 20/50",
@@ -31,39 +20,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.05619118435851836,
     "stop_baslangic": "2026-11-15T09:14:08.442365+00:00"
-  },
-  "SUI/USDT": {
-    "miktar": 27.248270969694318,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.7172,
-    "giris_zamani": "2026-11-15T09:14:08.913445+00:00",
-    "maliyet": 3.912404392285238,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.688920747978559,
-    "stop_baslangic": "2026-11-15T09:14:08.913445+00:00"
-  },
-  "LINK/USDT": {
-    "miktar": 2.1655620760324035,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 9.137,
-    "giris_zamani": "2026-11-15T09:14:09.220715+00:00",
-    "maliyet": 3.9613094471888033,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 8.809949273551291,
-    "stop_baslangic": "2026-11-15T09:14:09.220715+00:00"
-  },
-  "ENA/USDT": {
-    "miktar": 169.61652361034186,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.1186,
-    "giris_zamani": "2026-11-15T09:14:09.538184+00:00",
-    "maliyet": 4.027331271308617,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.11109482827828061,
-    "stop_baslangic": "2026-11-15T09:14:09.538184+00:00"
   },
   "AVAX/USDT": {
     "miktar": 2.8782011017156903,
@@ -86,5 +42,49 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.03855839999999999,
     "stop_baslangic": "2026-11-15T09:14:10.975018+00:00"
+  },
+  "MSTRB/USDT": {
+    "miktar": 0.19716689564358383,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 99.42,
+    "giris_zamani": "2026-11-15T17:00:35.474442+00:00",
+    "maliyet": 3.9243909439209417,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 96.20997707874457,
+    "stop_baslangic": "2026-11-15T17:00:35.474442+00:00"
+  },
+  "CRCLB/USDT": {
+    "miktar": 0.3439599294264157,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 57.94,
+    "giris_zamani": "2026-11-15T17:00:35.592630+00:00",
+    "maliyet": 3.9897974596529573,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 56.43750969622038,
+    "stop_baslangic": "2026-11-15T17:00:35.592630+00:00"
+  },
+  "INIT/USDT": {
+    "miktar": 169.59123510785128,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 0.12045,
+    "giris_zamani": "2026-11-15T17:00:35.708766+00:00",
+    "maliyet": 4.089542396144282,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.101178,
+    "stop_baslangic": "2026-11-15T17:00:35.708766+00:00"
+  },
+  "PUMP/USDT": {
+    "miktar": 7465.585618579089,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 0.002873,
+    "giris_zamani": "2026-11-15T17:00:36.301078+00:00",
+    "maliyet": 4.294019515951496,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0027370695363266103,
+    "stop_baslangic": "2026-11-15T17:00:36.301078+00:00"
   }
 }
