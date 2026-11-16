@@ -54,15 +54,15 @@
     "stop_fiyat": 0.0114492,
     "stop_baslangic": "2026-11-16T09:30:20.754685+00:00"
   },
-  "SKHYB/USDT": {
-    "miktar": 0.0861103036316154,
-    "strateji": "Bollinger 20/2",
-    "giris_fiyat": 126.71,
-    "giris_zamani": "2026-11-16T09:30:21.730332+00:00",
-    "maliyet": 1.9920570650261855,
+  "ADA/USDT": {
+    "miktar": 75.09419654348785,
+    "strateji": "SFP (likidite avi)",
+    "giris_fiyat": 0.154,
+    "giris_zamani": "2026-11-16T20:20:35.130600+00:00",
+    "maliyet": 2.3152164700094353,
     "yon": "LONG",
-    "kaldirac": 5.4827538444789035,
-    "stop_fiyat": 123.9367221124086,
-    "stop_baslangic": "2026-11-16T09:30:21.730332+00:00"
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.14724800823892598,
+    "stop_baslangic": "2026-11-16T20:20:35.130600+00:00"
   }
 }
