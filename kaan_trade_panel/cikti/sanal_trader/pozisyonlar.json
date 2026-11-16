@@ -32,48 +32,37 @@
     "stop_fiyat": 0.03855839999999999,
     "stop_baslangic": "2026-11-15T09:14:10.975018+00:00"
   },
-  "INIT/USDT": {
-    "miktar": 169.59123510785128,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 0.12045,
-    "giris_zamani": "2026-11-15T17:00:35.708766+00:00",
-    "maliyet": 4.089542396144282,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.101178,
-    "stop_baslangic": "2026-11-15T17:00:35.708766+00:00"
-  },
-  "HYPE/USDT": {
-    "miktar": 0.30873035707350155,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 67.0,
-    "giris_zamani": "2026-11-16T01:55:27.438841+00:00",
-    "maliyet": 4.141127912697618,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 64.73860614783703,
-    "stop_baslangic": "2026-11-16T01:55:27.438841+00:00"
-  },
-  "PAXG/USDT": {
-    "miktar": 0.0075905399150933694,
+  "SOXLB/USDT": {
+    "miktar": 0.36204816881160906,
     "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 3878.11,
-    "giris_zamani": "2026-11-16T01:55:31.349730+00:00",
-    "maliyet": 2.946641516528804,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 3849.739780622095,
-    "stop_baslangic": "2026-11-16T01:55:31.349730+00:00"
+    "giris_fiyat": 53.46,
+    "giris_zamani": "2026-11-16T09:30:19.562418+00:00",
+    "maliyet": 3.8748939148485726,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 56.74557147448747,
+    "stop_baslangic": "2026-11-16T09:30:19.562418+00:00"
   },
-  "GOOGLB/USDT": {
-    "miktar": 0.12458383285488107,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 295.92,
-    "giris_zamani": "2026-11-16T01:55:31.840353+00:00",
-    "maliyet": 3.69037515699864,
+  "RARE/USDT": {
+    "miktar": 1435.9743897259548,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 0.01363,
+    "giris_zamani": "2026-11-16T09:30:20.754685+00:00",
+    "maliyet": 3.9183845709639167,
     "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 292.63440167460135,
-    "stop_baslangic": "2026-11-16T01:55:31.840353+00:00"
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.0114492,
+    "stop_baslangic": "2026-11-16T09:30:20.754685+00:00"
+  },
+  "SKHYB/USDT": {
+    "miktar": 0.0861103036316154,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 126.71,
+    "giris_zamani": "2026-11-16T09:30:21.730332+00:00",
+    "maliyet": 1.9920570650261855,
+    "yon": "LONG",
+    "kaldirac": 5.4827538444789035,
+    "stop_fiyat": 123.9367221124086,
+    "stop_baslangic": "2026-11-16T09:30:21.730332+00:00"
   }
 }
