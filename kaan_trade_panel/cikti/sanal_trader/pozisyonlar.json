@@ -31,5 +31,16 @@
     "kaldirac": 10.0,
     "stop_fiyat": 3812.2683555193967,
     "stop_baslangic": "2026-11-18T04:11:11.977340+00:00"
+  },
+  "PAXG/USDT": {
+    "miktar": 0.0100765565199877,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 3740.01,
+    "giris_zamani": "2026-11-18T13:51:09.180008+00:00",
+    "maliyet": 3.7724146296615815,
+    "yon": "SHORT",
+    "kaldirac": 10.0,
+    "stop_fiyat": 3772.134831454905,
+    "stop_baslangic": "2026-11-18T13:51:09.180008+00:00"
   }
 }
