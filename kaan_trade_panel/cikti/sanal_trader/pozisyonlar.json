@@ -10,17 +10,6 @@
     "stop_fiyat": 0.12577170290175738,
     "stop_baslangic": "2026-11-17T22:13:14.784647+00:00"
   },
-  "PENGU/USDT": {
-    "miktar": 2512.279047657902,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 0.004806,
-    "giris_zamani": "2026-11-17T22:13:15.656039+00:00",
-    "maliyet": 2.417219840449225,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.00457240068333381,
-    "stop_baslangic": "2026-11-17T22:13:15.656039+00:00"
-  },
   "XAUT/USDT": {
     "miktar": 0.00986878640172597,
     "strateji": "Major Trend Surucusu",
@@ -32,15 +21,37 @@
     "stop_fiyat": 3812.2683555193967,
     "stop_baslangic": "2026-11-18T04:11:11.977340+00:00"
   },
-  "PAXG/USDT": {
-    "miktar": 0.0100765565199877,
-    "strateji": "Major Trend Surucusu",
-    "giris_fiyat": 3740.01,
-    "giris_zamani": "2026-11-18T13:51:09.180008+00:00",
-    "maliyet": 3.7724146296615815,
-    "yon": "SHORT",
-    "kaldirac": 10.0,
-    "stop_fiyat": 3772.134831454905,
-    "stop_baslangic": "2026-11-18T13:51:09.180008+00:00"
+  "HYPE/USDT": {
+    "miktar": 0.2855245617120487,
+    "strateji": "Fair Value Gap",
+    "giris_fiyat": 66.82,
+    "giris_zamani": "2026-11-18T21:51:14.725117+00:00",
+    "maliyet": 3.8195698125323507,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 64.8414229224898,
+    "stop_baslangic": "2026-11-18T21:51:14.725117+00:00"
+  },
+  "MUB/USDT": {
+    "miktar": 0.026186486412207364,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 705.89,
+    "giris_zamani": "2026-11-18T21:51:16.881774+00:00",
+    "maliyet": 3.700656435137749,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 678.6281591357911,
+    "stop_baslangic": "2026-11-18T21:51:16.881774+00:00"
+  },
+  "SKHYB/USDT": {
+    "miktar": 0.1532734568284665,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 122.61,
+    "giris_zamani": "2026-11-18T21:51:18.760126+00:00",
+    "maliyet": 3.762334042390045,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 118.58955893502868,
+    "stop_baslangic": "2026-11-18T21:51:18.760126+00:00"
   }
 }
