@@ -21,15 +21,59 @@
     "stop_fiyat": 3744.37029594971,
     "stop_baslangic": "2026-11-19T03:15:16.514920+00:00"
   },
-  "SOXSB/USDT": {
-    "miktar": 0.38318418027162293,
-    "strateji": "MA kesisme 20/100",
-    "giris_fiyat": 57.08,
-    "giris_zamani": "2026-11-19T03:15:18.913369+00:00",
-    "maliyet": 4.378809411392239,
+  "MMT/USDT": {
+    "miktar": 109.36076504952115,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 0.202,
+    "giris_zamani": "2026-11-19T12:53:07.648920+00:00",
+    "maliyet": 4.422597505506161,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 52.091092654522804,
-    "stop_baslangic": "2026-11-19T03:15:18.913369+00:00"
+    "stop_fiyat": 0.16968,
+    "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
+  },
+  "PEPE/USDT": {
+    "miktar": 5676906.211104902,
+    "strateji": "Donchian 20/10",
+    "giris_fiyat": 3.94e-06,
+    "giris_zamani": "2026-11-19T12:53:07.861053+00:00",
+    "maliyet": 4.477879974324988,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 3.7801157186660623e-06,
+    "stop_baslangic": "2026-11-19T12:53:07.861053+00:00"
+  },
+  "TRX/USDT": {
+    "miktar": 145.44159884627996,
+    "strateji": "Hacim-Fiyat Uyumsuzlugu",
+    "giris_fiyat": 0.3127,
+    "giris_zamani": "2026-11-19T12:53:08.196234+00:00",
+    "maliyet": 4.552511307230405,
+    "yon": "LONG",
+    "kaldirac": 10.0,
+    "stop_fiyat": 0.3110180217124854,
+    "stop_baslangic": "2026-11-19T12:53:08.196234+00:00"
+  },
+  "LUNC/USDT": {
+    "miktar": 418221.63604888733,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 4.632e-05,
+    "giris_zamani": "2026-11-19T12:53:10.243190+00:00",
+    "maliyet": 3.8782835198767684,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 4.255714905423238e-05,
+    "stop_baslangic": "2026-11-19T12:53:10.243190+00:00"
+  },
+  "HUMA/USDT": {
+    "miktar": 2421.503272723057,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 0.0082,
+    "giris_zamani": "2026-11-19T12:53:10.349883+00:00",
+    "maliyet": 3.9752406078736877,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.007429233747085473,
+    "stop_baslangic": "2026-11-19T12:53:10.349883+00:00"
   }
 }
