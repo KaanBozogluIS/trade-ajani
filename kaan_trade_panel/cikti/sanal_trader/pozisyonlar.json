@@ -32,28 +32,6 @@
     "stop_fiyat": 0.16968,
     "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
   },
-  "PEPE/USDT": {
-    "miktar": 5676906.211104902,
-    "strateji": "Donchian 20/10",
-    "giris_fiyat": 3.94e-06,
-    "giris_zamani": "2026-11-19T12:53:07.861053+00:00",
-    "maliyet": 4.477879974324988,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 3.7801157186660623e-06,
-    "stop_baslangic": "2026-11-19T12:53:07.861053+00:00"
-  },
-  "TRX/USDT": {
-    "miktar": 145.44159884627996,
-    "strateji": "Hacim-Fiyat Uyumsuzlugu",
-    "giris_fiyat": 0.3127,
-    "giris_zamani": "2026-11-19T12:53:08.196234+00:00",
-    "maliyet": 4.552511307230405,
-    "yon": "LONG",
-    "kaldirac": 10.0,
-    "stop_fiyat": 0.3110180217124854,
-    "stop_baslangic": "2026-11-19T12:53:08.196234+00:00"
-  },
   "LUNC/USDT": {
     "miktar": 418221.63604888733,
     "strateji": "MA kesisme 50/200",
