@@ -32,28 +32,6 @@
     "stop_fiyat": 0.16968,
     "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
   },
-  "LUNC/USDT": {
-    "miktar": 418221.63604888733,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 4.632e-05,
-    "giris_zamani": "2026-11-19T12:53:10.243190+00:00",
-    "maliyet": 3.8782835198767684,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 4.255714905423238e-05,
-    "stop_baslangic": "2026-11-19T12:53:10.243190+00:00"
-  },
-  "HUMA/USDT": {
-    "miktar": 2421.503272723057,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 0.0082,
-    "giris_zamani": "2026-11-19T12:53:10.349883+00:00",
-    "maliyet": 3.9752406078736877,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.007429233747085473,
-    "stop_baslangic": "2026-11-19T12:53:10.349883+00:00"
-  },
   "BTC/USDT": {
     "miktar": 0.00030826820461844534,
     "strateji": "Major Trend Surucusu",
@@ -65,17 +43,6 @@
     "stop_fiyat": 64118.60230862614,
     "stop_baslangic": "2026-11-20T03:02:39.610505+00:00"
   },
-  "NEAR/USDT": {
-    "miktar": 6.396645995867159,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 3.076,
-    "giris_zamani": "2026-11-20T03:02:40.153603+00:00",
-    "maliyet": 3.939155772429906,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 2.918971574628608,
-    "stop_baslangic": "2026-11-20T03:02:40.153603+00:00"
-  },
   "PEPE/USDT": {
     "miktar": 5722960.4535877425,
     "strateji": "Major Trend Surucusu",
@@ -86,5 +53,16 @@
     "kaldirac": 5.0,
     "stop_fiyat": 3.853764368652597e-06,
     "stop_baslangic": "2026-11-20T03:02:40.917662+00:00"
+  },
+  "NVDAB/USDT": {
+    "miktar": 0.11432588750497283,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 129.21,
+    "giris_zamani": "2026-11-20T20:01:04.161669+00:00",
+    "maliyet": 2.957366951855364,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 136.03742497468804,
+    "stop_baslangic": "2026-11-20T20:01:04.161669+00:00"
   }
 }
