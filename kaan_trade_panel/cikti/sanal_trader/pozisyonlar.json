@@ -53,5 +53,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.007429233747085473,
     "stop_baslangic": "2026-11-19T12:53:10.349883+00:00"
+  },
+  "BTC/USDT": {
+    "miktar": 0.00030826820461844534,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 62271.03,
+    "giris_zamani": "2026-11-20T03:02:39.610505+00:00",
+    "maliyet": 3.84307880237064,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 64118.60230862614,
+    "stop_baslangic": "2026-11-20T03:02:39.610505+00:00"
+  },
+  "NEAR/USDT": {
+    "miktar": 6.396645995867159,
+    "strateji": "RSI 30/60",
+    "giris_fiyat": 3.076,
+    "giris_zamani": "2026-11-20T03:02:40.153603+00:00",
+    "maliyet": 3.939155772429906,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 2.918971574628608,
+    "stop_baslangic": "2026-11-20T03:02:40.153603+00:00"
+  },
+  "PEPE/USDT": {
+    "miktar": 5722960.4535877425,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 3.61e-06,
+    "giris_zamani": "2026-11-20T03:02:40.917662+00:00",
+    "maliyet": 4.136113561051402,
+    "yon": "SHORT",
+    "kaldirac": 5.0,
+    "stop_fiyat": 3.853764368652597e-06,
+    "stop_baslangic": "2026-11-20T03:02:40.917662+00:00"
   }
 }
