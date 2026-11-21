@@ -21,17 +21,6 @@
     "stop_fiyat": 29.082110599585437,
     "stop_baslangic": "2026-11-21T01:25:13.051824+00:00"
   },
-  "ZEC/USDT": {
-    "miktar": 0.028326880000754576,
-    "strateji": "Fair Value Gap",
-    "giris_fiyat": 786.78,
-    "giris_zamani": "2026-11-21T17:24:07.362566+00:00",
-    "maliyet": 4.461866395794532,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 736.2826786867947,
-    "stop_baslangic": "2026-11-21T17:24:07.362566+00:00"
-  },
   "AVAX/USDT": {
     "miktar": 3.2256233386337847,
     "strateji": "RSI 30/60",
