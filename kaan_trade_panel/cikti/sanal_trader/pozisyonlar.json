@@ -64,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 136.03742497468804,
     "stop_baslangic": "2026-11-20T20:01:04.161669+00:00"
+  },
+  "SOXLB/USDT": {
+    "miktar": 0.5623781057506184,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 33.46,
+    "giris_zamani": "2026-11-21T01:25:13.051824+00:00",
+    "maliyet": 3.767201485168307,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 29.082110599585437,
+    "stop_baslangic": "2026-11-21T01:25:13.051824+00:00"
+  },
+  "BNB/USDT": {
+    "miktar": 0.036703723367877895,
+    "strateji": "Major Trend Surucusu",
+    "giris_fiyat": 540.13,
+    "giris_zamani": "2026-11-21T01:25:13.275182+00:00",
+    "maliyet": 3.9555615594267217,
+    "yon": "SHORT",
+    "kaldirac": 5.01689240106211,
+    "stop_fiyat": 553.0494718201008,
+    "stop_baslangic": "2026-11-21T01:25:13.275182+00:00"
   }
 }
