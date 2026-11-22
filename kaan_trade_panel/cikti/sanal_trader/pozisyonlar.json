@@ -10,28 +10,6 @@
     "stop_fiyat": 0.16968,
     "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
   },
-  "SOXLB/USDT": {
-    "miktar": 0.5623781057506184,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 33.46,
-    "giris_zamani": "2026-11-21T01:25:13.051824+00:00",
-    "maliyet": 3.767201485168307,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 29.082110599585437,
-    "stop_baslangic": "2026-11-21T01:25:13.051824+00:00"
-  },
-  "AVAX/USDT": {
-    "miktar": 3.2256233386337847,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 6.619,
-    "giris_zamani": "2026-11-21T17:24:10.190629+00:00",
-    "maliyet": 4.274354530213618,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 6.373318299950453,
-    "stop_baslangic": "2026-11-21T17:24:10.190629+00:00"
-  },
   "DODO/USDT": {
     "miktar": 618.8216135010732,
     "strateji": "MA kesisme 20/100",
@@ -42,16 +20,5 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.03535064134721052,
     "stop_baslangic": "2026-11-21T17:24:11.178820+00:00"
-  },
-  "FET/USDT": {
-    "miktar": 227.82045681181054,
-    "strateji": "RSI 20/50",
-    "giris_fiyat": 0.1096,
-    "giris_zamani": "2026-11-21T17:24:11.422318+00:00",
-    "maliyet": 4.998823236551439,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.10477762656465728,
-    "stop_baslangic": "2026-11-21T17:24:11.422318+00:00"
   }
 }
