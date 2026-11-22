@@ -43,17 +43,6 @@
     "stop_fiyat": 0.03535064134721052,
     "stop_baslangic": "2026-11-21T17:24:11.178820+00:00"
   },
-  "RARE/USDT": {
-    "miktar": 1613.2529198239013,
-    "strateji": "Destek/Direnc kirilmasi",
-    "giris_fiyat": 0.0151,
-    "giris_zamani": "2026-11-21T17:24:11.300675+00:00",
-    "maliyet": 4.876900718586769,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.012998496489288714,
-    "stop_baslangic": "2026-11-21T17:24:11.300675+00:00"
-  },
   "FET/USDT": {
     "miktar": 227.82045681181054,
     "strateji": "RSI 20/50",
