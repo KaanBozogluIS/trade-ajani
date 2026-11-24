@@ -21,37 +21,48 @@
     "stop_fiyat": 0.03535064134721052,
     "stop_baslangic": "2026-11-21T17:24:11.178820+00:00"
   },
-  "NVDAB/USDT": {
-    "miktar": 0.12605600956138907,
-    "strateji": "Donchian 55/20",
-    "giris_fiyat": 163.34,
-    "giris_zamani": "2026-11-24T05:56:51.675802+00:00",
-    "maliyet": 4.122119840191649,
+  "SPCXB/USDT": {
+    "miktar": 0.14515738967316422,
+    "strateji": "RSI 20/50",
+    "giris_fiyat": 125.5,
+    "giris_zamani": "2026-11-24T17:32:10.592609+00:00",
+    "maliyet": 3.647097578374797,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 157.2984124039518,
-    "stop_baslangic": "2026-11-24T05:56:51.675802+00:00"
+    "stop_fiyat": 122.20751065554005,
+    "stop_baslangic": "2026-11-24T17:32:10.592609+00:00"
   },
-  "SOXLB/USDT": {
-    "miktar": 0.48874003496533164,
-    "strateji": "Donchian 55/20",
-    "giris_fiyat": 42.55,
-    "giris_zamani": "2026-11-24T05:56:52.256252+00:00",
-    "maliyet": 4.163341038593566,
-    "yon": "LONG",
+  "ADA/USDT": {
+    "miktar": 128.218989045449,
+    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
+    "giris_fiyat": 0.1435,
+    "giris_zamani": "2026-11-24T17:32:10.707979+00:00",
+    "maliyet": 3.683568554158545,
+    "yon": "SHORT",
     "kaldirac": 5.0,
-    "stop_fiyat": 39.639139429847376,
-    "stop_baslangic": "2026-11-24T05:56:52.256252+00:00"
+    "stop_fiyat": 0.1474878719117399,
+    "stop_baslangic": "2026-11-24T17:32:10.707979+00:00"
   },
-  "MUB/USDT": {
-    "miktar": 0.029935648511980953,
-    "strateji": "Donchian 55/20",
-    "giris_fiyat": 703.37,
-    "giris_zamani": "2026-11-24T05:56:53.173979+00:00",
-    "maliyet": 4.215382801575985,
+  "LISTA/USDT": {
+    "miktar": 167.53073506854503,
+    "strateji": "Destek/Direnc kirilmasi",
+    "giris_fiyat": 0.1112,
+    "giris_zamani": "2026-11-24T17:32:12.017582+00:00",
+    "maliyet": 3.7296131610855268,
     "yon": "LONG",
     "kaldirac": 5.0,
-    "stop_fiyat": 680.2885134102602,
-    "stop_baslangic": "2026-11-24T05:56:53.173979+00:00"
+    "stop_fiyat": 0.09527066036641026,
+    "stop_baslangic": "2026-11-24T17:32:12.017582+00:00"
+  },
+  "WLFI/USDT": {
+    "miktar": 469.97290410130455,
+    "strateji": "Bollinger 20/2",
+    "giris_fiyat": 0.0403,
+    "giris_zamani": "2026-11-24T17:32:12.766986+00:00",
+    "maliyet": 3.791773380436952,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 0.039192784833012216,
+    "stop_baslangic": "2026-11-24T17:32:12.766986+00:00"
   }
 }
