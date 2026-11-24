@@ -20,5 +20,38 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.03535064134721052,
     "stop_baslangic": "2026-11-21T17:24:11.178820+00:00"
+  },
+  "NVDAB/USDT": {
+    "miktar": 0.12605600956138907,
+    "strateji": "Donchian 55/20",
+    "giris_fiyat": 163.34,
+    "giris_zamani": "2026-11-24T05:56:51.675802+00:00",
+    "maliyet": 4.122119840191649,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 157.2984124039518,
+    "stop_baslangic": "2026-11-24T05:56:51.675802+00:00"
+  },
+  "SOXLB/USDT": {
+    "miktar": 0.48874003496533164,
+    "strateji": "Donchian 55/20",
+    "giris_fiyat": 42.55,
+    "giris_zamani": "2026-11-24T05:56:52.256252+00:00",
+    "maliyet": 4.163341038593566,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 39.639139429847376,
+    "stop_baslangic": "2026-11-24T05:56:52.256252+00:00"
+  },
+  "MUB/USDT": {
+    "miktar": 0.029935648511980953,
+    "strateji": "Donchian 55/20",
+    "giris_fiyat": 703.37,
+    "giris_zamani": "2026-11-24T05:56:53.173979+00:00",
+    "maliyet": 4.215382801575985,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 680.2885134102602,
+    "stop_baslangic": "2026-11-24T05:56:53.173979+00:00"
   }
 }
