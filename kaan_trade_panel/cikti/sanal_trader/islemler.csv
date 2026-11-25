@@ -497,3 +497,5 @@ tarih,islem,strateji,sembol,fiyat,miktar,tutar,ucret,kar_zarar,kar_zarar_yuzde,n
 2026-11-24 17:32:10,KISA_AC,Tepe/Dip (rejim uyarlanabilir),ADA/USDT,0.1435,128.21898905,3.68,0.0184,,,15.7,37.84,sinyal,5.0
 2026-11-24 17:32:12,AL,Destek/Direnc kirilmasi,LISTA/USDT,0.1112,167.53073507,3.73,0.0186,,,11.97,37.61,sinyal,5.0
 2026-11-24 17:32:12,AL,Bollinger 20/2,WLFI/USDT,0.0403,469.9729041,3.79,0.019,,,8.18,37.7,sinyal,5.0
+2026-11-25 02:19:14,KISA_AC,Tepe/Dip (rejim uyarlanabilir),DOGE/USDT,0.0547,360.34468719,3.89,0.0197,,,4.3,35.4,sinyal,5.077
+2026-11-25 02:19:16,AL,MA kesisme 50/200,GOOGLB/USDT,277.95,0.11648955,4.08,0.0324,,,0.21,35.44,sinyal,7.942

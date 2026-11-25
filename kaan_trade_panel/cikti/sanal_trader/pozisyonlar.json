@@ -64,5 +64,27 @@
     "kaldirac": 5.0,
     "stop_fiyat": 0.039192784833012216,
     "stop_baslangic": "2026-11-24T17:32:12.766986+00:00"
+  },
+  "DOGE/USDT": {
+    "miktar": 360.34468718617376,
+    "strateji": "Tepe/Dip (rejim uyarlanabilir)",
+    "giris_fiyat": 0.0547,
+    "giris_zamani": "2026-11-25T02:19:14.991484+00:00",
+    "maliyet": 3.8865677149478755,
+    "yon": "SHORT",
+    "kaldirac": 5.0766090857424775,
+    "stop_fiyat": 0.05599298905807714,
+    "stop_baslangic": "2026-11-25T02:19:14.991484+00:00"
+  },
+  "GOOGLB/USDT": {
+    "miktar": 0.11648955149936732,
+    "strateji": "MA kesisme 50/200",
+    "giris_fiyat": 277.95,
+    "giris_zamani": "2026-11-25T02:19:16.842307+00:00",
+    "maliyet": 4.080896100695269,
+    "yon": "LONG",
+    "kaldirac": 7.942050157868038,
+    "stop_fiyat": 273.7503287139962,
+    "stop_baslangic": "2026-11-25T02:19:16.842307+00:00"
   }
 }
