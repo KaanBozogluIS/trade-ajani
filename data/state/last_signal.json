@@ -1,102 +1,102 @@
 {
   "binance:SEIUSDT:1h:altcoin_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.03281
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.03283
   },
   "binance:SHIBUSDT:1h:altcoin_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 3.52e-06
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 3.54e-06
   },
   "binance:FETUSDT:1h:altcoin_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.1053
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.1067
   },
   "binance:BNBUSDT:4h:major_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 12:00:00+00:00",
-    "price": 546.0
+    "time": "2026-11-24 20:00:00+00:00",
+    "price": 548.62
   },
   "binance:SOLUSDT:4h:major_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 12:00:00+00:00",
-    "price": 69.05
+    "time": "2026-11-24 20:00:00+00:00",
+    "price": 69.69
   },
   "binance:ETHUSDT:4h:major_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 12:00:00+00:00",
-    "price": 1677.73
+    "time": "2026-11-24 20:00:00+00:00",
+    "price": 1680.11
   },
   "binance:ZECUSDT:1h:ema_cross": {
     "signal": -1,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 712.61
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 739.77
   },
   "binance:BTCUSDT:1d:ict_swing": {
     "signal": -1,
-    "time": "2026-11-23 00:00:00+00:00",
-    "price": 61270.93
+    "time": "2026-11-24 00:00:00+00:00",
+    "price": 59832.0
   },
   "binance:TUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.00363
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.00367
   },
   "binance:DOTUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.651
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.653
   },
   "binance:UNIUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 4.672
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 4.722
   },
   "binance:FETUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.1053
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.1067
   },
   "binance:LINKUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 8.755
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 8.852
   },
   "binance:PEPEUSDT:1h:tepe_dip_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 3.34e-06
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 3.46e-06
   },
   "binance:SANDUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.03174
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.03165
   },
   "binance:BONKUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
+    "time": "2026-11-24 23:00:00+00:00",
     "price": 2.11e-06
   },
   "binance:ETHUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 1677.73
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 1680.11
   },
   "binance:BNBUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 546.0
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 548.62
   },
   "binance:ONGUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.05187
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.05271
   },
   "binance:DOTUSDT:1h:hacim_uyumsuzlugu_stratejisi": {
     "signal": 0,
-    "time": "2026-11-24 15:00:00+00:00",
-    "price": 0.651
+    "time": "2026-11-24 23:00:00+00:00",
+    "price": 0.653
   }
 }
