@@ -10,17 +10,6 @@
     "stop_fiyat": 0.16968,
     "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
   },
-  "DODO/USDT": {
-    "miktar": 618.8216135010732,
-    "strateji": "MA kesisme 20/100",
-    "giris_fiyat": 0.03872,
-    "giris_zamani": "2026-11-21T17:24:11.178820+00:00",
-    "maliyet": 4.796951526478789,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.03535064134721052,
-    "stop_baslangic": "2026-11-21T17:24:11.178820+00:00"
-  },
   "TAO/USDT": {
     "miktar": 0.07837528819340162,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
