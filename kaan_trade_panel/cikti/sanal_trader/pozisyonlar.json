@@ -42,5 +42,16 @@
     "kaldirac": 5.6911155983092625,
     "stop_fiyat": 267.25344850599544,
     "stop_baslangic": "2026-11-25T22:26:43.832071+00:00"
+  },
+  "SSV/USDT": {
+    "miktar": 4.371808397390764,
+    "strateji": "Momentum 180",
+    "giris_fiyat": 2.774,
+    "giris_zamani": "2026-11-26T15:01:12.723731+00:00",
+    "maliyet": 2.427907206078475,
+    "yon": "LONG",
+    "kaldirac": 5.0,
+    "stop_fiyat": 2.5062625247277164,
+    "stop_baslangic": "2026-11-26T15:01:12.723731+00:00"
   }
 }
