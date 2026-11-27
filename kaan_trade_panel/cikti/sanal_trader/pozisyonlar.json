@@ -1,15 +1,4 @@
 {
-  "MMT/USDT": {
-    "miktar": 109.36076504952115,
-    "strateji": "MA kesisme 50/200",
-    "giris_fiyat": 0.202,
-    "giris_zamani": "2026-11-19T12:53:07.648920+00:00",
-    "maliyet": 4.422597505506161,
-    "yon": "LONG",
-    "kaldirac": 5.0,
-    "stop_fiyat": 0.16968,
-    "stop_baslangic": "2026-11-19T12:53:07.648920+00:00"
-  },
   "TAO/USDT": {
     "miktar": 0.07837528819340162,
     "strateji": "Hacim-Fiyat Uyumsuzlugu",
@@ -20,17 +9,6 @@
     "kaldirac": 5.0,
     "stop_fiyat": 175.47549418771698,
     "stop_baslangic": "2026-11-25T22:26:42.655274+00:00"
-  },
-  "GOOGLB/USDT": {
-    "miktar": 0.0630233772184436,
-    "strateji": "RSI 30/60",
-    "giris_fiyat": 273.01,
-    "giris_zamani": "2026-11-25T22:26:43.832071+00:00",
-    "maliyet": 3.026337306340059,
-    "yon": "LONG",
-    "kaldirac": 5.6911155983092625,
-    "stop_fiyat": 267.25344850599544,
-    "stop_baslangic": "2026-11-25T22:26:43.832071+00:00"
   },
   "SSV/USDT": {
     "miktar": 4.371808397390764,
